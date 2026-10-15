@@ -67,6 +67,11 @@ foreach ( get_comments( array( 'post_id' => $post_id, 'status' => 'all' ) ) as $
 }
 
 /* ---------- 3. 一条四层深的链子 ---------- */
+// 统一用这个邮箱：它有过已通过的评论，之后同邮箱的提交会直接发布（check_comment() 按
+// 「作者名 + 邮箱」认老读者）。以前这里只在内层作用域里出现过，外面那条待审评论引用了
+// 一个没定义的同名变量——PHP 警告刷日志，而且那条评论的作者邮箱其实是空的。
+$known_email = 'visitor@example.com';
+
 // 作者名各不相同：「回复 @谁」的断言要靠它们认人。
 $chain = array(
 	array( 'key' => 'L1', 'author' => '顶层甲', 'parent' => 0 ),
@@ -83,8 +88,7 @@ foreach ( $chain as $i => $node ) {
 	$ids[ $node['key'] ] = wp_insert_comment( array(
 		'comment_post_ID'      => $post_id,
 		'comment_author'       => $node['author'],
-		// 第一条顺手当「回头客」：这个邮箱有过通过的评论，之后同邮箱的提交会直接发布
-		'comment_author_email' => 'visitor@example.com',
+		'comment_author_email' => $known_email,
 		'comment_content'      => 'YUKI-TEST-NEST-' . $node['key'] . ' ' . $node['author'] . ' 的第 ' . ( $i + 1 ) . ' 层发言。',
 		'comment_approved'     => 1,
 		'comment_author_IP'    => '127.0.0.1',
@@ -106,18 +110,9 @@ $ids['LONE'] = wp_insert_comment( array(
 	'comment_date_gmt'     => gmdate( 'Y-m-d H:i:s', strtotime( '+10 minutes' ) ),
 ) );
 
-// 一条待审评论：正文里带标签。作者本人（带评论 cookie）看得到它、也看得到自己的标签；
-// 别人看不到它。这条覆盖的是主题自己渲染评论之后最容易被弄坏的那条分支。
-$ids['PEND'] = wp_insert_comment( array(
-	'comment_post_ID'      => $post_id,
-	'comment_author'       => '待审者',
-	'comment_author_email' => $known_email,
-	'comment_content'      => '<b>YUKI-TEST-NEST-PEND</b> 一条还没过审的评论。',
-	'comment_approved'     => 0,
-	'comment_author_IP'    => '127.0.0.1',
-	'comment_date'         => gmdate( 'Y-m-d H:i:s', strtotime( '+12 minutes' ) ),
-	'comment_date_gmt'     => gmdate( 'Y-m-d H:i:s', strtotime( '+12 minutes' ) ),
-) );
+// （这里原来还有一条匿名访客的待审评论，只为一条早先放弃的「预览链接」验法而建：
+//   预览那条路要 ?unapproved=&moderation-hash= 才成立，而待审的渲染分支已经由下面
+//   管理员那条覆盖了——同一个分支验两遍没有意义，删掉，别留死数据。）
 
 // 管理员自己的一条待审评论：核心会把「当前用户自己的未过审评论」放进列表，
 // 所以用管理员身份打开文章页能看到它——这段用来验主题自己渲染评论时对待审那条的处理
@@ -158,19 +153,8 @@ echo 'YUKI-JSON: ' . wp_json_encode( array(
 	'post_url'      => get_permalink( $post_id ),
 	'ids'           => $ids,
 	'ping_author'   => '别的博客',
-	'known_email'   => 'visitor@example.com',
-	// 待审评论的预览链接：WordPress 提交待审评论后跳转的就是这个形状
-	// （?unapproved=<id>&moderation-hash=<日期哈希>），十分钟内有效
-	'pending_preview' => add_query_arg(
-		array(
-			'unapproved'      => $ids['PEND'],
-			'moderation-hash' => wp_hash( get_comment( $ids['PEND'] )->comment_date_gmt ),
-		),
-		get_permalink( $post_id )
-	) . '#comment-' . $ids['PEND'],
+	'known_email'   => $known_email,
 	// 评论 cookie 的名字里要带这个哈希，验证脚本拿它模拟「作者本人」
-	'cookie_hash'   => COOKIEHASH,
-	'pending_author' => '待审者',
 	'authors'       => array(
 		'L1'   => '顶层甲',
 		'L2'   => '二层乙',

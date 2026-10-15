@@ -15,7 +15,8 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { REPO_ROOT, SITE, WP_ROOT, get, php, postForm, tagAttrs } from './lib.mjs';
 import { check, section, note, report } from './report.mjs';
-import { launch, newPage } from './browser.mjs';
+import { withBrowser, measure } from './browser.mjs';
+import { themeCss, cssBlock, tokens, usedTokens, isColor, hexToRgb, contrast } from './theme-css.mjs';
 
 const FIXTURES = path.join(import.meta.dirname, 'comment-nesting-fixtures.php');
 const RUN = Date.now().toString(36);
@@ -61,51 +62,17 @@ const byId = (id) => comments.find((c) => c.id === id);
 
 /* ---------------- style.css ---------------- */
 
-// 工作区里是 CRLF，按行找分节标题之前先归一化，否则找不着
-const css = fs.readFileSync(path.join(REPO_ROOT, 'style.css'), 'utf8').replace(/\r\n/g, '\n');
+const css = themeCss();
 
-/** 取一个 `选择器 { ... }` 块的内容，找不到就空串。 */
-const cssBlock = (selector) => {
-  const esc = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  return new RegExp(`${esc}\\s*\\{([^}]*)\\}`, 'i').exec(css)?.[1]?.trim() ?? '';
-};
-
-/** 取一段 token 块（:root 或 .dark）里的 `--yuki-x: 值`。 */
-function tokenBlock(selector) {
-  const body = cssBlock(selector);
-  const out = {};
-  for (const m of body.matchAll(/(--[\w-]+)\s*:\s*([^;]+);/g)) out[m[1]] = m[2].trim();
-  return out;
-}
-
-const rootTokens = tokenBlock(':root');
-const darkTokens = tokenBlock('.dark');
-
-/** var(--x) 名字，按出现顺序去重。 */
-const usedTokens = (text) => [...new Set([...text.matchAll(/var\(\s*(--[\w-]+)/g)].map((m) => m[1]))];
-
-const isColor = (value) => /^(#|rgb|hsl)/i.test(value.trim()) || /^(white|black|red|blue|green|gray|grey)$/i.test(value.trim());
-
-/** WCAG 相对亮度。 */
-function luminance(color) {
-  const hex = color.trim().replace('#', '');
-  const full = hex.length === 3 ? hex.split('').map((c) => c + c).join('') : hex;
-  const [r, g, b] = [0, 2, 4].map((i) => parseInt(full.slice(i, i + 2), 16) / 255);
-  const lin = (c) => (c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4);
-  return 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b);
-}
-
-const contrast = (a, b) => {
-  const [hi, lo] = [luminance(a), luminance(b)].sort((x, y) => y - x);
-  return (hi + 0.05) / (lo + 0.05);
-};
+const rootTokens = tokens(css);
+const darkTokens = tokens(css, '.dark');
 
 // 评论区那一段：从「评论」这条分节标题起，到下一个分节标题为止
 const sectionStart = css.indexOf('评论\n   ============================================');
 const nextSection = css.indexOf('/* ============================================', sectionStart);
 const commentCss = sectionStart < 0 ? '' : css.slice(sectionStart, nextSection < 0 ? css.length : nextSection);
 // 提交按钮的规则共用一处，也算评论区的一部分
-const buttonCss = cssBlock('.yuki-btn');
+const buttonCss = cssBlock( css, '.yuki-btn');
 const commentStyles = commentCss + '\n' + buttonCss;
 
 /* ================= 1. 层级压在两层 ================= */
@@ -226,7 +193,9 @@ check('新回复也落在同一层，没有多出一层缩进',
 
 section('样式只用 token');
 
-const literals = [...commentStyles.matchAll(/#[0-9a-fA-F]{3,8}\b|\b(?:rgba?|hsla?)\([^)]*\)|\b(?:white|black|red|blue|green|gray|grey|orange|yellow)\b/g)]
+// 命名色后面不能紧跟 - 或字母：`white-space: nowrap` 里的 white 不是颜色。
+// 这一条踩过一次——写了 \b 就够，结果 `white-space` 让它误报。
+const literals = [...commentStyles.matchAll(/#[0-9a-fA-F]{3,8}\b|\b(?:rgba?|hsla?)\([^)]*\)|\b(?:white|black|red|blue|green|gray|grey|orange|yellow)(?![\w-])/g)]
   .map((m) => m[0]);
 check('评论区里没有硬编码色值', literals.length === 0, literals.join(', '));
 
@@ -243,8 +212,8 @@ check('用到的颜色 token 在 .dark 里也定义了（否则深色下会是�
 
 section('深色下读得清');
 
-const contentColorToken = /color\s*:\s*var\((--[\w-]+)\)/.exec(cssBlock('.yuki-comment-list .comment-content'))?.[1];
-const bodyBgToken = /background(?:-color)?\s*:\s*var\((--[\w-]+)\)/.exec(cssBlock('.yuki-comment-list .comment-body'))?.[1];
+const contentColorToken = /color\s*:\s*var\((--[\w-]+)\)/.exec(cssBlock( css, '.yuki-comment-list .comment-content'))?.[1];
+const bodyBgToken = /background(?:-color)?\s*:\s*var\((--[\w-]+)\)/.exec(cssBlock( css, '.yuki-comment-list .comment-body'))?.[1];
 check('能认出评论正文用的字色与卡片底色', !!contentColorToken && !!bodyBgToken, `${contentColorToken} / ${bodyBgToken}`);
 
 // 认不出 token 就不硬算——上面那条已经红了，这里再崩掉只会让报告看不清
@@ -268,7 +237,7 @@ check('输入框规则与表单的类对得上', /\.yuki-comment-form\s+input/.t
 
 section('窄屏不被缩进挤成一条缝');
 
-const childrenPad = /padding-left\s*:\s*(\d+)px/.exec(cssBlock('.yuki-comment-list .children'))?.[1];
+const childrenPad = /padding-left\s*:\s*(\d+)px/.exec(cssBlock( css, '.yuki-comment-list .children'))?.[1];
 check('二层缩进存在且不大', childrenPad !== undefined && Number(childrenPad) <= 32, `${childrenPad}px`);
 
 /** 取出所有 @media 块。按花括号配对，单行写法和多行写法都认。 */
@@ -312,18 +281,16 @@ check('窄屏缩进比宽屏更小', narrow !== undefined && Number(narrow.pad) 
       if (i > 0) jar.set(pair.slice(0, i).trim(), pair.slice(i + 1).trim());
     }
   };
-  // 每次请求现算：写成常量会把「还没装 cookie 时」那个空表冻住
-  const jarHeaders = () => ({ cookie: [...jar].map(([k, v]) => `${k}=${v}`).join('; ') });
-  // postForm() 是整体替换 headers 的，所以带 cookie 的那次要把 content-type 一起带上——
-  // 少了它 PHP 解不出 $_POST，登录会静默失败（拿到的是匿名页面，什么都验不到）
-  const formHeaders = () => ({ 'content-type': 'application/x-www-form-urlencoded', ...jarHeaders() });
+  // lib.mjs 的 get()/postForm() 现在收一个 cookie 参数，别再手工拼头了
+  // （手工拼过两次：postForm 以前是整体替换 headers，漏了 content-type 就静默登录失败）
+  const cookie = () => [...jar].map(([k, v]) => `${k}=${v}`).join('; ');
 
   store(await get(`${SITE}/wp-login.php`));
   store(await postForm(`${SITE}/wp-login.php`, {
     log: 'admin', pwd: 'admin123', 'wp-submit': 'Log In', redirect_to: `${SITE}/wp-admin/`, testcookie: '1',
-  }, { headers: formHeaders() }));
+  }, { cookie: cookie() }));
 
-  const asAdmin = (await get(POST_URL, { headers: jarHeaders() })).body;
+  const asAdmin = (await get(POST_URL, { cookie: cookie() })).body;
   const adminPending = parseComments(asAdmin).find((c) => c.id === IDS.ADMINPEND);
 
   section('待审那条（管理员看自己未过审的）');
@@ -343,22 +310,17 @@ check('窄屏缩进比宽屏更小', narrow !== undefined && Number(narrow.pad) 
 
 section('真浏览器里量一量');
 
-const hexToRgb = (hex) => {
-  const h = hex.trim().replace('#', '');
-  const full = h.length === 3 ? h.split('').map((c) => c + c).join('') : h;
-  const [r, g, b] = [0, 2, 4].map((i) => parseInt(full.slice(i, i + 2), 16));
-  return `rgb(${r}, ${g}, ${b})`;
-};
 
-const measuredContrast = (fg, bg) => {
-  const toLum = (rgb) => {
-    const [r, g, b] = rgb.match(/\d+/g).slice(0, 3).map((v) => Number(v) / 255);
-    const lin = (c) => (c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4);
-    return 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b);
+const READ_NARROW = `(() => {
+  const first = document.querySelector('.yuki-comment-list > li > .comment-body');
+  const second = document.querySelector('.yuki-comment-list > li > .children > li > .comment-body');
+  if (!first || !second) return null;
+  return {
+    viewport: window.innerWidth,
+    first: first.getBoundingClientRect().width,
+    second: second.getBoundingClientRect().width,
   };
-  const [hi, lo] = [toLum(fg), toLum(bg)].sort((x, y) => y - x);
-  return (hi + 0.05) / (lo + 0.05);
-};
+})()`;
 
 const READ_CARD = `(() => {
   const card = document.querySelector('.yuki-comment-list .comment-body');
@@ -372,18 +334,17 @@ const READ_CARD = `(() => {
 })()`;
 
 try {
-  const browser = await launch();
+  const seenByScheme = await withBrowser(async (browser) => ({
+    light: await measure(browser, POST_URL, { colorScheme: 'light', expression: READ_CARD }),
+    dark: await measure(browser, POST_URL, { colorScheme: 'dark', expression: READ_CARD }),
+    narrow: await measure(browser, POST_URL, { colorScheme: 'light', width: 375, height: 900, expression: READ_NARROW }),
+  }));
 
-  try {
-    for (const scheme of ['light', 'dark']) {
+  for (const scheme of ['light', 'dark']) {
+    {
       const tokens = scheme === 'dark' ? darkTokens : rootTokens;
       const label = scheme === 'dark' ? '深色' : '浅色';
-
-      const page = await newPage(browser, { colorScheme: scheme });
-      await page.setViewport(1200, 900);
-      await page.goto(POST_URL);
-      const seen = await page.evaluate(READ_CARD);
-      await page.close();
+      const seen = seenByScheme[scheme];
 
       check(`${label}模式下主题走的是那一条分支`, seen?.dark === (scheme === 'dark'), `html.dark=${seen?.dark}`);
       check(`${label}下评论卡片底色就是 ${tokens['--yuki-card']}`,
@@ -391,20 +352,11 @@ try {
       check(`${label}下评论正文颜色就是 ${tokens['--yuki-ink-2']}`,
         seen?.fg === hexToRgb(tokens['--yuki-ink-2']), `实测 ${seen?.fg}`);
       check(`${label}下按实测颜色算的正文对比度 ≥ 4.5`,
-        seen ? measuredContrast(seen.fg, seen.bg) >= 4.5 : false,
-        seen ? `${measuredContrast(seen.fg, seen.bg).toFixed(2)}:1（${seen.fg} on ${seen.bg}）` : '没读到卡片');
+        seen ? contrast(seen.fg, seen.bg) >= 4.5 : false,
+        seen ? `${contrast(seen.fg, seen.bg).toFixed(2)}:1（${seen.fg} on ${seen.bg}）` : '没读到卡片');
     }
 
-    const narrow = await newPage(browser, { colorScheme: 'light' });
-    await narrow.setViewport(375, 900);
-    await narrow.goto(POST_URL);
-    const widths = await narrow.evaluate(`(() => {
-      const first = document.querySelector('.yuki-comment-list > li > .comment-body');
-      const second = document.querySelector('.yuki-comment-list > li > .children > li > .comment-body');
-      if (!first || !second) return null;
-      return { viewport: window.innerWidth, first: first.getBoundingClientRect().width, second: second.getBoundingClientRect().width };
-    })()`);
-    await narrow.close();
+    const widths = seenByScheme.narrow;
 
     check('375px 下两层卡片都还在', !!widths, widths ? `视口 ${widths.viewport}` : '没读到卡片');
     check('第二层只比第一层窄一个缩进（不被挤成一条缝）',
@@ -413,8 +365,6 @@ try {
     check('第二层卡片仍有第一层九成以上宽',
       widths ? widths.second >= widths.first * 0.9 : false,
       widths ? `${((widths.second / widths.first) * 100).toFixed(0)}%` : '');
-  } finally {
-    await browser.close();
   }
 } catch (err) {
   check('能起一个无头浏览器来量', false, err.message);

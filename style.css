@@ -359,6 +359,35 @@ img { max-width: 100%; height: auto; display: block; }
 .yuki-hitokoto cite { display: block; margin-top: 8px; font-size: 12px; font-style: normal; color: var(--yuki-muted-foreground); }
 
 /* ============================================
+   说说归档
+   ============================================ */
+/* 说说是短内容，归档里走紧凑的一列：正文直接铺开、缩略图一律不要。
+   与文章列表（左 112×84 缩略图 + 摘要）拉开距离，一眼能区分。 */
+.yuki-shuoshuo-list { display: flex; flex-direction: column; }
+.yuki-shuoshuo-item { padding: 22px 0; border-bottom: 1px solid var(--yuki-border); }
+.yuki-shuoshuo-item:first-child { padding-top: 0; }
+.yuki-shuoshuo-item:last-child { padding-bottom: 0; border-bottom: none; }
+.yuki-shuoshuo-title { margin: 0 0 8px; font-size: 16px; font-weight: 600; line-height: 1.5; }
+.yuki-shuoshuo-title a:hover { color: var(--yuki-primary-700); }
+.yuki-shuoshuo-body { font-size: 14px; line-height: 1.7; color: var(--yuki-ink-2); }
+.yuki-shuoshuo-body > :first-child { margin-top: 0; }
+.yuki-shuoshuo-body > :last-child { margin-bottom: 0; }
+.yuki-shuoshuo-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-top: 10px;
+  font-size: 12px;
+  color: var(--yuki-muted-foreground);
+}
+.yuki-shuoshuo-meta a:hover { color: var(--yuki-primary-700); }
+@media (max-width: 640px) {
+  .yuki-shuoshuo-item { padding: 16px 0; }
+}
+
+
+/* ============================================
    评论
    ============================================ */
 .yuki-comments { margin-top: 64px; padding-top: 40px; border-top: 1px solid var(--yuki-border); }
@@ -459,6 +488,18 @@ img { max-width: 100%; height: auto; display: block; }
   .yuki-comment-list .comment-body { padding: 16px; }
 }
 
+/* 待审提示：贴在评论列表上方，说清「还没公开」。与列表里那条 .comment-awaiting-moderation
+   不是一回事——那条说的是「这一条在等审核」，这条说的是「你有几条在等审核」。 */
+.yuki-pending-notice {
+  margin: 0 0 24px;
+  padding: 12px 16px;
+  border: 1px solid var(--yuki-border);
+  border-left: 3px solid var(--yuki-primary);
+  border-radius: var(--yuki-radius-md);
+  background: var(--yuki-muted);
+  font-size: 14px;
+  color: var(--yuki-ink-2);
+}
 /* ============================================
    Newsletter / Footer
    ============================================ */

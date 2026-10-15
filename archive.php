@@ -11,6 +11,12 @@
 get_header();
 
 $yuki_is_tax = is_category() || is_tag() || is_tax();
+
+// 说说的承载体分类被配置了、而且现在打开的正是它的归档：只有这一种归档换紧凑版式，
+// 别的分类/标签/日期归档一律照旧。承载体没配置或被删时 yuki_shuoshuo_category_id()
+// 返回 0，这里自然不生效。
+$yuki_shuoshuo_id = function_exists( 'yuki_shuoshuo_category_id' ) ? yuki_shuoshuo_category_id() : 0;
+$yuki_is_shuoshuo = $yuki_shuoshuo_id && is_category() && (int) get_queried_object_id() === $yuki_shuoshuo_id;
 ?>
 
 <section class="yuki-hero yuki-dot-pattern">
@@ -25,11 +31,16 @@ $yuki_is_tax = is_category() || is_tag() || is_tax();
 
 <main class="yuki-container">
 	<?php if ( have_posts() ) : ?>
-		<div class="yuki-post-list">
+		<div class="<?php echo $yuki_is_shuoshuo ? 'yuki-shuoshuo-list' : 'yuki-post-list'; ?>">
 			<?php
 			while ( have_posts() ) :
 				the_post();
-				get_template_part( 'template-parts/post-item', null, array( 'show_cat' => ! $yuki_is_tax ) );
+
+				if ( $yuki_is_shuoshuo ) {
+					get_template_part( 'template-parts/shuoshuo-item' );
+				} else {
+					get_template_part( 'template-parts/post-item', null, array( 'show_cat' => ! $yuki_is_tax ) );
+				}
 			endwhile;
 			?>
 		</div>

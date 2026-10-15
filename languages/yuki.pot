@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Yuki 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-15T16:24:28+00:00\n"
+"POT-Creation-Date: 2026-10-15T16:25:52+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -20,6 +20,10 @@ msgstr ""
 
 #: functions.php:309
 msgid "%d 分钟阅读"
+msgstr ""
+
+#: template-parts/shuoshuo-item.php:49
+msgid "%s 条评论"
 msgstr ""
 
 #: functions.php:128
@@ -280,6 +284,10 @@ msgstr ""
 msgid "评论（%s）"
 msgstr ""
 
+#: template-parts/shuoshuo-item.php:46
+msgid "说点什么"
+msgstr ""
+
 #: functions.php:431
 msgid "说说"
 msgstr ""
@@ -300,7 +308,7 @@ msgstr ""
 msgid "这个分类里的文章不出现在首页与博客列表，只保留它自己的归档页。选「不使用」则整项功能不生效。"
 msgstr ""
 
-#: archive.php:45
+#: archive.php:56
 msgid "这个归档下还没有文章。"
 msgstr ""
 

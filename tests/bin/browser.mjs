@@ -63,6 +63,44 @@ export async function launch() {
 }
 
 /**
+ * 起一个浏览器、跑一段回调、无论成败都关掉。
+ *
+ * @param {Function} fn 收到 browse 对象（launch() 的返回值）。
+ */
+export async function withBrowser(fn) {
+  const browser = await launch();
+
+  try {
+    return await fn(browser);
+  } finally {
+    await browser.close();
+  }
+}
+
+/**
+ * 开一个页面、设好视口与配色、打开地址、跑一段表达式量个数，然后关掉。
+ *
+ * 各工单的视觉断言差的只是「量什么」，起页面这一套是一样的——这段之前在每个脚本里
+ * 各写了一遍，抽到这里。要在一个页面里量多处，或者要跨页面比较，直接用 newPage()。
+ *
+ * @param {object} browser   launch() 的返回值。
+ * @param {string} url       打开的地址。
+ * @param {object} options   { colorScheme, width, height, expression }
+ * @return {Promise<*>} expression 的值。
+ */
+export async function measure(browser, url, { colorScheme = 'light', width = 1200, height = 900, expression } = {}) {
+  const page = await newPage(browser, { colorScheme });
+
+  try {
+    await page.setViewport(width, height);
+    await page.goto(url);
+    return await page.evaluate(expression);
+  } finally {
+    await page.close();
+  }
+}
+
+/**
  * 开一个页面。
  *
  * colorScheme 走 CDP 的 prefers-color-scheme，主题的内联脚本就是拿它决定深浅色的——
