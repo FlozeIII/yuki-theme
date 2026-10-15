@@ -41,14 +41,9 @@
 	</nav>
 
 	<div class="yuki-nav-actions">
-		<details class="yuki-search">
-			<summary aria-label="<?php esc_attr_e( '搜索', 'yuki' ); ?>">
-				<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/></svg>
-			</summary>
-			<div class="yuki-search-panel">
-				<?php get_search_form(); ?>
-			</div>
-		</details>
+		<button type="button" id="search-toggle" class="yuki-search-btn" aria-label="<?php esc_attr_e( '搜索', 'yuki' ); ?>" aria-expanded="false" aria-controls="yuki-search-overlay">
+			<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/></svg>
+		</button>
 
 		<button type="button" id="theme-toggle" class="theme-switch" aria-label="<?php esc_attr_e( '切换主题', 'yuki' ); ?>">
 			<span class="theme-switch-hint theme-switch-hint-left" aria-hidden="true">

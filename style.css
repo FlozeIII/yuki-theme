@@ -454,14 +454,13 @@ img { max-width: 100%; height: auto; display: block; }
    头部操作区 & 搜索
    ============================================ */
 .yuki-nav-actions { display: flex; align-items: center; gap: 12px; flex: none; }
-.yuki-search { position: relative; }
-.yuki-search > summary {
+.yuki-search-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   width: 34px;
   height: 34px;
-  list-style: none;
+  padding: 0;
   cursor: pointer;
   border: 1px solid var(--yuki-border);
   border-radius: var(--yuki-radius-pill);
@@ -469,24 +468,11 @@ img { max-width: 100%; height: auto; display: block; }
   color: var(--yuki-ink-3);
   transition: border-color 180ms ease, color 180ms ease;
 }
-.yuki-search > summary::-webkit-details-marker { display: none; }
-.yuki-search > summary:hover,
-.yuki-search[open] > summary { border-color: var(--yuki-primary); color: var(--yuki-primary-700); }
-.yuki-search > summary:focus-visible { outline: 2px solid var(--yuki-ring); outline-offset: 2px; }
-.yuki-search > summary svg { width: 15px; height: 15px; }
-.yuki-search-panel {
-  position: absolute;
-  top: calc(100% + 12px);
-  right: 0;
-  z-index: 20;
-  width: min(300px, calc(100vw - 48px));
-  padding: 16px;
-  border: 1px solid var(--yuki-border);
-  border-radius: var(--yuki-radius-lg);
-  background: var(--yuki-card);
-  box-shadow: var(--yuki-shadow-2);
-}
+.yuki-search-btn:hover { border-color: var(--yuki-primary); color: var(--yuki-primary-700); }
+.yuki-search-btn:focus-visible { outline: 2px solid var(--yuki-ring); outline-offset: 2px; }
+.yuki-search-btn svg { width: 15px; height: 15px; }
 
+/* 搜索表单 —— 浮层内与 404 / 搜索无结果页共用 */
 .yuki-search-form { display: flex; gap: 8px; }
 .yuki-search-form label { flex: 1; min-width: 0; }
 .yuki-search-field {
@@ -501,6 +487,44 @@ img { max-width: 100%; height: auto; display: block; }
 }
 .yuki-search-field:focus { outline: 2px solid var(--yuki-ring); outline-offset: 1px; }
 .yuki-search-form .yuki-btn { flex: none; padding: 10px 16px; }
+
+/* 居中搜索浮层 */
+.yuki-search-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.25s ease, visibility 0.25s;
+}
+.yuki-search-overlay.is-open { opacity: 1; visibility: visible; }
+.yuki-search-backdrop { position: absolute; inset: 0; background: rgba(45, 45, 53, 0.35); }
+.dark .yuki-search-backdrop { background: rgba(0, 0, 0, 0.5); }
+.yuki-search-dialog {
+  position: relative;
+  width: min(640px, 100%);
+  padding: 12px;
+  border: 1px solid var(--yuki-border);
+  border-radius: var(--yuki-radius-lg);
+  background: var(--yuki-card);
+  box-shadow: 0 24px 60px -20px rgba(45, 45, 53, 0.3);
+  transform: translateY(10px) scale(0.98);
+  transition: transform 0.25s cubic-bezier(0.45, 0, 0.2, 1);
+}
+.yuki-search-overlay.is-open .yuki-search-dialog { transform: none; }
+.yuki-search-dialog .yuki-search-field { padding: 14px 18px; font-size: 16px; }
+.yuki-search-dialog .yuki-btn { padding: 14px 24px; }
+
+body.yuki-search-locked { overflow: hidden; }
+
+@media (prefers-reduced-motion: reduce) {
+  .yuki-search-overlay,
+  .yuki-search-dialog { transition: none; }
+  .yuki-search-dialog { transform: none; }
+}
 
 /* 窄屏收紧导航 */
 @media (max-width: 640px) {

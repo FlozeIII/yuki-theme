@@ -46,6 +46,14 @@ $gongan = get_theme_mod( 'yuki_gongan_number', '' );
 	</div>
 </footer>
 
+<!-- 搜索浮层：放 </footer> 之后，避免受 header 层叠上下文影响 -->
+<div class="yuki-search-overlay" id="yuki-search-overlay">
+	<div class="yuki-search-backdrop" data-search-close></div>
+	<div class="yuki-search-dialog" role="dialog" aria-modal="true" aria-label="<?php esc_attr_e( '搜索', 'yuki' ); ?>">
+		<?php get_search_form(); ?>
+	</div>
+</div>
+
 <?php wp_footer(); ?>
 </body>
 </html>

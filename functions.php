@@ -36,6 +36,7 @@ function yuki_assets() {
 	wp_enqueue_style( 'yuki-style', get_stylesheet_uri(), array(), '1.0.0' );
 
 	wp_enqueue_script( 'yuki-theme-toggle', get_template_directory_uri() . '/assets/js/theme-toggle.js', array(), '1.0.0', true );
+	wp_enqueue_script( 'yuki-search-overlay', get_template_directory_uri() . '/assets/js/search-overlay.js', array(), '1.0.0', true );
 }
 add_action( 'wp_enqueue_scripts', 'yuki_assets' );
 
