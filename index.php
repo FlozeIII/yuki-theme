@@ -21,25 +21,7 @@ get_header();
 			<?php
 			while ( have_posts() ) :
 				the_post();
-				$cats = get_the_category();
-				?>
-				<article class="yuki-post-item">
-					<?php if ( has_post_thumbnail() ) : ?>
-						<a class="yuki-post-thumb" href="<?php the_permalink(); ?>">
-							<?php the_post_thumbnail( 'yuki-thumb' ); ?>
-						</a>
-					<?php endif; ?>
-					<div class="yuki-post-body">
-						<div class="yuki-post-meta">
-							<?php if ( $cats ) : ?>
-								<a class="yuki-cat-badge" href="<?php echo esc_url( get_category_link( $cats[0] ) ); ?>"><?php echo esc_html( $cats[0]->name ); ?></a>
-							<?php endif; ?>
-							<time datetime="<?php echo esc_attr( get_the_date( 'c' ) ); ?>"><?php echo esc_html( get_the_date() ); ?></time>
-						</div>
-						<h2 class="yuki-post-title"><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h2>
-						<p class="yuki-post-excerpt"><?php echo esc_html( get_the_excerpt() ); ?></p>
-					</div>
-				</article>
+				get_template_part( 'template-parts/post-item' );
 			<?php endwhile; ?>
 		</div>
 
