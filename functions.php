@@ -740,3 +740,11 @@ function yuki_comment_template( $comment, $args, $depth ) {
 		'depth'     => $depth,
 	) );
 }
+
+/* ---------------------------------------------
+ * 独立的功能模块
+ *
+ * 逐个显式 require，而不是 glob 扫 inc/ 目录：加载了哪些文件一眼看得见，
+ * 加一个文件也要有人手动写一行——不会因为往目录里放了点什么就悄悄多出一堆行为。
+ * --------------------------------------------- */
+require_once get_template_directory() . '/inc/comment-deletion.php';

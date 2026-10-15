@@ -74,17 +74,30 @@ export function probe(...args) {
 
 /* ---------- HTTP ---------- */
 
-/** GET 一个地址，返回 { status, body, headers }。网络不可达时抛错。 */
+/**
+ * 默认请求超时。
+ *
+ * 本地请求都是毫秒级的，所以这个值只是兜底。它必须存在，因为 stub 有一个 `hang` 模式
+ * （接住请求什么都不回，用来模拟上游超时）——谁把它留在 hang 上，没有超时的请求就会
+ * 一直等下去，看起来像自己的代码死了。有了它，那种情况会变成一条清清楚楚的失败。
+ */
+const DEFAULT_TIMEOUT_MS = 20000;
+
+/** GET 一个地址，返回 { status, body, headers }。网络不可达或超时都会抛错。 */
 export async function get(url, options = {}) {
-  const res = await fetch(url, { redirect: 'manual', ...options });
+  const res = await fetch(url, {
+    redirect: 'manual',
+    signal: AbortSignal.timeout(DEFAULT_TIMEOUT_MS),
+    ...options,
+  });
   const body = await res.text();
   return { status: res.status, body, headers: res.headers };
 }
 
-/** 取地址可达性与状态码；不可达返回 0 而不是抛错。 */
-export async function statusOf(url) {
+/** 取地址可达性与状态码；不可达、或者挂住不应答，都返回 0 而不是抛错。 */
+export async function statusOf(url, timeoutMs = 2000) {
   try {
-    const res = await fetch(url, { redirect: 'manual' });
+    const res = await fetch(url, { redirect: 'manual', signal: AbortSignal.timeout(timeoutMs) });
     return res.status;
   } catch {
     return 0;
@@ -98,6 +111,7 @@ export async function postForm(url, fields, options = {}) {
     redirect: 'manual',
     headers: { 'content-type': 'application/x-www-form-urlencoded' },
     body: new URLSearchParams(fields).toString(),
+    signal: AbortSignal.timeout(DEFAULT_TIMEOUT_MS),
     ...options,
   });
   const body = await res.text();

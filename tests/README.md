@@ -93,7 +93,7 @@ PHPMailer 的 `WordWrap` 默认是 `0`（关着，WordPress 也没有打开它�
 
 | 文件 | 作用 |
 | --- | --- |
-| `mode` | `ok`（默认）/ `500` / `garbage` |
+| `mode` | `ok`（默认）/ `500` / `garbage` / `hang` |
 | `body.txt` | `mode=ok` 时返回的正文 |
 | `hits.log` | 每个上游请求追加一行：`<ISO 时间> <方法> <路径>` |
 
@@ -101,7 +101,14 @@ PHPMailer 的 `WordWrap` 默认是 `0`（关着，WordPress 也没有打开它�
 node tests/bin/upstream-stub.mjs --port=8099 --var=C:/Users/Floze/wp-dev/var
 ```
 
-- **切故障**：把 `mode` 写成 `500`（或 `garbage`，返回没法解析的正文）
+- **切故障**：把 `mode` 写成 `500`（返回 500）、`garbage`（返回没法解析的正文），
+  或者 `hang`（接住请求但**永不回应**，客户端只能按自己的 timeout 收场；60 秒后自行销毁连接，
+  免得挂着的那次请求的 socket 留到进程结束）
+- `hang` 是用来造「上游**超时**」的。杀掉 stub 得到的是**连接被拒**——那是另一种失败，
+  快得很，验不出「超时不能拖慢页面」。**它的影响面比其他取值大**：别的取值只影响单次响应，
+  `hang` 会让**所有**敲这个 stub 的请求一起挂住，包括另一个会话的。用完立刻写回 `ok`。
+  （`lib.mjs` 的 `get` / `postForm` 和 `statusOf` 都带了超时，所以真撞上会变成一条明确的
+  失败，而不是无限等下去。）
 - **整个停掉**：杀掉进程——端口不再监听，连接被拒，「上游不可达」才是真的不可达
 - **数命中**：读 `hits.log` 的行数，或 GET `/__mode`、`/__hits`
 
