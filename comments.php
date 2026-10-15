@@ -34,6 +34,8 @@ if ( post_password_required() ) {
 	comment_form( array(
 		'title_reply'   => __( '发表评论', 'yuki' ),
 		'label_submit'  => __( '提交评论', 'yuki' ),
+		// 表单的类要与 style.css 里那几条输入框规则对上，否则它们一直是空转
+		'class_form'    => 'yuki-comment-form',
 		'comment_field' => '<p class="comment-form-comment"><textarea id="comment" name="comment" rows="5" placeholder="' . esc_attr__( '写下你的想法…', 'yuki' ) . '"></textarea></p>',
 	) );
 	?>

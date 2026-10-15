@@ -12,6 +12,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { REPO_ROOT, SITE, WP_ROOT, get, php, postForm, tagAttrs } from './lib.mjs';
+import { check, section, report } from './report.mjs';
 
 const ADMIN = { user: 'admin', pass: 'admin123' };
 const COMMENT_URL = `${SITE}/wp-comments-post.php`;
@@ -21,9 +22,6 @@ const RUN = Date.now().toString(36);
 const mark = (kind) => `YUKI-TEST-${kind}-${RUN}`;
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
-const out = [];
-const check = (name, ok, detail = '') => out.push({ name, ok: !!ok, detail });
-const section = (title) => out.push({ section: title });
 
 /* ---------------- HTTP ---------------- */
 
@@ -282,21 +280,3 @@ check('该待审的在待审队列里', queues.moderated.body.includes(pendingMa
 check('该发布的在评论列表里（已通过）', queues.all.body.includes(normalMarker));
 
 report();
-
-/* ---------------- 报告 ---------------- */
-
-function report() {
-  const pad = (s, n) => s + ' '.repeat(Math.max(0, n - [...s].reduce((a, c) => a + (c.charCodeAt(0) > 255 ? 2 : 1), 0)));
-  let failed = 0;
-  for (const r of out) {
-    if (r.section) {
-      console.log(`\n== ${r.section} ==`);
-      continue;
-    }
-    if (!r.ok) failed++;
-    console.log(`${r.ok ? 'ok  ' : 'FAIL'} ${pad(r.name, 34)}${r.detail ? ` <- ${r.detail}` : ''}`);
-  }
-  const total = out.filter((r) => !r.section).length;
-  console.log(`\n${total - failed}/${total} 通过`);
-  process.exit(failed ? 1 : 0);
-}

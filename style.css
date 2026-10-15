@@ -364,7 +364,37 @@ img { max-width: 100%; height: auto; display: block; }
   background: var(--yuki-card);
   font-size: 14px;
 }
-.yuki-comment-list .children { list-style: none; padding-left: 28px; margin-top: 16px; }
+/* 元信息：头像 + 名字一行，日期与「回复 @谁」另起一行 */
+.yuki-comment-list .comment-author { display: flex; align-items: center; gap: 10px; }
+.yuki-comment-list .comment-author .avatar { border-radius: 50%; }
+.yuki-comment-list .comment-author .fn { font-weight: 600; font-style: normal; color: var(--yuki-foreground); }
+.yuki-comment-list .comment-metadata {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-top: 6px;
+  font-size: 12px;
+  color: var(--yuki-muted-foreground);
+}
+.yuki-comment-list .comment-metadata a:hover { color: var(--yuki-primary-700); }
+/* 「回复 @谁」：层级压平之后，缩进不再说明得了谁在回谁，靠这一枚标签 */
+.yuki-comment-reply-to {
+  padding: 2px 10px;
+  border-radius: var(--yuki-radius-pill);
+  background: var(--yuki-muted);
+  color: var(--yuki-ink-2);
+}
+.yuki-comment-list .comment-content { margin-top: 14px; color: var(--yuki-ink-2); }
+.yuki-comment-list .comment-content > :first-child { margin-top: 0; }
+.yuki-comment-list .comment-content > :last-child { margin-bottom: 0; }
+.yuki-comment-list .comment-awaiting-moderation { display: block; margin-top: 8px; font-size: 13px; color: var(--yuki-muted-foreground); }
+.yuki-comment-list .reply { margin-top: 12px; }
+.yuki-comment-list .comment-reply-link { font-size: 13px; color: var(--yuki-primary-700); }
+.yuki-comment-list .comment-reply-link:hover { color: var(--yuki-primary-600); }
+/* 第二层：缩进之外再加一道竖线——窄屏上缩进能收窄，这道边线替它说明层级 */
+.yuki-comment-list .children { list-style: none; padding-left: 28px; margin-top: 16px; display: flex; flex-direction: column; gap: 16px; }
+.yuki-comment-list .children > li > .comment-body { border-left: 3px solid var(--yuki-primary); }
 /* 蜜罐字段：正常访客看不见也点不到，机器人却会顺手填上。
    整块容器移出可视区域并裁掉内容——这样里面那个输入框无论被表单的通用输入样式
    撑到多宽，也不会有东西露出来。 */
@@ -375,6 +405,11 @@ img { max-width: 100%; height: auto; display: block; }
   height: 1px;
   overflow: hidden;
 }
+.yuki-comment-form .comment-notes,
+.yuki-comment-form .logged-in-as,
+.yuki-comment-form .comment-form-cookies-consent { font-size: 13px; color: var(--yuki-muted-foreground); }
+.yuki-comment-form label { display: block; margin-bottom: 6px; font-size: 13px; color: var(--yuki-muted-foreground); }
+.yuki-comment-form .required { color: var(--yuki-primary-700); }
 .yuki-comment-form input[type="text"],
 .yuki-comment-form input[type="email"],
 .yuki-comment-form input[type="url"],
@@ -390,6 +425,10 @@ img { max-width: 100%; height: auto; display: block; }
   margin-bottom: 14px;
 }
 .yuki-comment-form input:focus, .yuki-comment-form textarea:focus { outline: 2px solid var(--yuki-ring); outline-offset: 1px; }
+.yuki-comment-form .comment-form-cookies-consent { display: flex; align-items: center; gap: 8px; }
+.yuki-comment-form .comment-form-cookies-consent input { width: auto; margin: 0; }
+.yuki-comment-form .comment-form-cookies-consent label { margin: 0; }
+.yuki-comment-form .form-submit { margin: 18px 0 0; }
 .yuki-btn {
   display: inline-flex;
   align-items: center;
@@ -407,6 +446,11 @@ img { max-width: 100%; height: auto; display: block; }
   transition: background-color 180ms ease, transform 180ms ease;
 }
 .yuki-btn:hover { background: var(--yuki-primary-600); transform: translateY(-1px); }
+/* 窄屏：缩进必须让路，否则第二层正文会被挤成一条缝。层级靠左边那道竖线认，不靠留白 */
+@media (max-width: 640px) {
+  .yuki-comment-list .children { padding-left: 12px; }
+  .yuki-comment-list .comment-body { padding: 16px; }
+}
 
 /* ============================================
    Newsletter / Footer
