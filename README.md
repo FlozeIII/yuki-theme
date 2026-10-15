@@ -8,20 +8,30 @@
 2. WordPress 后台 → 外观 → 主题 → 启用 **Yuki**。
 3. 外观 → 菜单：创建菜单并指定到「主导航」位置。
 4. 外观 → 自定义 → **Yuki 页脚设置**：填写 ICP 备案号 / 公安备案号（留空则显示占位）。
+5. 外观 → 自定义 → **Yuki 头像设置**：Gravatar 在境内访问不了，国内主机请改选 Cravatar 或自填镜像地址。
 
 ## 结构
 
 ```
 yuki-theme/
-├── style.css          主题头 + 全部设计 Token 与样式
-├── functions.php      主题设置、资源加载、自定义izer（备案号）
-├── header.php         导航 + 主题滑动开关
-├── footer.php         订阅区 + 页脚 + 备案区
-├── index.php          首页（纵向单列文章列表）
-├── single.php         文章详情（正文 + 侧边栏两栏）
-├── sidebar.php        作者/分类/标签云/热门文章
-├── comments.php       评论列表与表单
-└── assets/js/theme-toggle.js
+├── style.css              主题头 + 全部设计 Token 与样式
+├── functions.php          主题设置、资源加载、自定义器（备案号 / 头像源）
+├── header.php             导航 + 搜索入口 + 主题滑动开关
+├── footer.php             订阅区 + 页脚 + 备案区 + 搜索浮层
+├── index.php              首页（纵向单列文章列表）
+├── single.php             文章详情（正文 + 侧边栏两栏）
+├── page.php               静态页面（单栏）
+├── archive.php            归档：分类 / 标签 / 作者 / 日期 / 自定义分类法
+├── search.php             搜索结果
+├── searchform.php         搜索表单
+├── 404.php                未找到
+├── sidebar.php            作者/分类/标签云/热门文章
+├── comments.php           评论列表与表单
+├── template-parts/
+│   └── post-item.php      列表项（首页 / 归档 / 搜索共用）
+└── assets/js/
+    ├── theme-toggle.js    浅色 / 深色开关
+    └── search-overlay.js  居中搜索浮层
 ```
 
 ## 特性
@@ -29,5 +39,7 @@ yuki-theme/
 - 浅色/深色切换：头部滑动开关，偏好记忆在 localStorage，跟随系统偏好初始化（头部内联脚本防闪烁）。
 - 纵向文章列表：首页单列陈列，左小缩略图 + 标题/摘要/日期/分类。
 - 文章页：8:4 两栏，侧边栏含作者卡、分类统计、标签云、热门文章；移动端自动堆叠。
+- 搜索：头部放大镜展开居中浮层，背景模糊，Esc / 点遮罩 / 再点按钮关闭。
 - 备案号：自定义器填写后自动链接到工信部/公安备案查询站点。
+- 头像镜像：Gravatar 在境内不可达，可在自定义器里一键切到 Cravatar 或自填镜像。
 - 无第三方依赖，无构建步骤。
