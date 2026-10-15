@@ -121,11 +121,18 @@ add_filter( 'excerpt_more', 'yuki_excerpt_more' );
 
 function yuki_reading_time( $post_id = null ) {
 	$post_id = $post_id ? $post_id : get_the_ID();
-	$words   = str_word_count( wp_strip_all_tags( get_post_field( 'post_content', $post_id ) ) );
-	// 中文按字符数估算，英文按词数
-	$minutes = max( 1, (int) ceil( $words / 400 ) );
-	/* translators: %d: minutes */
-	return sprintf( _n( '%d 分钟阅读', '%d 分钟阅读', $minutes, 'yuki' ), $minutes );
+	$content = wp_strip_all_tags( get_post_field( 'post_content', $post_id ) );
+
+	// 中文（含日韩文字）按字符数计，其余按词数计
+	$cjk_pattern = '/\p{Han}|\p{Hiragana}|\p{Katakana}|\p{Hangul}/u';
+	$cjk         = (int) preg_match_all( $cjk_pattern, $content );
+	$words       = str_word_count( preg_replace( $cjk_pattern, ' ', $content ) );
+
+	// 中文约 300 字/分钟，英文约 200 词/分钟
+	$minutes = max( 1, (int) ceil( $cjk / 300 + $words / 200 ) );
+
+	/* translators: %d: 预计阅读分钟数 */
+	return sprintf( __( '%d 分钟阅读', 'yuki' ), $minutes );
 }
 
 /* ---------------------------------------------
