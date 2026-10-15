@@ -434,3 +434,92 @@ img { max-width: 100%; height: auto; display: block; }
 }
 .yuki-icp a { color: inherit; }
 .yuki-icp a:hover { color: var(--yuki-primary-700); }
+
+/* ============================================
+   无障碍工具类
+   ============================================ */
+.screen-reader-text {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ============================================
+   头部操作区 & 搜索
+   ============================================ */
+.yuki-nav-actions { display: flex; align-items: center; gap: 12px; flex: none; }
+.yuki-search { position: relative; }
+.yuki-search > summary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  list-style: none;
+  cursor: pointer;
+  border: 1px solid var(--yuki-border);
+  border-radius: var(--yuki-radius-pill);
+  background: var(--yuki-muted);
+  color: var(--yuki-ink-3);
+  transition: border-color 180ms ease, color 180ms ease;
+}
+.yuki-search > summary::-webkit-details-marker { display: none; }
+.yuki-search > summary:hover,
+.yuki-search[open] > summary { border-color: var(--yuki-primary); color: var(--yuki-primary-700); }
+.yuki-search > summary:focus-visible { outline: 2px solid var(--yuki-ring); outline-offset: 2px; }
+.yuki-search > summary svg { width: 15px; height: 15px; }
+.yuki-search-panel {
+  position: absolute;
+  top: calc(100% + 12px);
+  right: 0;
+  z-index: 20;
+  width: min(300px, calc(100vw - 48px));
+  padding: 16px;
+  border: 1px solid var(--yuki-border);
+  border-radius: var(--yuki-radius-lg);
+  background: var(--yuki-card);
+  box-shadow: var(--yuki-shadow-2);
+}
+
+.yuki-search-form { display: flex; gap: 8px; }
+.yuki-search-form label { flex: 1; min-width: 0; }
+.yuki-search-field {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid var(--yuki-input);
+  border-radius: var(--yuki-radius-md);
+  background: var(--yuki-background);
+  color: var(--yuki-foreground);
+  font-family: inherit;
+  font-size: 14px;
+}
+.yuki-search-field:focus { outline: 2px solid var(--yuki-ring); outline-offset: 1px; }
+.yuki-search-form .yuki-btn { flex: none; padding: 10px 16px; }
+
+/* 窄屏收紧导航 */
+@media (max-width: 640px) {
+  .yuki-nav { padding: 16px; }
+  .yuki-nav .menu { gap: 18px; font-size: 13px; }
+}
+
+/* ============================================
+   404
+   ============================================ */
+.yuki-404 { padding: 96px 0 120px; text-align: center; }
+.yuki-404 .code {
+  margin: 0;
+  font-size: clamp(56px, 10vw, 88px);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: var(--yuki-primary);
+}
+.yuki-404 h1 { margin: 16px 0 8px; font-size: 26px; font-weight: 700; }
+.yuki-404 p { margin: 0 0 32px; color: var(--yuki-muted-foreground); }
+.yuki-404 .yuki-search-form { max-width: 400px; margin: 0 auto 24px; }
