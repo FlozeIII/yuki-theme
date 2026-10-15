@@ -64,6 +64,7 @@ function yuki_widgets_init() {
 	register_sidebar( array(
 		'name'          => __( '文章侧边栏', 'yuki' ),
 		'id'            => 'sidebar-single',
+		'description'   => __( '放任意小工具即接管侧边栏；一个都不放则使用主题内置的默认小工具（作者简介、分类、标签云、热门文章）。', 'yuki' ),
 		'before_widget' => '<div id="%1$s" class="yuki-widget widget %2$s">',
 		'after_widget'  => '</div>',
 		'before_title'  => '<h3>',

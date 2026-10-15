@@ -2,12 +2,20 @@
 /**
  * 文章页侧边栏
  *
+ * 在「外观 → 小工具」里往「文章侧边栏」放置小工具后接管这里；
+ * 一个都没放时回退到下面这套内置默认小工具，保证开箱即用。
+ *
  * @package Yuki
  */
 
 $author_name = get_the_author();
 ?>
 <aside class="yuki-sidebar">
+<?php if ( is_active_sidebar( 'sidebar-single' ) ) : ?>
+
+	<?php dynamic_sidebar( 'sidebar-single' ); ?>
+
+<?php else : ?>
 
 	<div class="yuki-widget">
 		<h3><?php esc_html_e( '作者简介', 'yuki' ); ?></h3>
@@ -75,5 +83,7 @@ $author_name = get_the_author();
 			?>
 		</ul>
 	</div>
+
+<?php endif; ?>
 
 </aside>
