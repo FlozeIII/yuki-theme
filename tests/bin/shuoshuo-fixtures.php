@@ -337,6 +337,42 @@ switch ( $yuki_fx_cmd ) {
 		);
 		break;
 
+	case 'customizer':
+		/*
+		 * 自定义器里的注册情况。
+		 *
+		 * 验的是**注册**：把 customize_register 动作跑一遍，看那个 setting / control
+		 * 在不在、下拉里有没有对应的分类。真正的界面渲染要登录 cookie，
+		 * 对这一条验收标准来说不是必需的——「能不能选」的实质是选项里有没有那个分类。
+		 */
+		require_once ABSPATH . 'wp-includes/class-wp-customize-manager.php';
+
+		$manager = new WP_Customize_Manager();
+		do_action( 'customize_register', $manager );
+
+		$setting = $manager->get_setting( 'yuki_shuoshuo_category' );
+		$control = $manager->get_control( 'yuki_shuoshuo_category' );
+
+		$choices = array();
+		if ( $control && isset( $control->choices ) ) {
+			foreach ( array_keys( (array) $control->choices ) as $key ) {
+				$choices[] = (int) $key;
+			}
+		}
+
+		yuki_fx_emit(
+			array(
+				'has_setting' => (bool) $setting,
+				'has_control' => (bool) $control,
+				'section'     => $control && isset( $control->section ) ? $control->section : '',
+				'type'        => $control && isset( $control->type ) ? $control->type : '',
+				// 0 表示「不使用」，其余是各分类的标识
+				'choices'     => $choices,
+				'sanitizer'   => $setting && isset( $setting->sanitize_callback ) ? $setting->sanitize_callback : '',
+			)
+		);
+		break;
+
 	case 'stick':
 	case 'unstick':
 		/*
@@ -406,10 +442,21 @@ switch ( $yuki_fx_cmd ) {
 			)
 		);
 
+		// 当前真正在用的承载体不能删：某一轮万一卡在「已改名、还没改回来」，
+		// 它的 slug 也带 yuki-suipian 前缀，但那是活的承载体，删掉就等于把站弄坏。
+		$live_id = function_exists( 'yuki_shuoshuo_category_id' ) ? (int) yuki_shuoshuo_category_id() : 0;
+
 		if ( ! is_wp_error( $all_terms ) ) {
 			foreach ( $all_terms as $candidate_id ) {
 				$candidate = get_term( (int) $candidate_id, 'category' );
-				if ( $candidate instanceof WP_Term && 0 === strpos( $candidate->slug, 'yuki-suipian' ) ) {
+
+				if ( ! $candidate instanceof WP_Term ) {
+					continue;
+				}
+				if ( (int) $candidate->term_id === $live_id ) {
+					continue;
+				}
+				if ( 0 === strpos( $candidate->slug, 'yuki-suipian' ) ) {
 					wp_delete_term( (int) $candidate_id, 'category' );
 					$stray_count++;
 				}

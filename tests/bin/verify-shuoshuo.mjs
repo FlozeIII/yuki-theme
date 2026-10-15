@@ -85,6 +85,26 @@ section('配置');
 check('配置指向承载体分类', setup.mod === carrierId, `mod=${setup.mod} carrier_id=${carrierId}`);
 check('配置里存的是数字标识，不是名字', Number.isInteger(setup.mod) && setup.mod > 0, `mod=${JSON.stringify(setup.mod)}`);
 
+/* ---- 自定义器里真的能选 ---- */
+
+/*
+ * 前面那些断言里的配置都是**造数脚本直接写进去的**，所以它们证明不了「自定义器里
+ * 能选」。这一节补的就是那一格：把 customize_register 跑一遍，看 setting / control
+ * 在不在、下拉里有没有承载体分类。
+ *
+ * 验的是注册而不是界面渲染——渲染要登录 cookie，而「能不能选」的实质是
+ * 选项里有没有那个分类。
+ */
+const cz = tryFx('customizer');
+check('自定义器里注册了承载体设置', cz.has_setting === true, JSON.stringify(cz).slice(0, 160));
+check('承载体是一个下拉控件', cz.has_control === true && cz.type === 'select', `control=${cz.has_control} type=${cz.type}`);
+check('下拉里有「不使用」这一项', Array.isArray(cz.choices) && cz.choices.includes(0), JSON.stringify(cz.choices));
+check(
+  '下拉里能选到当前承载体分类',
+  Array.isArray(cz.choices) && cz.choices.includes(carrierId),
+  `承载体 ${carrierId}，下拉选项 ${JSON.stringify(cz.choices)}`,
+);
+
 /* ================= 2. 主列表排除 ================= */
 
 section('主列表');
@@ -287,7 +307,12 @@ check(
 );
 
 const renamedBack = tryFx('rename', '--name=说说', '--slug=shuoshuo');
-check('改回原名，配置依旧不动', renamedBack.mod === activeId, `mod=${renamedBack.mod}`);
+// 明细里带上 error：这条一旦失败，光看 mod=undefined 完全不知道是为什么
+check(
+  '改回原名，配置依旧不动',
+  renamedBack.mod === activeId,
+  `mod=${renamedBack.mod}${renamedBack.error ? ` 失败原因 ${renamedBack.error}` : ''}`,
+);
 
 /* ================= 收尾 ================= */
 
