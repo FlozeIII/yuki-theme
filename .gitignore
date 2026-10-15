@@ -26,6 +26,9 @@ build/
 *.css.map
 *.js.map
 
+# 并行会话的文件占用白板（AGENTS.md「并行会话」一节）
+.scratch/holds.md
+
 # 本地环境与密钥
 .env
 .env.*

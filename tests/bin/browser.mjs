@@ -14,6 +14,11 @@
 //   await page.close(); await browser.close();
 //
 // 环境变量 YUKI_EDGE 可以换浏览器可执行文件。
+//
+// **量窄屏别用 `msedge --screenshot --window-size=375,1400` 那种老办法。** 它按更宽的默认布局
+// 渲染再裁剪图片，看着像「页面横向溢出、文字被切」——本仓库真的踩过一次：据此报了一条「375px 整站
+// 溢出」的疑点，用 measure() 一量，文档 360 < 视口 375、越界元素 0 个，纯属截图方法的错觉。
+// 要量宽度、颜色、盒模型，都走这里（CDP 的 Emulation.setDeviceMetricsOverride 才是真视口）。
 
 import { spawn } from 'node:child_process';
 import fs from 'node:fs';
