@@ -23,6 +23,8 @@ if ( post_password_required() ) {
 			wp_list_comments( array(
 				'style'       => 'ul',
 				'avatar_size' => 40,
+				// 自己渲染每条评论：层级压平之后还要标出「回复 @谁」，核心的印记里没有这个位置
+				'callback'    => 'yuki_comment_template',
 			) );
 			?>
 		</ul>

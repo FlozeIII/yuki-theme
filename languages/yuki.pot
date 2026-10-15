@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Yuki 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-15T14:12:35+00:00\n"
+"POT-Creation-Date: 2026-10-15T15:36:20+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -13,7 +13,12 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Domain: yuki\n"
 
-#: functions.php:263
+#. translators: 1: Comment date, 2: Comment time.
+#: template-parts/comment.php:73
+msgid "%1$s %2$s"
+msgstr ""
+
+#: functions.php:309
 msgid "%d 分钟阅读"
 msgstr ""
 
@@ -33,12 +38,25 @@ msgstr ""
 msgid "ICP 备案号"
 msgstr ""
 
+#: template-parts/comment.php:48
+msgid "Pingback："
+msgstr ""
+
 #: functions.php:112
 msgid "Yuki 头像设置"
 msgstr ""
 
+#: functions.php:148
+msgid "Yuki 说说设置"
+msgstr ""
+
 #: functions.php:81
 msgid "Yuki 页脚设置"
+msgstr ""
+
+#. translators: %s: 站点名
+#: inc/comment-deletion.php:143
+msgid "[%s] 需要的话，你可以删掉自己那条评论"
 msgstr ""
 
 #: single.php:56
@@ -47,6 +65,10 @@ msgstr ""
 
 #: single.php:62
 msgid "下一篇"
+msgstr ""
+
+#: functions.php:174
+msgid "不使用（关闭说说）"
 msgstr ""
 
 #: functions.php:25
@@ -59,6 +81,11 @@ msgstr ""
 
 #: sidebar.php:21
 msgid "作者简介"
+msgstr ""
+
+#. translators: %s: 站点名 */ __( '[%s] 需要的话，你可以删掉自己那条评论', 'yuki' ), wp_specialchars_decode( (string) get_option( 'blogname' ), ENT_QUOTES ) ); $body = array( sprintf( /* translators: %s: 文章标题
+#: inc/comment-deletion.php:150
+msgid "你在《%s》下留了一条评论："
 msgstr ""
 
 #: footer.php:18
@@ -85,7 +112,7 @@ msgstr ""
 msgid "关闭"
 msgstr ""
 
-#: comments.php:37
+#: comments.php:41
 msgid "写下你的想法…"
 msgstr ""
 
@@ -97,19 +124,47 @@ msgstr ""
 msgid "切换主题"
 msgstr ""
 
-#: comments.php:35
+#: inc/comment-deletion.php:251
+msgid "删除之后无法恢复。"
+msgstr ""
+
+#: inc/comment-deletion.php:202
+msgid "删除这条评论？"
+msgstr ""
+
+#: comments.php:37
 msgid "发表评论"
+msgstr ""
+
+#: inc/comment-deletion.php:265
+msgid "回到站点首页"
 msgstr ""
 
 #: 404.php:17
 msgid "回到首页"
 msgstr ""
 
+#: template-parts/comment.php:83
+msgid "回复 @%s"
+msgstr ""
+
 #: functions.php:122
 msgid "头像来源"
 msgstr ""
 
-#: comments.php:36
+#: inc/comment-deletion.php:156
+msgid "如果写错了想删掉，打开下面这个链接，确认之后就会删除。链接只能用一次，过期后失效。"
+msgstr ""
+
+#: inc/comment-deletion.php:262
+msgid "它可能已经用过一次，或者已经过期了。想删的话，重新发一条评论即可拿到新链接。"
+msgstr ""
+
+#: functions.php:158
+msgid "承载说说的分类"
+msgstr ""
+
+#: comments.php:38
 msgid "提交评论"
 msgstr ""
 
@@ -161,6 +216,18 @@ msgstr ""
 msgid "独立创作者"
 msgstr ""
 
+#: functions.php:435
+msgid "短碎片内容。这个分类里的文章不出现在首页与博客列表，只在自己的归档里。"
+msgstr ""
+
+#: inc/comment-deletion.php:256
+msgid "确认删除"
+msgstr ""
+
+#: template-parts/comment.php:51 template-parts/comment.php:89
+msgid "编辑"
+msgstr ""
+
 #: functions.php:129
 msgid "自定义镜像"
 msgstr ""
@@ -177,24 +244,56 @@ msgstr ""
 msgid "订阅更新"
 msgstr ""
 
+#: inc/comment-deletion.php:203
+msgid "评论已删除"
+msgstr ""
+
 #: comments.php:18
 msgid "评论（%s）"
+msgstr ""
+
+#: functions.php:431
+msgid "说说"
 msgstr ""
 
 #: index.php:37
 msgid "还没有文章，去后台发布第一篇吧。"
 msgstr ""
 
-#: functions.php:358
+#: functions.php:548
 msgid "这一栏请保持空白"
+msgstr ""
+
+#: functions.php:159
+msgid "这个分类里的文章不出现在首页与博客列表，只保留它自己的归档页。选「不使用」则整项功能不生效。"
 msgstr ""
 
 #: archive.php:45
 msgid "这个归档下还没有文章。"
 msgstr ""
 
+#: inc/comment-deletion.php:204
+msgid "这个链接已经无效了"
+msgstr ""
+
 #: 404.php:14
 msgid "这个页面走失了"
+msgstr ""
+
+#: inc/comment-deletion.php:159
+msgid "这封邮件是因为有人在站点评论时填了这个邮箱。不是你，忽略即可。"
+msgstr ""
+
+#: template-parts/comment.php:35
+msgid "这条评论正在等待审核。"
+msgstr ""
+
+#: template-parts/comment.php:37
+msgid "这条评论正在等待审核。这是预览，审核通过后才会公开显示。"
+msgstr ""
+
+#: inc/comment-deletion.php:260
+msgid "那条评论已经不在了。"
 msgstr ""
 
 #: 404.php:15

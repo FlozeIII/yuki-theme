@@ -9,7 +9,10 @@
  * - `comment_class()`：层级类 depth-N、奇数偶数类、parent 都在里面，样式与脚本都靠它。
  * - 末尾不关 `</li>`：那是 Walker 的 end_el 干的，自己关了会多出一个。
  * - 待审评论对非作者要过滤掉正文里的 HTML（核心在 start_el 里挂的 filter_comment_text，
- *   走 callback 这条路时不会挂上），下面的 $yuki_strip_html 就是补这一条。
+ *   走 callback 这条路时不会挂上），下面的临时过滤器就是补这一条。
+ *
+ * 有意与核心不同的两处：作者名后面不跟 `&lt;span class="says"&gt;says:&lt;/span&gt;`（中文站里挂个英文
+ * says: 更难看，主题别处也没有这种衬词），以及印记里多了一枚「回复 @谁」。
  *
  * @package Yuki
  *
@@ -29,9 +32,9 @@ $yuki_commenter = wp_get_current_commenter();
 $yuki_own_view = ! empty( $yuki_commenter['comment_author'] );
 
 if ( $yuki_commenter['comment_author_email'] ) {
-	$yuki_pending_note = __( 'Your comment is awaiting moderation.' );
+	$yuki_pending_note = __( '这条评论正在等待审核。', 'yuki' );
 } else {
-	$yuki_pending_note = __( 'Your comment is awaiting moderation. This is a preview; your comment will be visible after it has been approved.' );
+	$yuki_pending_note = __( '这条评论正在等待审核。这是预览，审核通过后才会公开显示。', 'yuki' );
 }
 
 $yuki_reply_to = yuki_comment_reply_to( $yuki_comment );
@@ -41,10 +44,12 @@ $yuki_is_pending = ( '0' === $yuki_comment->comment_approved );
 	<article id="div-comment-<?php comment_ID(); ?>" class="comment-body">
 		<?php if ( $yuki_list_args['short_ping'] && 'comment' !== $yuki_comment->comment_type ) : ?>
 			<?php // 短 ping：核心在这条设置下只印一行，这里照办，免得同一个设置出现两套印记 ?>
-			<div class="comment-content">
-				<?php esc_html_e( 'Pingback:' ); ?> <?php comment_author_link( $yuki_comment ); ?>
-				<?php edit_comment_link( __( 'Edit' ), '<span class="edit-link">', '</span>' ); ?>
-			</div>
+			<?php
+			esc_html_e( 'Pingback：', 'yuki' );
+			echo ' ';
+			comment_author_link( $yuki_comment );
+			edit_comment_link( __( '编辑', 'yuki' ), '<span class="edit-link">', '</span>' );
+			?>
 		<?php else : ?>
 			<footer class="comment-meta">
 				<div class="comment-author vcard">
@@ -92,8 +97,15 @@ $yuki_is_pending = ( '0' === $yuki_comment->comment_approved );
 			<div class="comment-content">
 				<?php
 				if ( $yuki_is_pending && ! $yuki_own_view ) {
-					// 待审评论的正文对非作者只留文字，不渲染它带来的标签
-					echo wp_kses( get_comment_text( $yuki_comment ), array() );
+					// 待审评论的正文对非作者只留文字。挂在 comment_text 上、与核心同一优先级（40），
+					// 是为了让插件的过滤器按核心的时序跑：核心在 start_el 里挂的就是这一处，
+					// 走 callback 时不会挂上，只能自己补。
+					$yuki_strip_tags = static function ( $text ) {
+						return wp_kses( $text, array() );
+					};
+					add_filter( 'comment_text', $yuki_strip_tags, 40 );
+					comment_text( $yuki_comment );
+					remove_filter( 'comment_text', $yuki_strip_tags, 40 );
 				} else {
 					comment_text( $yuki_comment );
 				}

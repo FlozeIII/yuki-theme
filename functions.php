@@ -591,3 +591,152 @@ function yuki_comment_guard( $approved ) {
 	return $approved;
 }
 add_filter( 'pre_comment_approved', 'yuki_comment_guard' );
+
+/* ---------------------------------------------
+ * 评论增强 · 层级与呈现
+ *
+ * 回复最多显示两层：更深的回复不继续缩进，而是压到第二层，并标出它真正回的是谁（见
+ * template-parts/comment.php）。数据库里的父子关系一个字节都不动——压的只是显示用的那份数组。
+ * --------------------------------------------- */
+
+/**
+ * 取「这条评论真正回的是谁」那张映射（按引用）。压平时往里写，渲染时从里读。
+ *
+ * 函数静态，只活在这一次请求里——它本来就是一次渲染的中间产物，没必要落库或跨请求。
+ *
+ * @return array 评论 id => 真父评论 id。
+ */
+function &yuki_comment_reply_targets() {
+	static $targets = array();
+
+	return $targets;
+}
+
+/**
+ * 记下：这条评论（显示层级里被压平的那条）真正回的是哪条。
+ *
+ * @param int $comment_id  评论 id。
+ * @param int $real_parent 它真正的父评论 id。
+ */
+function yuki_comment_set_reply_target( $comment_id, $real_parent ) {
+	$targets = &yuki_comment_reply_targets();
+
+	$targets[ (int) $comment_id ] = (int) $real_parent;
+}
+
+/**
+ * 读出：这条评论真正回的是哪条。没记过（没被压平）返回 0。
+ *
+ * @param int $comment_id 评论 id。
+ * @return int
+ */
+function yuki_comment_get_reply_target( $comment_id ) {
+	$targets = yuki_comment_reply_targets();
+
+	return isset( $targets[ (int) $comment_id ] ) ? $targets[ (int) $comment_id ] : 0;
+}
+
+/**
+ * 把深于两层的回复压到第二层。
+ *
+ * 核心自己也有「到顶平铺」：`Walker_Comment::display_element()` 在到达 max_depth 时，会把那个元素的
+ * 子回复就地铺在当前层（不让它们被甩到列表末尾）。所以把 max_depth 设成 2 同样能得到「一层 children、
+ * 全部 depth-2」。可它同时也把这个 2 交给了 `comment_reply_link()`——第二层的评论因此没有回复入口，
+ * 讨论到第二层就断了。
+ *
+ * 这里换一种做法：不动 max_depth（站点设置的五层照旧），只改**显示用的那棵树**。深于两层的评论
+ * 改挂到它的顶层祖先下，于是渲染在第二层；第二层仍能回复，新回复同样铺在第二层，靠「回复 @谁」
+ * 标出它真正回的那条。顺序也保住了——按时间排，而不是按父评论分组。
+ *
+ * 改的是 clone，不是缓存里的那个对象：WP_Comment 是全局评论缓存里的实例，就地改 comment_parent
+ * 会连累同一次请求里别的消费者（小工具、feed、另一个 wp_list_comments）。
+ *
+ * 父评论不在本页时（父评论被删、或列表被别的东西截断）不动它，交给核心照原样处理，与改动前一致。
+ *
+ * @param mixed $comments 当前页的评论。
+ * @return mixed 压平之后的评论。
+ */
+function yuki_comment_flatten( $comments ) {
+	if ( ! is_array( $comments ) || ! get_option( 'thread_comments' ) ) {
+		return $comments;
+	}
+
+	$by_id = array();
+	foreach ( $comments as $comment ) {
+		$by_id[ (int) $comment->comment_ID ] = $comment;
+	}
+
+	$out = array();
+
+	foreach ( $comments as $comment ) {
+		$id      = (int) $comment->comment_ID;
+		$depth   = 1;
+		$top_id  = $id;
+		$current = $comment;
+		$seen    = array( $id => true );
+
+		// 往上数到自己那一层的顶层祖先为止。$seen 兜住坏数据里的自环与互环。
+		while ( $current->comment_parent
+			&& isset( $by_id[ (int) $current->comment_parent ] )
+			&& ! isset( $seen[ (int) $current->comment_parent ] ) ) {
+			$parent_id          = (int) $current->comment_parent;
+			$seen[ $parent_id ] = true;
+			$current            = $by_id[ $parent_id ];
+			$top_id             = $parent_id;
+			$depth++;
+		}
+
+		if ( $depth > 2 && $top_id !== $id ) {
+			yuki_comment_set_reply_target( $id, (int) $comment->comment_parent );
+
+			$flattened                 = clone $comment;
+			$flattened->comment_parent = (string) $top_id;
+			$out[]                     = $flattened;
+			continue;
+		}
+
+		$out[] = $comment;
+	}
+
+	return $out;
+}
+add_filter( 'comments_array', 'yuki_comment_flatten' );
+
+/**
+ * 这条评论（按显示层级）回的是谁的名字。顶层评论返回空串。
+ *
+ * @param WP_Comment $comment 评论。
+ * @return string
+ */
+function yuki_comment_reply_to( $comment ) {
+	$parent_id = yuki_comment_get_reply_target( (int) $comment->comment_ID );
+
+	if ( ! $parent_id ) {
+		$parent_id = (int) $comment->comment_parent;
+	}
+
+	if ( ! $parent_id ) {
+		return '';
+	}
+
+	$parent = get_comment( $parent_id );
+
+	return $parent ? $parent->comment_author : '';
+}
+
+/**
+ * wp_list_comments() 的 callback：渲染单条评论。
+ *
+ * 印记在 template-parts/comment.php 里，那里同时写着几处不能改的 id 与类。
+ *
+ * @param WP_Comment $comment 评论。
+ * @param array      $args    wp_list_comments() 的参数。
+ * @param int        $depth   层级（顶层是 1）。
+ */
+function yuki_comment_template( $comment, $args, $depth ) {
+	get_template_part( 'template-parts/comment', null, array(
+		'comment'   => $comment,
+		'list_args' => $args,
+		'depth'     => $depth,
+	) );
+}

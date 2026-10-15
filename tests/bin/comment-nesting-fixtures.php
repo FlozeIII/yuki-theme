@@ -106,6 +106,35 @@ $ids['LONE'] = wp_insert_comment( array(
 	'comment_date_gmt'     => gmdate( 'Y-m-d H:i:s', strtotime( '+10 minutes' ) ),
 ) );
 
+// 一条待审评论：正文里带标签。作者本人（带评论 cookie）看得到它、也看得到自己的标签；
+// 别人看不到它。这条覆盖的是主题自己渲染评论之后最容易被弄坏的那条分支。
+$ids['PEND'] = wp_insert_comment( array(
+	'comment_post_ID'      => $post_id,
+	'comment_author'       => '待审者',
+	'comment_author_email' => $known_email,
+	'comment_content'      => '<b>YUKI-TEST-NEST-PEND</b> 一条还没过审的评论。',
+	'comment_approved'     => 0,
+	'comment_author_IP'    => '127.0.0.1',
+	'comment_date'         => gmdate( 'Y-m-d H:i:s', strtotime( '+12 minutes' ) ),
+	'comment_date_gmt'     => gmdate( 'Y-m-d H:i:s', strtotime( '+12 minutes' ) ),
+) );
+
+// 管理员自己的一条待审评论：核心会把「当前用户自己的未过审评论」放进列表，
+// 所以用管理员身份打开文章页能看到它——这段用来验主题自己渲染评论时对待审那条的处理
+// （提示语、正文剥标签、不给回复链接），也就是核心 filter_comment_text 那套行为的等价物。
+$admin = get_userdata( 1 );
+$ids['ADMINPEND'] = wp_insert_comment( array(
+	'comment_post_ID'      => $post_id,
+	'comment_author'       => $admin ? $admin->display_name : 'admin',
+	'comment_author_email' => $admin ? $admin->user_email : '',
+	'comment_content'      => '<b>YUKI-TEST-NEST-ADMINPEND</b> 管理员自己的一条待审评论。',
+	'comment_approved'     => 0,
+	'user_id'              => 1,
+	'comment_author_IP'    => '127.0.0.1',
+	'comment_date'         => gmdate( 'Y-m-d H:i:s', strtotime( '+13 minutes' ) ),
+	'comment_date_gmt'     => gmdate( 'Y-m-d H:i:s', strtotime( '+13 minutes' ) ),
+) );
+
 // 一条 pingback：主题自己渲染每条评论之后，非 comment 类型也得照旧出得来
 $ids['PING'] = wp_insert_comment( array(
 	'comment_post_ID'   => $post_id,
@@ -130,6 +159,18 @@ echo 'YUKI-JSON: ' . wp_json_encode( array(
 	'ids'           => $ids,
 	'ping_author'   => '别的博客',
 	'known_email'   => 'visitor@example.com',
+	// 待审评论的预览链接：WordPress 提交待审评论后跳转的就是这个形状
+	// （?unapproved=<id>&moderation-hash=<日期哈希>），十分钟内有效
+	'pending_preview' => add_query_arg(
+		array(
+			'unapproved'      => $ids['PEND'],
+			'moderation-hash' => wp_hash( get_comment( $ids['PEND'] )->comment_date_gmt ),
+		),
+		get_permalink( $post_id )
+	) . '#comment-' . $ids['PEND'],
+	// 评论 cookie 的名字里要带这个哈希，验证脚本拿它模拟「作者本人」
+	'cookie_hash'   => COOKIEHASH,
+	'pending_author' => '待审者',
 	'authors'       => array(
 		'L1'   => '顶层甲',
 		'L2'   => '二层乙',

@@ -15,6 +15,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { REPO_ROOT, SITE, WP_ROOT, get, php, postForm, tagAttrs } from './lib.mjs';
 import { check, section, note, report } from './report.mjs';
+import { launch, newPage } from './browser.mjs';
 
 const FIXTURES = path.join(import.meta.dirname, 'comment-nesting-fixtures.php');
 const RUN = Date.now().toString(36);
@@ -43,10 +44,13 @@ function parseComments(html) {
     items.push({ id: Number(m[1]), cls: m[2], at: m.index });
   }
   for (let i = 0; i < items.length; i++) {
-    // 到下一条 li 为止就是这条评论自己那一段：子回复的 <li> 排在它自己的 </article> 之后，
-    // 所以这一段正好是「它的元信息 + 正文 + 回复链接」，不含任何子回复。
+    // 这条评论自己那一段：li 开到它自己的 </article> 为止。子回复的 <li> 排在这个 </article>
+    // 之后，所以这一段正好是「元信息 + 正文 + 回复链接」，不含子回复；而截到页面末尾会把
+    // 表单里的 cancel-comment-reply-link 之类一并卷进来，断言就会误报。
+    const close = html.indexOf('</article>', items[i].at);
     const next = i + 1 < items.length ? items[i + 1].at : html.length;
-    items[i].html = html.slice(items[i].at, next);
+    const end = close > 0 && close < next ? close + '</article>'.length : next;
+    items[i].html = html.slice(items[i].at, end);
     items[i].depth = Number(/depth-(\d+)/.exec(items[i].cls)?.[1] ?? 0);
   }
   return items;
@@ -292,6 +296,129 @@ check('窄屏有单独的媒体查询把二层缩进收窄', narrow !== undefine
   narrow ? `${narrow.cond} 时 padding-left: ${narrow.pad}px` : '没找到收窄缩进的窄屏媒体查询');
 check('窄屏缩进比宽屏更小', narrow !== undefined && Number(narrow.pad) < Number(childrenPad),
   `${childrenPad}px → ${narrow?.pad ?? '（没写）'}px`);
+
+/* ================= 9. 待审那条：核心的两处行为要留住 ================= */
+
+// 主题自己渲染评论之后，核心在 start_el 里挂的两处行为得自己补：待审提示，以及
+// 对非作者剥掉正文里的 HTML（下面的临时过滤器）。用管理员身份看自己那条未过审的评论——
+// 核心本来就会把它放进列表，所以这条路是真的。
+{
+  // 登录用的 cookie 罐：这次要带身份请求同一个页面
+  const jar = new Map();
+  const store = (res) => {
+    for (const line of res.headers.getSetCookie?.() ?? []) {
+      const [pair] = line.split(';');
+      const i = pair.indexOf('=');
+      if (i > 0) jar.set(pair.slice(0, i).trim(), pair.slice(i + 1).trim());
+    }
+  };
+  // 每次请求现算：写成常量会把「还没装 cookie 时」那个空表冻住
+  const jarHeaders = () => ({ cookie: [...jar].map(([k, v]) => `${k}=${v}`).join('; ') });
+  // postForm() 是整体替换 headers 的，所以带 cookie 的那次要把 content-type 一起带上——
+  // 少了它 PHP 解不出 $_POST，登录会静默失败（拿到的是匿名页面，什么都验不到）
+  const formHeaders = () => ({ 'content-type': 'application/x-www-form-urlencoded', ...jarHeaders() });
+
+  store(await get(`${SITE}/wp-login.php`));
+  store(await postForm(`${SITE}/wp-login.php`, {
+    log: 'admin', pwd: 'admin123', 'wp-submit': 'Log In', redirect_to: `${SITE}/wp-admin/`, testcookie: '1',
+  }, { headers: formHeaders() }));
+
+  const asAdmin = (await get(POST_URL, { headers: jarHeaders() })).body;
+  const adminPending = parseComments(asAdmin).find((c) => c.id === IDS.ADMINPEND);
+
+  section('待审那条（管理员看自己未过审的）');
+  check('能看到自己那条未过审的评论', adminPending !== undefined);
+  check('显示待审提示', /正在等待审核/.test(adminPending?.html ?? ''));
+  check('正文里的标签被剥掉，文字还在',
+    (adminPending?.html ?? '').includes('YUKI-TEST-NEST-ADMINPEND') && !/<b>YUKI-TEST-NEST-ADMINPEND/.test(adminPending?.html ?? ''),
+    adminPending ? '' : '（没找到这条评论）');
+  check('待审那条不给回复链接', !/comment-reply-link/.test(adminPending?.html ?? ''));
+}
+
+/* ================= 10. 真浏览器里量一量 ================= */
+
+// 上面两组样式断言读的是 CSS 文本，说的是「契约」；这一段让浏览器真算一遍：
+// 深色下评论卡片到底是不是那套值、对比度够不够、窄屏下第二层被缩进挤掉了多少。
+// 深浅色走 CDP 的 prefers-color-scheme，走的是主题自己的那条分支，不是塞个 class 假装。
+
+section('真浏览器里量一量');
+
+const hexToRgb = (hex) => {
+  const h = hex.trim().replace('#', '');
+  const full = h.length === 3 ? h.split('').map((c) => c + c).join('') : h;
+  const [r, g, b] = [0, 2, 4].map((i) => parseInt(full.slice(i, i + 2), 16));
+  return `rgb(${r}, ${g}, ${b})`;
+};
+
+const measuredContrast = (fg, bg) => {
+  const toLum = (rgb) => {
+    const [r, g, b] = rgb.match(/\d+/g).slice(0, 3).map((v) => Number(v) / 255);
+    const lin = (c) => (c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4);
+    return 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b);
+  };
+  const [hi, lo] = [toLum(fg), toLum(bg)].sort((x, y) => y - x);
+  return (hi + 0.05) / (lo + 0.05);
+};
+
+const READ_CARD = `(() => {
+  const card = document.querySelector('.yuki-comment-list .comment-body');
+  const content = document.querySelector('.yuki-comment-list .comment-content');
+  if (!card || !content) return null;
+  return {
+    dark: document.documentElement.classList.contains('dark'),
+    bg: getComputedStyle(card).backgroundColor,
+    fg: getComputedStyle(content).color,
+  };
+})()`;
+
+try {
+  const browser = await launch();
+
+  try {
+    for (const scheme of ['light', 'dark']) {
+      const tokens = scheme === 'dark' ? darkTokens : rootTokens;
+      const label = scheme === 'dark' ? '深色' : '浅色';
+
+      const page = await newPage(browser, { colorScheme: scheme });
+      await page.setViewport(1200, 900);
+      await page.goto(POST_URL);
+      const seen = await page.evaluate(READ_CARD);
+      await page.close();
+
+      check(`${label}模式下主题走的是那一条分支`, seen?.dark === (scheme === 'dark'), `html.dark=${seen?.dark}`);
+      check(`${label}下评论卡片底色就是 ${tokens['--yuki-card']}`,
+        seen?.bg === hexToRgb(tokens['--yuki-card']), `实测 ${seen?.bg}`);
+      check(`${label}下评论正文颜色就是 ${tokens['--yuki-ink-2']}`,
+        seen?.fg === hexToRgb(tokens['--yuki-ink-2']), `实测 ${seen?.fg}`);
+      check(`${label}下按实测颜色算的正文对比度 ≥ 4.5`,
+        seen ? measuredContrast(seen.fg, seen.bg) >= 4.5 : false,
+        seen ? `${measuredContrast(seen.fg, seen.bg).toFixed(2)}:1（${seen.fg} on ${seen.bg}）` : '没读到卡片');
+    }
+
+    const narrow = await newPage(browser, { colorScheme: 'light' });
+    await narrow.setViewport(375, 900);
+    await narrow.goto(POST_URL);
+    const widths = await narrow.evaluate(`(() => {
+      const first = document.querySelector('.yuki-comment-list > li > .comment-body');
+      const second = document.querySelector('.yuki-comment-list > li > .children > li > .comment-body');
+      if (!first || !second) return null;
+      return { viewport: window.innerWidth, first: first.getBoundingClientRect().width, second: second.getBoundingClientRect().width };
+    })()`);
+    await narrow.close();
+
+    check('375px 下两层卡片都还在', !!widths, widths ? `视口 ${widths.viewport}` : '没读到卡片');
+    check('第二层只比第一层窄一个缩进（不被挤成一条缝）',
+      widths ? widths.first - widths.second <= 24 : false,
+      widths ? `第一层 ${widths.first.toFixed(0)}px → 第二层 ${widths.second.toFixed(0)}px` : '');
+    check('第二层卡片仍有第一层九成以上宽',
+      widths ? widths.second >= widths.first * 0.9 : false,
+      widths ? `${((widths.second / widths.first) * 100).toFixed(0)}%` : '');
+  } finally {
+    await browser.close();
+  }
+} catch (err) {
+  check('能起一个无头浏览器来量', false, err.message);
+}
 
 note(`页面 ${POST_URL}`);
 note(`style.css 评论区片段 ${commentCss.length} 字符，用到 ${tokensUsed.length} 个 token`);
