@@ -104,8 +104,108 @@ function yuki_customize_register( $wp_customize ) {
 		'section'     => 'yuki_footer',
 		'type'        => 'text',
 	) );
+
+	/* ---- 头像源 ---- */
+
+	$wp_customize->add_section( 'yuki_avatar', array(
+		'title'    => __( 'Yuki 头像设置', 'yuki' ),
+		'priority' => 155,
+	) );
+
+	$wp_customize->add_setting( 'yuki_avatar_source', array(
+		'default'           => 'gravatar',
+		'sanitize_callback' => 'sanitize_key',
+	) );
+
+	$wp_customize->add_control( 'yuki_avatar_source', array(
+		'label'       => __( '头像来源', 'yuki' ),
+		'description' => __( 'Gravatar 在境内访问不了，国内主机建议选 Cravatar 或自填镜像。', 'yuki' ),
+		'section'     => 'yuki_avatar',
+		'type'        => 'select',
+		'choices'     => array(
+			'gravatar' => __( 'Gravatar（默认，境内不可用）', 'yuki' ),
+			'cravatar' => __( 'Cravatar（境内镜像）', 'yuki' ),
+			'custom'   => __( '自定义镜像', 'yuki' ),
+		),
+	) );
+
+	$wp_customize->add_setting( 'yuki_avatar_custom_url', array(
+		'default'           => '',
+		'sanitize_callback' => 'esc_url_raw',
+	) );
+
+	$wp_customize->add_control( 'yuki_avatar_custom_url', array(
+		'label'       => __( '自定义镜像地址', 'yuki' ),
+		'description' => __( '镜像站点地址，例如 https://mirror.example.cn，会拼成 地址/avatar/哈希；直接粘贴含 /avatar/ 的完整前缀也可以。仅在上一项选「自定义镜像」时生效。', 'yuki' ),
+		'section'     => 'yuki_avatar',
+		'type'        => 'url',
+	) );
 }
 add_action( 'customize_register', 'yuki_customize_register' );
+
+/* ---------------------------------------------
+ * 头像源
+ *
+ * Gravatar 的 secure.gravatar.com 在国内既连不上、也慢，而主机在境内时
+ * 服务端同样连不上，所以站内代理没有意义——直接把域名换成境内可达的镜像。
+ * 过滤 get_avatar_url 即可覆盖 get_avatar() 与 get_avatar_data() 的全部调用。
+ * --------------------------------------------- */
+
+/**
+ * 当前配置的镜像前缀。返回空字符串表示不改写，走 WordPress 原本的 Gravatar 地址。
+ *
+ * @return string 形如 https://cravatar.cn/avatar/ 的前缀。
+ */
+function yuki_avatar_mirror_base() {
+	switch ( get_theme_mod( 'yuki_avatar_source', 'gravatar' ) ) {
+		case 'cravatar':
+			return 'https://cravatar.cn/avatar/';
+
+		case 'custom':
+			$custom = trim( (string) get_theme_mod( 'yuki_avatar_custom_url', '' ) );
+			if ( '' === $custom ) {
+				return '';
+			}
+			$custom = trailingslashit( $custom );
+			// 只填域名时补上 /avatar/；已经带了就别重复拼成 /avatar/avatar/
+			if ( ! preg_match( '#/avatar/$#i', $custom ) ) {
+				$custom .= 'avatar/';
+			}
+			return $custom;
+
+		default:
+			return '';
+	}
+}
+
+/**
+ * 把 Gravatar 域名改写成镜像域名，hash 与查询参数原样保留。
+ *
+ * @param string $url          get_avatar_url() 产出的地址。
+ * @param mixed  $id_or_email  用户标识，本函数用不到。
+ * @param array  $args         头像参数，本函数用不到。
+ * @return string
+ */
+function yuki_avatar_url( $url, $id_or_email, $args ) {
+	$base = yuki_avatar_mirror_base();
+
+	if ( '' === $base ) {
+		return $url;
+	}
+
+	// 原地址形如：
+	//   https://secure.gravatar.com/avatar/<hash>?s=96&d=mm&r=g
+	//   https://0.gravatar.com/avatar/<hash>
+	// 只换 host + /avatar/ 这一段。
+	$rewritten = preg_replace(
+		'#^https?://(?:[a-z0-9-]+\.)*gravatar\.com/avatar/#i',
+		$base,
+		$url
+	);
+
+	return $rewritten ? $rewritten : $url;
+}
+add_filter( 'get_avatar_url', 'yuki_avatar_url', 10, 3 );
 
 /* ---------------------------------------------
  * 摘要与阅读时间
