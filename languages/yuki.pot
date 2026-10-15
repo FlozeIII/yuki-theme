@@ -1,0 +1,207 @@
+# Copyright (C) 2026 Yuki
+# This file is distributed under the GNU General Public License v2 or later.
+msgid ""
+msgstr ""
+"Project-Id-Version: Yuki 1.0.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-15T12:54:44+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Domain: yuki\n"
+
+#: functions.php:237
+msgid "%d 分钟阅读"
+msgstr ""
+
+#: functions.php:128
+msgid "Cravatar（境内镜像）"
+msgstr ""
+
+#: functions.php:123
+msgid "Gravatar 在境内访问不了，国内主机建议选 Cravatar 或自填镜像。"
+msgstr ""
+
+#: functions.php:127
+msgid "Gravatar（默认，境内不可用）"
+msgstr ""
+
+#: functions.php:91
+msgid "ICP 备案号"
+msgstr ""
+
+#: functions.php:112
+msgid "Yuki 头像设置"
+msgstr ""
+
+#: functions.php:81
+msgid "Yuki 页脚设置"
+msgstr ""
+
+#: single.php:56
+msgid "上一篇"
+msgstr ""
+
+#: single.php:62
+msgid "下一篇"
+msgstr ""
+
+#: functions.php:25
+msgid "主导航"
+msgstr ""
+
+#: sidebar.php:26
+msgid "作者"
+msgstr ""
+
+#: sidebar.php:21
+msgid "作者简介"
+msgstr ""
+
+#: footer.php:18
+msgid "你的邮箱地址"
+msgstr ""
+
+#: functions.php:92
+msgid "例如：京ICP备2026XXXXXX号，显示在页脚备案区"
+msgstr ""
+
+#: functions.php:104
+msgid "例如：京公网安备 110XXXXXXXXX号（可选）"
+msgstr ""
+
+#: functions.php:103
+msgid "公安备案号"
+msgstr ""
+
+#: search.php:21
+msgid "共找到 %d 篇文章"
+msgstr ""
+
+#: comments.php:37
+msgid "写下你的想法…"
+msgstr ""
+
+#: sidebar.php:35
+msgid "分类"
+msgstr ""
+
+#: header.php:48
+msgid "切换主题"
+msgstr ""
+
+#: comments.php:35
+msgid "发表评论"
+msgstr ""
+
+#: 404.php:17
+msgid "回到首页"
+msgstr ""
+
+#: functions.php:122
+msgid "头像来源"
+msgstr ""
+
+#: comments.php:36
+msgid "提交评论"
+msgstr ""
+
+#: footer.php:52 header.php:44 searchform.php:13
+msgid "搜索"
+msgstr ""
+
+#: search.php:17
+msgid "搜索「%s」"
+msgstr ""
+
+#: searchform.php:10
+msgid "搜索："
+msgstr ""
+
+#: functions.php:67
+msgid "放任意小工具即接管侧边栏；一个都不放则使用主题内置的默认小工具（作者简介、分类、标签云、热门文章）。"
+msgstr ""
+
+#: functions.php:65
+msgid "文章侧边栏"
+msgstr ""
+
+#: sidebar.php:81
+msgid "暂无数据"
+msgstr ""
+
+#. Description of the theme
+msgid "极简 × 二次元风格 WordPress 博客主题。暖白底色 + 柔和堇紫主色，内置浅色/深色模式滑动开关，纵向文章列表，文章页带侧边栏与备案号占位。"
+msgstr ""
+
+#: sidebar.php:50
+msgid "标签云"
+msgstr ""
+
+#: footer.php:15
+msgid "每周一封邮件，分享新文章与灵感碎片。随时取消。"
+msgstr ""
+
+#: search.php:45
+msgid "没有找到匹配的文章，换个关键词试试。"
+msgstr ""
+
+#: sidebar.php:62
+msgid "热门文章"
+msgstr ""
+
+#: sidebar.php:26
+msgid "独立创作者"
+msgstr ""
+
+#: functions.php:129
+msgid "自定义镜像"
+msgstr ""
+
+#: functions.php:139
+msgid "自定义镜像地址"
+msgstr ""
+
+#: footer.php:19 footer.php:30
+msgid "订阅"
+msgstr ""
+
+#: footer.php:14
+msgid "订阅更新"
+msgstr ""
+
+#: comments.php:18
+msgid "评论（%s）"
+msgstr ""
+
+#: index.php:37
+msgid "还没有文章，去后台发布第一篇吧。"
+msgstr ""
+
+#: archive.php:45
+msgid "这个归档下还没有文章。"
+msgstr ""
+
+#: 404.php:14
+msgid "这个页面走失了"
+msgstr ""
+
+#: 404.php:15
+msgid "链接可能已经失效，或者内容被移到了别处。试试搜索："
+msgstr ""
+
+#: functions.php:140
+msgid "镜像站点地址，例如 https://mirror.example.cn，会拼成 地址/avatar/哈希；直接粘贴含 /avatar/ 的完整前缀也可以。仅在上一项选「自定义镜像」时生效。"
+msgstr ""
+
+#: footer.php:29
+msgid "首页"
+msgstr ""
+
+#: searchform.php:11
+msgctxt "placeholder"
+msgid "搜索文章…"
+msgstr ""

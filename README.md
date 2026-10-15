@@ -43,4 +43,6 @@ yuki-theme/
 - 搜索：头部放大镜展开居中浮层，背景模糊，Esc / 点遮罩 / 再点按钮关闭。
 - 备案号：自定义器填写后自动链接到工信部/公安备案查询站点。
 - 头像镜像：Gravatar 在境内不可达，可在自定义器里一键切到 Cravatar 或自填镜像。
+- 国际化：文案统一走 `yuki` 文本域，`languages/yuki.pot` 可直接交给译者。
+  翻译文件放 `wp-content/languages/themes/yuki-{locale}.l10n.php`（或 `.mo`）。
 - 无第三方依赖，无构建步骤。
