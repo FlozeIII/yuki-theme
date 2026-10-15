@@ -22,7 +22,8 @@ get_header();
 			while ( have_posts() ) :
 				the_post();
 				get_template_part( 'template-parts/post-item' );
-			<?php endwhile; ?>
+			endwhile;
+			?>
 		</div>
 
 		<nav class="yuki-pagination">
