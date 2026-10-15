@@ -11,7 +11,7 @@
 
 import fs from 'node:fs';
 import path from 'node:path';
-import { REPO_ROOT, SITE, WP_ROOT, get, php, postForm } from './lib.mjs';
+import { REPO_ROOT, SITE, WP_ROOT, get, php, postForm, tagAttrs } from './lib.mjs';
 
 const ADMIN = { user: 'admin', pass: 'admin123' };
 const COMMENT_URL = `${SITE}/wp-comments-post.php`;
@@ -65,8 +65,8 @@ const blockedNow = (res) => {
 
 /* ---------------- 表单解析 ---------------- */
 
-/** 属性取值。核心输出的隐藏字段用的是单引号，两种都得认。 */
-const attr = (tag, name) => new RegExp(`\\b${name}=(["'])(.*?)\\1`, 'i').exec(tag)?.[2] ?? '';
+/** 属性取值。解析交给 lib.mjs 的 tagAttrs——单引号、双引号、不带引号都认，别各养一份。 */
+const attr = (tag, name) => tagAttrs(tag)[name] ?? '';
 
 // comment_form() 自己的字段就这些，多出来的才是主题加的
 const CORE_FIELDS = new Set([

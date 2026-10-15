@@ -96,7 +96,8 @@ echo 'YUKI-JSON: ' . wp_json_encode( array(
 	'site'          => home_url( '/' ),
 	'post_id'       => (int) $post_id,
 	'post_url'      => get_permalink( $post_id ),
-	'comments_feed' => get_permalink( $post_id ) . 'feed/',
+	// 用这个函数而不是 get_permalink() . 'feed/'：固定链接设成朴素时后者会拼出 ?p=123feed/
+	'comments_feed' => get_post_comments_feed_link( $post_id ),
 	'known_author'  => $known_author,
 	'known_email'   => $known_email,
 ) ) . "\n";
