@@ -1,0 +1,20 @@
+# 打包成安装用 zip 时排除的东西（wp dist-archive 等工具读这个文件）
+#
+# 主题对外发布时不该带上开发与验证的产物——使用者装的是主题，
+# 不是我们验证它用的基建。
+
+# 本地验证环境
+tests/
+.scratch/
+
+# 给 agent 和协作者的文档
+docs/
+AGENTS.md
+CONTEXT.md
+DESIGN.md
+
+# 版本控制与工具
+.git/
+.gitignore
+.distignore
+.editorconfig
