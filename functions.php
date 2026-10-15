@@ -141,6 +141,52 @@ function yuki_customize_register( $wp_customize ) {
 		'section'     => 'yuki_avatar',
 		'type'        => 'url',
 	) );
+
+	/* ---- 说说 ---- */
+
+	$wp_customize->add_section( 'yuki_shuoshuo', array(
+		'title'    => __( 'Yuki 说说设置', 'yuki' ),
+		'priority' => 150,
+	) );
+
+	$wp_customize->add_setting( 'yuki_shuoshuo_category', array(
+		'default'           => 0,
+		'sanitize_callback' => 'absint',
+	) );
+
+	$wp_customize->add_control( 'yuki_shuoshuo_category', array(
+		'label'       => __( '承载说说的分类', 'yuki' ),
+		'description' => __( '这个分类里的文章不出现在首页与博客列表，只保留它自己的归档页。选「不使用」则整项功能不生效。', 'yuki' ),
+		'section'     => 'yuki_shuoshuo',
+		'type'        => 'select',
+		'choices'     => yuki_shuoshuo_category_choices(),
+	) );
+}
+
+/**
+ * 自定义器里那个下拉的选项：分类标识 => 名字。
+ *
+ * 值是 term_id 而不是 slug——站主改名或换 slug 之后配置必须继续有效（见 ADR 0001）。
+ *
+ * @return array<int,string>
+ */
+function yuki_shuoshuo_category_choices() {
+	$choices = array( 0 => __( '不使用（关闭说说）', 'yuki' ) );
+
+	$terms = get_terms( array(
+		'taxonomy'   => 'category',
+		'hide_empty' => false,
+	) );
+
+	if ( is_wp_error( $terms ) ) {
+		return $choices;
+	}
+
+	foreach ( $terms as $term ) {
+		$choices[ (int) $term->term_id ] = $term->name;
+	}
+
+	return $choices;
 }
 add_action( 'customize_register', 'yuki_customize_register' );
 
@@ -262,6 +308,144 @@ function yuki_reading_time( $post_id = null ) {
 	/* translators: %d: 预计阅读分钟数 */
 	return sprintf( __( '%d 分钟阅读', 'yuki' ), $minutes );
 }
+
+/* ---------------------------------------------
+ * 说说
+ *
+ * 一篇说说就是一篇普通文章，归入一个由自定义器指定的分类；它不进首页与博客列表，
+ * 但保留自己的归档页。为什么不用自定义文章类型，见 docs/adr/0001。
+ *
+ * 配置存的是**分类标识**而不是名字或 slug：站主改名、换 slug 之后配置得继续有效。
+ * 分类被删掉、或者压根没配，整项功能安静地不生效——不报错，也不在页面上留空白。
+ * --------------------------------------------- */
+
+/**
+ * 当前承载说说的分类标识。没配、或者配的那个分类已经不在了，都返回 0。
+ *
+ * 让「分类被删了」和「从来没配过」走同一条路：调用方只需要判断 0，
+ * 不必各自去处理一个已经不存在的 term。
+ *
+ * @return int
+ */
+function yuki_shuoshuo_category_id() {
+	$term_id = (int) get_theme_mod( 'yuki_shuoshuo_category', 0 );
+
+	if ( $term_id <= 0 ) {
+		return 0;
+	}
+
+	$term = get_term( $term_id, 'category' );
+
+	if ( ! $term instanceof WP_Term ) {
+		return 0;
+	}
+
+	return $term_id;
+}
+
+/**
+ * 把说说挡在主列表之外。
+ *
+ * 只动主查询，而且只在博客列表上：说说自己的分类归档要照常列出它们，
+ * 标签、日期、别家分类的归档也不该受影响。
+ *
+ * 用负的 cat 参数去排除，而不是取出来再过滤——这样分页与总数才是对的
+ * （第一页补满、总页数相应少一页），翻页时也不会读到一页全是空白。
+ *
+ * @param WP_Query $query 当前查询。
+ */
+function yuki_shuoshuo_exclude_from_main_list( $query ) {
+	if ( is_admin() || ! $query->is_main_query() || ! $query->is_home() ) {
+		return;
+	}
+
+	$term_id = yuki_shuoshuo_category_id();
+
+	if ( ! $term_id ) {
+		return;
+	}
+
+	$query->set( 'cat', '-' . $term_id );
+}
+add_action( 'pre_get_posts', 'yuki_shuoshuo_exclude_from_main_list' );
+
+/**
+ * 兜住置顶文章绕过排除的那个缺口。
+ *
+ * 负的 cat 参数靠的是 category__not_in，而 WP_Query 处理置顶文章时**只认 post__not_in**
+ * （class-wp-query.php:3604）；剩下没被排除掉的置顶文章会被重新查一遍
+ * （get_posts( array( 'post__in' => $sticky_posts ) )，那里一个分类条件都没有），
+ * 再插到列表最前面。结果就是：一篇被置顶的说说照样出现在首页顶上。
+ *
+ * 所以在结果出来之后再兜一道。这里**不会**在页面上留空位——那篇文章本来就被主查询
+ * 排除了，是置顶逻辑把它又加了回来；去掉它只是把条数恢复成应有的样子。
+ *
+ * @param array    $posts 查询结果。
+ * @param WP_Query $query 当前查询。
+ * @return array
+ */
+function yuki_shuoshuo_drop_from_main_list( $posts, $query ) {
+	if ( is_admin() || ! $query instanceof WP_Query || ! $query->is_main_query() || ! $query->is_home() ) {
+		return $posts;
+	}
+
+	$term_id = yuki_shuoshuo_category_id();
+
+	if ( ! $term_id || ! is_array( $posts ) ) {
+		return $posts;
+	}
+
+	$kept = array();
+
+	foreach ( $posts as $post ) {
+		if ( $post instanceof WP_Post && has_category( $term_id, $post ) ) {
+			continue;
+		}
+		$kept[] = $post;
+	}
+
+	return $kept;
+}
+add_filter( 'the_posts', 'yuki_shuoshuo_drop_from_main_list', 10, 2 );
+
+/**
+ * 主题启用时，给说说挑一个承载体。
+ *
+ * 已经配好而且那个分类还在，就什么都不做——不能每次启用都盖掉站主的选择。
+ * 否则退回「未配置」：按默认 slug 找，找不到就建一个。
+ *
+ * 硬编码的只有这个默认 slug，而且只在「没有可用配置」时用一次；此后一切以配置为准，
+ * 所以站主改名、换 slug、删掉重建都不会把功能弄坏。
+ */
+function yuki_shuoshuo_activate() {
+	if ( yuki_shuoshuo_category_id() ) {
+		return;
+	}
+
+	$term = get_term_by( 'slug', 'shuoshuo', 'category' );
+
+	if ( $term instanceof WP_Term ) {
+		$term_id = (int) $term->term_id;
+	} else {
+		$created = wp_insert_term(
+			__( '说说', 'yuki' ),
+			'category',
+			array(
+				'slug'        => 'shuoshuo',
+				'description' => __( '短碎片内容。这个分类里的文章不出现在首页与博客列表，只在自己的归档里。', 'yuki' ),
+			)
+		);
+
+		if ( is_wp_error( $created ) ) {
+			return;
+		}
+
+		$term_id = (int) $created['term_id'];
+	}
+
+	set_theme_mod( 'yuki_shuoshuo_category', $term_id );
+}
+add_action( 'after_switch_theme', 'yuki_shuoshuo_activate' );
 
 /* ---------------------------------------------
  * 评论表单样式类

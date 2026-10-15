@@ -44,20 +44,32 @@ export function php(args, opts = {}) {
 }
 
 /**
- * 跑需要 WordPress 引导的探针，返回它打印的 JSON。
+ * 跑一个需要 WordPress 引导的脚本（tests/bin/ 下的 .php），返回它打印的最后一个 JSON 对象。
+ *
+ * 约定一律是 `<脚本> <wordpress目录> <子命令> [--键=值 …]`，最后一行是 JSON。
  * 探针成功但输出不是 JSON 时抛错——那说明 WordPress 自己先打印了东西。
  */
-export function probe(...args) {
-  const res = php([path.join(TESTS_DIR, 'bin', 'wp-probe.php'), WP_ROOT, ...args]);
+export function probeScript(script, ...args) {
+  const res = php([path.join(TESTS_DIR, 'bin', script), WP_ROOT, ...args]);
+  const lastLine = (res.stdout || '').trim().split('\n').filter(Boolean).pop() || '';
+
   if (res.status !== 0) {
-    throw new Error(`探针 ${args[0]} 失败（退出码 ${res.status}）：${(res.stderr || '').trim()}`);
+    // 脚本失败时往往已经打印了 {error: …} 那一行，把原因带出来。
+    // 只看 stderr 会得到「退出码 2：」后面什么都没有，等于没说。
+    const reason = (res.stderr || '').trim() || lastLine || '(没有任何输出)';
+    throw new Error(`${script} ${args[0] ?? ''} 失败（退出码 ${res.status}）：${reason}`);
   }
-  const line = (res.stdout || '').trim().split('\n').filter(Boolean).pop() || '';
+
   try {
-    return JSON.parse(line);
+    return JSON.parse(lastLine);
   } catch {
-    throw new Error(`探针 ${args[0]} 的输出不是 JSON：${JSON.stringify(res.stdout)}`);
+    throw new Error(`${script} ${args[0] ?? ''} 的输出不是 JSON：${JSON.stringify(res.stdout)}`);
   }
+}
+
+/** 跑通用的 WordPress 探针。 */
+export function probe(...args) {
+  return probeScript('wp-probe.php', ...args);
 }
 
 /* ---------- HTTP ---------- */
