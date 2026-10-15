@@ -38,11 +38,14 @@
 		overlay.classList.remove('is-open');
 		trigger.setAttribute('aria-expanded', 'false');
 		document.body.classList.remove('yuki-search-locked');
-		if (lastFocused && lastFocused.focus) {
-			lastFocused.focus();
-		} else {
-			trigger.focus();
-		}
+
+		// 打开前记下的落点不一定是有效目标：程序化触发、以及部分浏览器
+		// 的鼠标点击，都不会让按钮获得焦点，此时 activeElement 是 body。
+		// 那种情况下退回触发按钮，否则焦点会丢在整个文档上。
+		var target = lastFocused && lastFocused !== document.body && 'function' === typeof lastFocused.focus
+			? lastFocused
+			: trigger;
+		target.focus();
 	}
 
 	trigger.addEventListener('click', function () {
