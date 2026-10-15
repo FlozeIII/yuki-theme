@@ -1,0 +1,436 @@
+/*
+Theme Name: Yuki
+Description: 极简 × 二次元风格 WordPress 博客主题。暖白底色 + 柔和堇紫主色，内置浅色/深色模式滑动开关，纵向文章列表，文章页带侧边栏与备案号占位。
+Version: 1.0.0
+Requires at least: 6.0
+Requires PHP: 7.4
+License: GNU General Public License v2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
+Text Domain: yuki
+Tags: blog, minimal, two-columns, light, dark
+*/
+
+/* ============================================
+   Design Tokens — Yuki
+   ============================================ */
+:root {
+  --yuki-primary: #A5B4FC;
+  --yuki-primary-600: #818CF8;
+  --yuki-primary-700: #6366F1;
+  --yuki-primary-foreground: #1E1B4B;
+
+  --yuki-background: #FDFBF7;
+  --yuki-foreground: #2D2D35;
+  --yuki-card: #FFFFFF;
+  --yuki-muted: #F3F0EA;
+  --yuki-muted-foreground: #7C7C8A;
+  --yuki-border: #E8E5DF;
+  --yuki-input: #E8E5DF;
+  --yuki-ring: #A5B4FC;
+
+  --yuki-ink: #2D2D35;
+  --yuki-ink-2: #5C5C6D;
+  --yuki-ink-3: #8A8A9A;
+
+  --yuki-radius-sm: 4px;
+  --yuki-radius-md: 8px;
+  --yuki-radius-lg: 16px;
+  --yuki-radius-pill: 999px;
+
+  --yuki-shadow-1: 0 1px 2px rgba(45, 45, 53, 0.04), 0 1px 1px rgba(45, 45, 53, 0.02);
+  --yuki-shadow-2: 0 8px 24px -8px rgba(45, 45, 53, 0.05);
+
+  --yuki-font-sans: "Inter", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", system-ui, -apple-system, sans-serif;
+  --yuki-font-mono: "JetBrains Mono", "Fira Code", "SF Mono", Consolas, monospace;
+}
+
+.dark {
+  --yuki-primary: #A5B4FC;
+  --yuki-primary-600: #818CF8;
+  --yuki-primary-700: #6366F1;
+  --yuki-primary-foreground: #0F0F14;
+
+  --yuki-background: #18181F;
+  --yuki-foreground: #F3F0EA;
+  --yuki-card: #22222B;
+  --yuki-muted: #2A2A35;
+  --yuki-muted-foreground: #9CA3AF;
+  --yuki-border: #3A3A47;
+  --yuki-input: #3A3A47;
+  --yuki-ring: #A5B4FC;
+
+  --yuki-ink: #F3F0EA;
+  --yuki-ink-2: #C8C8D0;
+  --yuki-ink-3: #9CA3AF;
+}
+
+/* ============================================
+   Base
+   ============================================ */
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--yuki-background);
+  color: var(--yuki-foreground);
+  font-family: var(--yuki-font-sans);
+  font-size: 15px;
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: inherit; text-decoration: none; }
+img { max-width: 100%; height: auto; display: block; }
+.yuki-container { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
+.yuki-narrow { max-width: 768px; margin: 0 auto; padding: 0 24px; }
+
+/* 二次元点缀：柔和圆点纹理 */
+.yuki-dot-pattern {
+  background-image: radial-gradient(circle, var(--yuki-border) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+/* 柔和卡片框 */
+.yuki-soft-frame {
+  border: 1px solid var(--yuki-border);
+  border-radius: var(--yuki-radius-lg);
+  background: var(--yuki-card);
+  box-shadow: var(--yuki-shadow-1);
+}
+
+/* ============================================
+   Header / Nav
+   ============================================ */
+.yuki-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 20px 24px;
+}
+.yuki-nav .brand { font-size: 20px; font-weight: 600; letter-spacing: -0.02em; }
+.yuki-nav .menu { display: flex; gap: 28px; font-size: 14px; color: var(--yuki-muted-foreground); }
+.yuki-nav .menu a { transition: color 180ms ease; }
+.yuki-nav .menu a:hover { color: var(--yuki-primary-700); }
+.dark .yuki-nav .menu a:hover { color: var(--yuki-primary); }
+
+/* ============================================
+   Theme Switch — 滑动开关
+   ============================================ */
+.theme-switch {
+  position: relative;
+  flex: none;
+  width: 60px;
+  height: 30px;
+  border-radius: var(--yuki-radius-pill);
+  border: 1px solid var(--yuki-border);
+  background: var(--yuki-muted);
+  cursor: pointer;
+  transition: background-color 0.35s ease, border-color 0.35s ease;
+}
+.theme-switch:hover,
+.theme-switch:focus-visible { border-color: var(--yuki-primary); }
+.theme-switch:focus-visible { outline: 2px solid var(--yuki-ring); outline-offset: 2px; }
+.theme-switch-hint {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  display: inline-flex;
+  color: var(--yuki-ink-3);
+}
+.theme-switch-hint svg { width: 12px; height: 12px; }
+.theme-switch-hint-left { left: 8px; }
+.theme-switch-hint-right { right: 8px; }
+.theme-switch-knob {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: var(--yuki-radius-pill);
+  background: var(--yuki-card);
+  box-shadow: 0 2px 6px rgba(45, 45, 53, 0.12);
+  transition: transform 0.35s cubic-bezier(0.45, 0, 0.2, 1), background-color 0.35s ease;
+}
+.dark .theme-switch-knob { transform: translateX(30px); background: #F3F0EA; }
+.theme-switch-knob svg { width: 14px; height: 14px; }
+.theme-switch-knob-sun { display: inline-flex; color: #E8A33D; }
+.theme-switch-knob-moon { display: none; color: #6366F1; }
+.dark .theme-switch-knob-sun { display: none; }
+.dark .theme-switch-knob-moon { display: inline-flex; }
+
+/* ============================================
+   Hero（首页顶部）
+   ============================================ */
+.yuki-hero { padding: 72px 0 56px; text-align: center; }
+.yuki-hero h1 {
+  margin: 0 0 16px;
+  font-size: clamp(32px, 4vw, 48px);
+  font-weight: 700;
+  line-height: 1.18;
+}
+.yuki-hero p { margin: 0 auto; max-width: 560px; color: var(--yuki-muted-foreground); font-size: 17px; }
+
+/* ============================================
+   文章列表 — 纵向单列
+   ============================================ */
+.yuki-post-list { display: flex; flex-direction: column; max-width: 768px; margin: 0 auto; }
+.yuki-post-item {
+  display: flex;
+  gap: 20px;
+  padding: 24px 8px;
+  border-bottom: 1px solid var(--yuki-border);
+  transition: background-color 180ms ease;
+}
+.yuki-post-item:last-child { border-bottom: none; }
+.yuki-post-item:hover .yuki-post-title { color: var(--yuki-primary-700); }
+.dark .yuki-post-item:hover .yuki-post-title { color: var(--yuki-primary); }
+.yuki-post-thumb {
+  flex: none;
+  width: 112px;
+  height: 84px;
+  border-radius: var(--yuki-radius-md);
+  overflow: hidden;
+  background: var(--yuki-muted);
+}
+.yuki-post-thumb img { width: 100%; height: 100%; object-fit: cover; }
+.yuki-post-meta { font-size: 12px; color: var(--yuki-muted-foreground); margin-bottom: 6px; display: flex; gap: 10px; flex-wrap: wrap; }
+.yuki-post-title { margin: 0 0 6px; font-size: 19px; font-weight: 600; line-height: 1.35; transition: color 180ms ease; }
+.yuki-post-excerpt { margin: 0; font-size: 14px; color: var(--yuki-ink-2); }
+.yuki-cat-badge {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: var(--yuki-radius-pill);
+  background: var(--yuki-muted);
+  color: var(--yuki-foreground);
+  font-size: 12px;
+}
+
+/* 分页 */
+.yuki-pagination { display: flex; justify-content: center; gap: 8px; padding: 40px 0 64px; }
+.yuki-pagination .page-numbers {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 36px;
+  height: 36px;
+  padding: 0 10px;
+  border-radius: var(--yuki-radius-md);
+  border: 1px solid var(--yuki-border);
+  font-size: 14px;
+  color: var(--yuki-muted-foreground);
+  transition: border-color 180ms ease, color 180ms ease;
+}
+.yuki-pagination .page-numbers:hover { border-color: var(--yuki-primary); color: var(--yuki-primary-700); }
+.yuki-pagination .page-numbers.current { background: var(--yuki-primary); border-color: var(--yuki-primary); color: var(--yuki-primary-foreground); }
+
+/* ============================================
+   文章详情页
+   ============================================ */
+.yuki-article-header { max-width: 768px; margin: 0 auto 48px; }
+.yuki-article-header h1 { margin: 16px 0; font-size: clamp(28px, 3.5vw, 40px); font-weight: 700; line-height: 1.25; }
+.yuki-article-featured { margin: 0 0 48px; padding: 8px; }
+.yuki-article-featured img { border-radius: calc(var(--yuki-radius-lg) - 4px); }
+
+.yuki-single-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 300px;
+  gap: 48px;
+  align-items: start;
+}
+@media (max-width: 960px) {
+  .yuki-single-layout { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* 正文排版 */
+.yuki-prose { font-size: 16px; line-height: 1.75; color: var(--yuki-ink-2); }
+.yuki-prose > *:first-child { margin-top: 0; }
+.yuki-prose h2 { font-size: 26px; font-weight: 600; margin: 2em 0 0.7em; color: var(--yuki-foreground); line-height: 1.3; }
+.yuki-prose h3 { font-size: 20px; font-weight: 600; margin: 1.7em 0 0.6em; color: var(--yuki-foreground); }
+.yuki-prose p { margin: 0 0 1.3em; }
+.yuki-prose a { color: var(--yuki-primary-700); text-decoration: underline; text-underline-offset: 3px; }
+.dark .yuki-prose a { color: var(--yuki-primary); }
+.yuki-prose blockquote {
+  margin: 1.8em 0;
+  padding: 1em 1.25em;
+  border-left: 3px solid var(--yuki-primary);
+  border-radius: 0 var(--yuki-radius-md) var(--yuki-radius-md) 0;
+  background: var(--yuki-muted);
+  font-style: italic;
+}
+.yuki-prose ul, .yuki-prose ol { margin: 0 0 1.3em; padding-left: 1.5em; }
+.yuki-prose li { margin-bottom: 0.45em; }
+.yuki-prose code {
+  font-family: var(--yuki-font-mono);
+  font-size: 0.9em;
+  background: var(--yuki-muted);
+  padding: 0.15em 0.4em;
+  border-radius: var(--yuki-radius-sm);
+  color: var(--yuki-primary-700);
+}
+.dark .yuki-prose code { color: var(--yuki-primary); }
+.yuki-prose pre {
+  background: var(--yuki-card);
+  border: 1px solid var(--yuki-border);
+  border-radius: var(--yuki-radius-lg);
+  padding: 1.2em;
+  overflow-x: auto;
+}
+.yuki-prose pre code { background: transparent; padding: 0; }
+.yuki-prose figure { margin: 2em 0; }
+.yuki-prose figcaption { text-align: center; font-size: 13px; color: var(--yuki-muted-foreground); margin-top: 0.7em; }
+.yuki-prose img { border-radius: var(--yuki-radius-lg); }
+
+/* 标签 & 上下篇 */
+.yuki-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 40px; padding-top: 28px; border-top: 1px solid var(--yuki-border); }
+.yuki-tag {
+  padding: 6px 14px;
+  border-radius: var(--yuki-radius-pill);
+  border: 1px solid var(--yuki-border);
+  font-size: 13px;
+  color: var(--yuki-muted-foreground);
+  transition: border-color 180ms ease, color 180ms ease;
+}
+.yuki-tag:hover { border-color: var(--yuki-primary); color: var(--yuki-primary-700); }
+.yuki-post-nav { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 40px; }
+@media (max-width: 640px) { .yuki-post-nav { grid-template-columns: 1fr; } }
+.yuki-post-nav a {
+  padding: 20px;
+  border: 1px solid var(--yuki-border);
+  border-radius: var(--yuki-radius-lg);
+  background: var(--yuki-card);
+  transition: border-color 180ms ease;
+}
+.yuki-post-nav a:hover { border-color: var(--yuki-primary); }
+.yuki-post-nav .label { font-size: 12px; color: var(--yuki-muted-foreground); margin-bottom: 8px; }
+.yuki-post-nav .title { font-weight: 500; font-size: 15px; }
+.yuki-post-nav .next { text-align: right; }
+
+/* ============================================
+   侧边栏
+   ============================================ */
+.yuki-sidebar { display: flex; flex-direction: column; gap: 28px; position: sticky; top: 32px; }
+@media (max-width: 960px) { .yuki-sidebar { position: static; } }
+.yuki-widget {
+  padding: 24px;
+  border: 1px solid var(--yuki-border);
+  border-radius: var(--yuki-radius-lg);
+  background: var(--yuki-card);
+}
+.yuki-widget h3 {
+  margin: 0 0 16px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--yuki-muted-foreground);
+}
+.yuki-widget ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; font-size: 14px; }
+.yuki-widget a:hover { color: var(--yuki-primary-700); }
+.dark .yuki-widget a:hover { color: var(--yuki-primary); }
+.yuki-widget .count {
+  float: right;
+  font-size: 12px;
+  color: var(--yuki-muted-foreground);
+  background: var(--yuki-muted);
+  padding: 1px 9px;
+  border-radius: var(--yuki-radius-pill);
+}
+.yuki-author-card { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+.yuki-author-card img { width: 56px; height: 56px; border-radius: 50%; object-fit: cover; }
+.yuki-author-card .name { font-weight: 600; }
+.yuki-author-card .role { font-size: 13px; color: var(--yuki-muted-foreground); }
+.yuki-widget .tagcloud { display: flex; flex-wrap: wrap; gap: 8px; }
+.yuki-widget .tagcloud a {
+  padding: 4px 12px;
+  border-radius: var(--yuki-radius-pill);
+  border: 1px solid var(--yuki-border);
+  font-size: 12px !important;
+  color: var(--yuki-muted-foreground);
+}
+.yuki-widget .tagcloud a:hover { border-color: var(--yuki-primary); color: var(--yuki-primary-700); }
+
+/* ============================================
+   评论
+   ============================================ */
+.yuki-comments { margin-top: 64px; padding-top: 40px; border-top: 1px solid var(--yuki-border); }
+.yuki-comments h2, .yuki-comments h3 { font-size: 22px; font-weight: 700; margin: 0 0 24px; }
+.yuki-comment-list { list-style: none; padding: 0; margin: 0 0 32px; display: flex; flex-direction: column; gap: 20px; }
+.yuki-comment-list .comment-body {
+  padding: 20px;
+  border: 1px solid var(--yuki-border);
+  border-radius: var(--yuki-radius-lg);
+  background: var(--yuki-card);
+  font-size: 14px;
+}
+.yuki-comment-list .children { list-style: none; padding-left: 28px; margin-top: 16px; }
+.yuki-comment-form input[type="text"],
+.yuki-comment-form input[type="email"],
+.yuki-comment-form input[type="url"],
+.yuki-comment-form textarea {
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: var(--yuki-radius-md);
+  border: 1px solid var(--yuki-input);
+  background: var(--yuki-background);
+  color: var(--yuki-foreground);
+  font-family: inherit;
+  font-size: 14px;
+  margin-bottom: 14px;
+}
+.yuki-comment-form input:focus, .yuki-comment-form textarea:focus { outline: 2px solid var(--yuki-ring); outline-offset: 1px; }
+.yuki-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 24px;
+  border-radius: var(--yuki-radius-md);
+  border: none;
+  background: var(--yuki-primary);
+  color: var(--yuki-primary-foreground);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 180ms ease, transform 180ms ease;
+}
+.yuki-btn:hover { background: var(--yuki-primary-600); transform: translateY(-1px); }
+
+/* ============================================
+   Newsletter / Footer
+   ============================================ */
+.yuki-newsletter { padding: 72px 0; border-top: 1px solid var(--yuki-border); text-align: center; }
+.yuki-newsletter form { display: flex; gap: 12px; max-width: 480px; margin: 24px auto 0; }
+.yuki-newsletter input {
+  flex: 1;
+  padding: 12px 20px;
+  border-radius: var(--yuki-radius-md);
+  border: 1px solid var(--yuki-input);
+  background: var(--yuki-background);
+  color: var(--yuki-foreground);
+  font-family: inherit;
+}
+.yuki-footer { padding: 44px 0 28px; border-top: 1px solid var(--yuki-border); }
+.yuki-footer-top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  font-size: 14px;
+  color: var(--yuki-muted-foreground);
+}
+.yuki-footer-top .links { display: flex; gap: 24px; }
+.yuki-footer-top .links a:hover { color: var(--yuki-primary-700); }
+.yuki-icp {
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid var(--yuki-border);
+  text-align: center;
+  font-size: 12px;
+  color: var(--yuki-muted-foreground);
+}
+.yuki-icp a { color: inherit; }
+.yuki-icp a:hover { color: var(--yuki-primary-700); }
