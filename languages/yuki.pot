@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Yuki 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-15T16:01:48+00:00\n"
+"POT-Creation-Date: 2026-10-15T16:24:28+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -96,6 +96,10 @@ msgstr ""
 msgid "你在《%s》下留了一条评论："
 msgstr ""
 
+#: comments.php:46
+msgid "你有 %s 条评论正在等待审核，通过之后才会公开显示。"
+msgstr ""
+
 #: footer.php:18
 msgid "你的邮箱地址"
 msgstr ""
@@ -120,7 +124,7 @@ msgstr ""
 msgid "关闭"
 msgstr ""
 
-#: comments.php:41
+#: comments.php:80
 msgid "写下你的想法…"
 msgstr ""
 
@@ -140,7 +144,7 @@ msgstr ""
 msgid "删除这条评论？"
 msgstr ""
 
-#: comments.php:37
+#: comments.php:76
 msgid "发表评论"
 msgstr ""
 
@@ -180,7 +184,7 @@ msgstr ""
 msgid "把心事折成纸飞机，交给明天的风。"
 msgstr ""
 
-#: comments.php:38
+#: comments.php:77
 msgid "提交评论"
 msgstr ""
 
@@ -272,7 +276,7 @@ msgstr ""
 msgid "评论已删除"
 msgstr ""
 
-#: comments.php:18
+#: comments.php:57
 msgid "评论（%s）"
 msgstr ""
 

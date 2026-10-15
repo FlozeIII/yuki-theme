@@ -83,15 +83,35 @@ export function probe(...args) {
  */
 const DEFAULT_TIMEOUT_MS = 20000;
 
+/**
+ * 把 headers 和 cookie 合成 fetch 用的 headers。
+ *
+ * cookie 单独给一个参数，而不是让调用方自己塞进 headers：塞的话会**整体顶掉**默认的
+ * content-type，于是 PHP 解不出 $_POST，登录/带身份的提交**静默失败**——拿到的是匿名页面，
+ * 然后所有断言都以「东西不存在」的形式红，查起来离真相很远。
+ *
+ * @param {object} headers 额外请求头。
+ * @param {string} cookie  Cookie 头的内容。
+ */
+function mergeHeaders(headers = {}, cookie = '') {
+  const merged = { ...headers };
+  if (cookie) {
+    merged.cookie = cookie;
+  }
+  return merged;
+}
+
 /** GET 一个地址，返回 { status, body, headers }。网络不可达或超时都会抛错。 */
 export async function get(url, options = {}) {
+  const { cookie = '', headers, ...rest } = options;
   const res = await fetch(url, {
     redirect: 'manual',
     signal: AbortSignal.timeout(DEFAULT_TIMEOUT_MS),
-    ...options,
+    ...rest,
+    headers: mergeHeaders(headers, cookie),
   });
   const body = await res.text();
-  return { status: res.status, body, headers: res.headers };
+  return { status: res.status, body, headers: res.headers, setCookies: res.headers.getSetCookie() };
 }
 
 /** 取地址可达性与状态码；不可达、或者挂住不应答，都返回 0 而不是抛错。 */
@@ -104,18 +124,42 @@ export async function statusOf(url, timeoutMs = 2000) {
   }
 }
 
-/** 按表单方式 POST，返回 { status, body, headers, location }。 */
+/** 按表单方式 POST，返回 { status, body, headers, location, setCookies }。 */
 export async function postForm(url, fields, options = {}) {
+  const { cookie = '', headers, ...rest } = options;
   const res = await fetch(url, {
     method: 'POST',
     redirect: 'manual',
-    headers: { 'content-type': 'application/x-www-form-urlencoded' },
-    body: new URLSearchParams(fields).toString(),
     signal: AbortSignal.timeout(DEFAULT_TIMEOUT_MS),
-    ...options,
+    ...rest,
+    // content-type 放在展开**之后**：这是 postForm，契约就是表单编码，调用方给的 headers
+    // 盖不掉它（cookie 走单独的参数加进来，更不该碰它）。放在展开之前的话，谁传一个
+    // headers 就把 content-type 顶掉了，PHP 解不出 $_POST，提交静默变成匿名页面。
+    headers: {
+      ...mergeHeaders(headers, cookie),
+      'content-type': 'application/x-www-form-urlencoded',
+    },
+    body: new URLSearchParams(fields).toString(),
   });
   const body = await res.text();
-  return { status: res.status, body, headers: res.headers, location: res.headers.get('location') || '' };
+  return {
+    status: res.status,
+    body,
+    headers: res.headers,
+    location: res.headers.get('location') || '',
+    setCookies: res.headers.getSetCookie(),
+  };
+}
+
+/**
+ * 把响应里的 Set-Cookie 合成一个可以直接回传的 Cookie 头。
+ * 只取 `名字=值` 那一段——属性（Path/HttpOnly/Expires）不该出现在请求里。
+ */
+export function cookieHeaderFrom(setCookies = []) {
+  return setCookies
+    .map((raw) => String(raw).split(';')[0].trim())
+    .filter(Boolean)
+    .join('; ');
 }
 
 /* ---------- 评论提交 ---------- */
@@ -147,7 +191,7 @@ export function tagAttrs(tag) {
  * @param {string} postUrl  文章地址（表单所在的那个页面）
  * @param {object} options  comment / author / email / url / settleMs
  */
-export async function submitComment(postUrl, { comment, author = 'YUKI-TEST 访客', email = 'yuki-test@example.test', url = '', settleMs = 3200 } = {}) {
+export async function submitComment(postUrl, { comment, author = 'YUKI-TEST 访客', email = 'yuki-test@example.test', url = '', cookie = '', consent = false, extraFields = {}, settleMs = 3200 } = {}) {
   const page = await get(postUrl);
   if (page.status !== 200) {
     throw new Error(`取评论表单页失败：${postUrl} 返回 ${page.status}`);
@@ -185,6 +229,16 @@ export async function submitComment(postUrl, { comment, author = 'YUKI-TEST 访�
     if (key === 'comment' || key in fields) fields[key] = value;
   }
 
+  // 「记住我的信息」那个勾选框默认不勾（跟真人一样）。勾上时核心才会下发评论者 cookie，
+  // 也就是「同一身份再次访问」所依赖的那个身份。
+  if (consent) {
+    fields['wp-comment-cookies-consent'] = 'yes';
+  }
+
+  // 需要往表单里塞额外字段时（比如把蜜罐填上、或者把一个字段改成数组试探守卫），
+  // 从这里进去。默认什么都不加——正常访客走的仍然是「表单里有什么就交什么」。
+  Object.assign(fields, extraFields);
+
   // 提交到表单自己声明的 action，而不是我们假定它一定是 wp-comments-post.php：
   // 既然已经费劲去读真实表单了，就没道理把「往哪提交」这一条写死。
   const formTag = form[0].match(/<form\b[^>]*>/i)?.[0] || '';
@@ -193,7 +247,7 @@ export async function submitComment(postUrl, { comment, author = 'YUKI-TEST 访�
 
   await new Promise((resolve) => setTimeout(resolve, settleMs));
 
-  const response = await postForm(target, fields);
+  const response = await postForm(target, fields, { cookie });
 
   return { ...response, fields, target, waitedMs: settleMs };
 }
