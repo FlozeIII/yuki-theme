@@ -507,6 +507,10 @@ img { max-width: 100%; height: auto; display: block; }
 .yuki-newsletter form { display: flex; gap: 12px; max-width: 480px; margin: 24px auto 0; }
 .yuki-newsletter input {
   flex: 1;
+  /* flex 项的 min-width 默认是 auto，输入框的固有宽度就成了地板：320px 视口下这一行
+     撑到 325px（视口只有 305），整页因此横向溢出 20px，按钮也被从 76px 挤到 62px。
+     写成 0 才能真的收缩。搜索框那条（.yuki-search-form label）早就是这么做的。 */
+  min-width: 0;
   padding: 12px 20px;
   border-radius: var(--yuki-radius-md);
   border: 1px solid var(--yuki-input);
