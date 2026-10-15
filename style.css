@@ -386,7 +386,6 @@ img { max-width: 100%; height: auto; display: block; }
   .yuki-shuoshuo-item { padding: 16px 0; }
 }
 
-
 /* ============================================
    评论
    ============================================ */
@@ -487,7 +486,6 @@ img { max-width: 100%; height: auto; display: block; }
   .yuki-comment-list .children { padding-left: 12px; }
   .yuki-comment-list .comment-body { padding: 16px; }
 }
-
 /* 待审提示：贴在评论列表上方，说清「还没公开」。与列表里那条 .comment-awaiting-moderation
    不是一回事——那条说的是「这一条在等审核」，这条说的是「你有几条在等审核」。 */
 .yuki-pending-notice {
@@ -500,6 +498,51 @@ img { max-width: 100%; height: auto; display: block; }
   font-size: 14px;
   color: var(--yuki-ink-2);
 }
+/* 点赞与回复排在一条动作行里 */
+.yuki-comment-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; margin-top: 12px; }
+/* 回复链接自己也带 margin-top，现在这点间距由整行来给 */
+.yuki-comment-actions .reply { margin-top: 0; }
+/* 计数是服务端渲染出来的（禁用 JS 时它照样在），JS 只让它点得动。
+   字色用 --yuki-ink-2：这一枚是给人读的数字，得按正文那套对比度来。 */
+.yuki-like {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 12px;
+  border: 1px solid var(--yuki-border);
+  border-radius: var(--yuki-radius-pill);
+  background: transparent;
+  color: var(--yuki-ink-2);
+  font-family: inherit;
+  font-size: 13px;
+  line-height: 1.6;
+  cursor: pointer;
+  transition: border-color 160ms ease, background 160ms ease, color 160ms ease;
+}
+.yuki-like:hover { border-color: var(--yuki-primary); background: var(--yuki-muted); }
+.yuki-like[disabled] { opacity: 0.6; cursor: default; }
+.yuki-like-heart { color: var(--yuki-muted-foreground); font-size: 14px; line-height: 1; }
+/* 点过的样子：边框与底色跟着主色走，心也上色——不靠数字一个信号说明我点过 */
+.yuki-like.is-liked { border-color: var(--yuki-primary); background: var(--yuki-muted); }
+.yuki-like.is-liked .yuki-like-heart { color: var(--yuki-primary-600); }
+.dark .yuki-like.is-liked .yuki-like-heart { color: var(--yuki-primary); }
+.yuki-like-count { font-variant-numeric: tabular-nums; }
+/* 只给读屏器念的文字：视觉上藏起来，但留在可访问性树里。
+   与 .yuki-comment-trap 的差别在这：那枚是给表单蜜罐的，连读屏器都不该念；
+   这一枚相反，它就是给读屏器准备的，所以用 clip 而不是 display:none。 */
+.yuki-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  border: 0;
+  white-space: nowrap;
+}
+
 /* ============================================
    Newsletter / Footer
    ============================================ */

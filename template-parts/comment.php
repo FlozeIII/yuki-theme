@@ -113,18 +113,31 @@ $yuki_is_pending = ( '0' === $yuki_comment->comment_approved );
 			</div><!-- .comment-content -->
 
 			<?php
-			if ( ! $yuki_is_pending || $yuki_own_view ) {
-				comment_reply_link( array_merge(
-					$yuki_list_args,
-					array(
-						'add_below' => 'div-comment',
-						'depth'     => $yuki_depth,
-						'max_depth' => $yuki_list_args['max_depth'],
-						'before'    => '<div class="reply">',
-						'after'     => '</div>',
-					)
-				) );
-			}
+			$yuki_can_reply = ( ! $yuki_is_pending || $yuki_own_view );
+			// 待审评论不给点赞入口：它还没公开，给它攒赞没有意义，端点那边也不收
+			$yuki_can_like  = ! $yuki_is_pending;
 			?>
+			<?php if ( $yuki_can_like || $yuki_can_reply ) : ?>
+				<div class="yuki-comment-actions">
+					<?php if ( $yuki_can_like ) : ?>
+						<?php get_template_part( 'template-parts/comment-like', null, array( 'comment' => $yuki_comment ) ); ?>
+					<?php endif; ?>
+
+					<?php
+					if ( $yuki_can_reply ) {
+						comment_reply_link( array_merge(
+							$yuki_list_args,
+							array(
+								'add_below' => 'div-comment',
+								'depth'     => $yuki_depth,
+								'max_depth' => $yuki_list_args['max_depth'],
+								'before'    => '<div class="reply">',
+								'after'     => '</div>',
+							)
+						) );
+					}
+					?>
+				</div><!-- .yuki-comment-actions -->
+			<?php endif; ?>
 		<?php endif; ?>
 	</article><!-- .comment-body -->

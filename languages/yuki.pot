@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Yuki 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-15T16:25:52+00:00\n"
+"POT-Creation-Date: 2026-10-15T16:37:55+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -240,6 +240,10 @@ msgstr ""
 msgid "没有找到匹配的文章，换个关键词试试。"
 msgstr ""
 
+#: template-parts/comment-like.php:29
+msgid "点赞"
+msgstr ""
+
 #: sidebar.php:77
 msgid "热门文章"
 msgstr ""
@@ -322,6 +326,10 @@ msgstr ""
 
 #: inc/comment-deletion.php:176
 msgid "这封邮件是因为有人在站点评论时填了这个邮箱。不是你，忽略即可。"
+msgstr ""
+
+#: comment-likes.php:225 inc/comment-likes.php:225
+msgid "这条评论不能点赞。"
 msgstr ""
 
 #: template-parts/comment.php:35

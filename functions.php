@@ -878,3 +878,4 @@ function yuki_comment_template( $comment, $args, $depth ) {
  * 加一个文件也要有人手动写一行——不会因为往目录里放了点什么就悄悄多出一堆行为。
  * --------------------------------------------- */
 require_once get_template_directory() . '/inc/comment-deletion.php';
+require_once get_template_directory() . '/inc/comment-likes.php';
