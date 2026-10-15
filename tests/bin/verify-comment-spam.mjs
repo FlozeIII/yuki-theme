@@ -184,19 +184,13 @@ const blocked = [];
 
 section('判定发生在入库之前');
 {
-  // 页面刚渲染出来就提交：同一个令牌，先趁它还太新时提交一次
+  // 页面刚渲染出来就提交。此刻令牌本身是有效签名、蜜罐也是空的，
+  // 能拦住这一次的只有判定窗口——不是别的什么顺便挡住了。
   const marker = mark('FAST');
   const res = await submit(submitAs(form, { trap: '', token: token0, marker }));
   const verdict = blockedNow(res);
   blocked.push(marker);
   check('瞬间提交：没有产生评论', verdict.ok, verdict.why);
-}
-{
-  const marker = mark('HONEY');
-  const res = await submit(submitAs(form, { trap: 'http://spam.example/', token: token0, marker }));
-  const verdict = blockedNow(res);
-  blocked.push(marker);
-  check('填了蜜罐：没有产生评论', verdict.ok, verdict.why);
 }
 {
   // 没签出令牌时也走完这条路，让断言自己去红，而不是把脚本崩掉
@@ -227,6 +221,16 @@ section('判定发生在入库之前');
 
 // 判定窗口只认「提交时刻 − 页面渲染时刻」的差，所以同一个令牌等过了窗口再提交即可
 await sleep(Math.max(0, tokenIssuedAt + 3300 - Date.now()));
+
+{
+  // 蜜罐这条必须等令牌过了窗口再提交：刚签发的令牌会被判定窗口先挡下，
+  // 那样即使蜜罐校验整个坏掉，断言照样是绿的——绿在了窗口上，不是蜜罐上。
+  const marker = mark('HONEY');
+  const res = await submit(submitAs(form, { trap: 'http://spam.example/', token: token0, marker }));
+  const verdict = blockedNow(res);
+  blocked.push(marker);
+  check('填了蜜罐：没有产生评论', verdict.ok, verdict.why);
+}
 
 section('正常填写的照旧');
 // 密码管理器把整个表单填满：姓名 / 邮箱 / 网址 / 正文都有值，蜜罐照样是空的
