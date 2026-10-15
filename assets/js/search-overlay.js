@@ -48,6 +48,9 @@
 		target.focus();
 	}
 
+	// 注意：展开后遮罩（z-index:100、铺满视口）会盖住整个头部，鼠标点在放大镜
+	// 上时命中的其实是遮罩，走的是下面那条 backdrop 分支。所以 isOpen() 分支
+	// 实际只有键盘（Tab + Enter）能走到。两条路径结果一样，都关闭，不加特殊处理。
 	trigger.addEventListener('click', function () {
 		if (isOpen()) {
 			close();
@@ -56,16 +59,42 @@
 		}
 	});
 
-	// 只认遮罩本身，点对话框内部不关
+	// 只认遮罩和关闭按钮，点对话框内部不关。用 closest 是为了让点击落在
+	// 它们内部的子元素上（比如按钮里的 svg）也算数。
 	overlay.addEventListener('click', function (event) {
-		if (event.target.hasAttribute('data-search-close')) {
+		if (event.target.closest('[data-search-close]')) {
 			close();
 		}
 	});
 
+	// Tab 必须锁在对话框内，否则 aria-modal="true" 就是在撒谎：它向读屏软件
+	// 承诺外部内容不可达，而实际上焦点会跑到模糊的背景里去。
+	function trapFocus(event) {
+		var items = overlay.querySelectorAll(
+			'a[href], button:not([disabled]), input:not([disabled]), select, textarea, [tabindex]:not([tabindex="-1"])'
+		);
+		if (!items.length) {
+			return;
+		}
+		var first = items[0];
+		var last = items[items.length - 1];
+		if (event.shiftKey && document.activeElement === first) {
+			event.preventDefault();
+			last.focus();
+		} else if (!event.shiftKey && document.activeElement === last) {
+			event.preventDefault();
+			first.focus();
+		}
+	}
+
 	document.addEventListener('keydown', function (event) {
-		if (event.key === 'Escape' && isOpen()) {
+		if (!isOpen()) {
+			return;
+		}
+		if (event.key === 'Escape') {
 			close();
+		} else if (event.key === 'Tab') {
+			trapFocus(event);
 		}
 	});
 })();

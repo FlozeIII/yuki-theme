@@ -50,6 +50,9 @@ $gongan = get_theme_mod( 'yuki_gongan_number', '' );
 <div class="yuki-search-overlay" id="yuki-search-overlay">
 	<div class="yuki-search-backdrop" data-search-close></div>
 	<div class="yuki-search-dialog" role="dialog" aria-modal="true" aria-label="<?php esc_attr_e( '搜索', 'yuki' ); ?>">
+		<button type="button" class="yuki-search-close" data-search-close aria-label="<?php esc_attr_e( '关闭', 'yuki' ); ?>">
+			<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+		</button>
 		<?php get_search_form(); ?>
 	</div>
 </div>

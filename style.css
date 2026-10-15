@@ -525,6 +525,28 @@ img { max-width: 100%; height: auto; display: block; }
 .yuki-search-dialog .yuki-search-field { padding: 14px 18px; font-size: 16px; }
 .yuki-search-dialog .yuki-btn { padding: 14px 24px; }
 
+/* 关闭按钮浮在搜索条上方，不下沉进条内，保持「长条」的完整 */
+.yuki-search-close {
+  position: absolute;
+  top: -44px;
+  right: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  cursor: pointer;
+  border: 1px solid var(--yuki-border);
+  border-radius: var(--yuki-radius-pill);
+  background: var(--yuki-card);
+  color: var(--yuki-muted-foreground);
+  transition: border-color 180ms ease, color 180ms ease;
+}
+.yuki-search-close:hover { border-color: var(--yuki-primary); color: var(--yuki-foreground); }
+.yuki-search-close:focus-visible { outline: 2px solid var(--yuki-ring); outline-offset: 2px; }
+.yuki-search-close svg { width: 14px; height: 14px; }
+
 body.yuki-search-locked { overflow: hidden; }
 
 @media (prefers-reduced-motion: reduce) {

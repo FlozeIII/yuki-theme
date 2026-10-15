@@ -167,12 +167,27 @@ function yuki_avatar_mirror_base() {
 			if ( '' === $custom ) {
 				return '';
 			}
-			$custom = trailingslashit( $custom );
-			// 只填域名时补上 /avatar/；已经带了就别重复拼成 /avatar/avatar/
-			if ( ! preg_match( '#/avatar/$#i', $custom ) ) {
-				$custom .= 'avatar/';
+
+			// 只取 scheme/host/port/path 重新拼，不能用 trailingslashit()：
+			// 地址带 query string 时它会把 '/' 拼到 '?' 之后，下面的 /avatar/
+			// 判断随之失效，拼出 .../avatar?token=abc/avatar/ 这种废地址。
+			// 代价是 query / fragment 会被丢掉——镜像地址必须把哈希拼成路径段，
+			// 本来也没有地方安放它们。
+			$parts = wp_parse_url( $custom );
+			if ( ! is_array( $parts ) || empty( $parts['host'] ) ) {
+				return '';
 			}
-			return $custom;
+
+			$path = isset( $parts['path'] ) ? rtrim( $parts['path'], '/' ) : '';
+			// 只填域名时补上 /avatar/；已经带了就别重复拼成 /avatar/avatar/
+			if ( ! preg_match( '#/avatar$#i', $path ) ) {
+				$path .= '/avatar';
+			}
+
+			return ( isset( $parts['scheme'] ) ? $parts['scheme'] : 'https' ) . '://'
+				. $parts['host']
+				. ( isset( $parts['port'] ) ? ':' . $parts['port'] : '' )
+				. $path . '/';
 
 		default:
 			return '';
@@ -198,9 +213,13 @@ function yuki_avatar_url( $url, $id_or_email, $args ) {
 	//   https://secure.gravatar.com/avatar/<hash>?s=96&d=mm&r=g
 	//   https://0.gravatar.com/avatar/<hash>
 	// 只换 host + /avatar/ 这一段。
-	$rewritten = preg_replace(
+	// 用 callback 而不是把 $base 直接当替换串：替换串里的 $1 / \1 会被
+	// preg_replace 当成反向引用吃掉，地址含 $ 的自定义镜像就会拼出废地址。
+	$rewritten = preg_replace_callback(
 		'#^https?://(?:[a-z0-9-]+\.)*gravatar\.com/avatar/#i',
-		$base,
+		static function () use ( $base ) {
+			return $base;
+		},
 		$url
 	);
 
@@ -225,10 +244,17 @@ function yuki_reading_time( $post_id = null ) {
 	$post_id = $post_id ? $post_id : get_the_ID();
 	$content = wp_strip_all_tags( get_post_field( 'post_content', $post_id ) );
 
+	// 正文含非法 UTF-8 时，带 /u 的正则会整体失败：preg_match_all 返回 false、
+	// preg_replace 返回 null，两个计数都归零，文章又被算成「1 分钟」。先清洗再数。
+	if ( ! mb_check_encoding( $content, 'UTF-8' ) ) {
+		$content = mb_convert_encoding( $content, 'UTF-8', 'UTF-8' );
+	}
+
 	// 中文（含日韩文字）按字符数计，其余按词数计
 	$cjk_pattern = '/\p{Han}|\p{Hiragana}|\p{Katakana}|\p{Hangul}/u';
 	$cjk         = (int) preg_match_all( $cjk_pattern, $content );
-	$words       = str_word_count( preg_replace( $cjk_pattern, ' ', $content ) );
+	$stripped    = preg_replace( $cjk_pattern, ' ', $content );
+	$words       = is_string( $stripped ) ? str_word_count( $stripped ) : 0;
 
 	// 中文约 300 字/分钟，英文约 200 词/分钟
 	$minutes = max( 1, (int) ceil( $cjk / 300 + $words / 200 ) );
