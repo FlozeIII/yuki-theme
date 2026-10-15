@@ -1,0 +1,51 @@
+# 操作系统
+.DS_Store
+._*
+.Trashes
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# 编辑器 / IDE
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+*.swp
+*~
+
+# 依赖
+node_modules/
+vendor/
+
+# 构建产物
+dist/
+build/
+.sass-cache/
+*.css.map
+*.js.map
+
+# 本地环境与密钥
+.env
+.env.*
+!.env.example
+wp-config.php
+wp-config-local.php
+
+# 仓库内跑本地调试站点时的 WordPress 核心目录
+/wordpress/
+/wp-admin/
+/wp-includes/
+/wp-content/uploads/
+/wp-content/cache/
+/wp-content/upgrade/
+
+# 日志与缓存
+*.log
+npm-debug.log*
+yarn-error.log
+.phpunit.result.cache
+
+# 打包产物（README 提到的安装用 zip）
+*.zip
