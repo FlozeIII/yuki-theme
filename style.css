@@ -365,6 +365,16 @@ img { max-width: 100%; height: auto; display: block; }
   font-size: 14px;
 }
 .yuki-comment-list .children { list-style: none; padding-left: 28px; margin-top: 16px; }
+/* 蜜罐字段：正常访客看不见也点不到，机器人却会顺手填上。
+   整块容器移出可视区域并裁掉内容——这样里面那个输入框无论被表单的通用输入样式
+   撑到多宽，也不会有东西露出来。 */
+.yuki-comment-trap {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
 .yuki-comment-form input[type="text"],
 .yuki-comment-form input[type="email"],
 .yuki-comment-form input[type="url"],

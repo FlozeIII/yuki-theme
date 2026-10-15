@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Yuki 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-15T12:54:44+00:00\n"
+"POT-Creation-Date: 2026-10-15T14:12:35+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -13,7 +13,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Domain: yuki\n"
 
-#: functions.php:237
+#: functions.php:263
 msgid "%d 分钟阅读"
 msgstr ""
 
@@ -79,6 +79,10 @@ msgstr ""
 
 #: search.php:21
 msgid "共找到 %d 篇文章"
+msgstr ""
+
+#: footer.php:53
+msgid "关闭"
 msgstr ""
 
 #: comments.php:37
@@ -179,6 +183,10 @@ msgstr ""
 
 #: index.php:37
 msgid "还没有文章，去后台发布第一篇吧。"
+msgstr ""
+
+#: functions.php:358
+msgid "这一栏请保持空白"
 msgstr ""
 
 #: archive.php:45

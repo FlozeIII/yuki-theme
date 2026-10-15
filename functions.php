@@ -271,3 +271,139 @@ function yuki_comment_form_defaults( $defaults ) {
 	return $defaults;
 }
 add_filter( 'comment_form_defaults', 'yuki_comment_form_defaults' );
+
+/* ---------------------------------------------
+ * 评论增强 · 防垃圾
+ *
+ * 表单里放两样对访客无感的东西：一个蜜罐字段、一个带本站签名的提交时间戳。
+ * 判定发生在评论入库之前——pre_comment_approved 返回 WP_Error 会让
+ * wp_new_comment() 就此短路（wp-includes/comment.php 里 wp_check_comment_data()
+ * 的文档写明了这一点），而 wp-comments-post.php 对不带 data 的 WP_Error
+ * 走 `exit;` 分支：不入库，也不回任何内容。
+ * --------------------------------------------- */
+
+/**
+ * 蜜罐字段名。刻意不带 name / email / url 这类自动填充词汇，免得被密码管理器顺手填上。
+ *
+ * @return string
+ */
+function yuki_comment_trap_field() {
+	return 'yuki_comment_note';
+}
+
+/**
+ * 时间戳令牌字段名。
+ *
+ * @return string
+ */
+function yuki_comment_token_field() {
+	return 'yuki_comment_token';
+}
+
+/**
+ * 给提交时刻签名。
+ *
+ * 用站点 salt 签名，别的站签不出、也就伪造不了。
+ *
+ * @param int|string $issued 提交时刻（Unix 时间戳）。
+ * @return string|false
+ */
+function yuki_comment_token_sign( $issued ) {
+	return hash_hmac( 'sha256', 'yuki-comment|' . $issued, wp_salt( 'nonce' ) );
+}
+
+/**
+ * 签发令牌：提交时刻 + 签名。
+ *
+ * 只设下限不设上界：站点可能开着页面缓存，访客拿到的令牌是缓存那次渲染签的，
+ * 签发时间早于他真正打开页面的时间，加上界会把缓存命中的访客全拦掉。
+ * 代价是同一个令牌可以反复用——它挡的是「随手填一个值」和「页面刚出来就提交」，
+ * 一个肯自己取页面、肯等三秒的脚本本来就挡不住，那种交给审核队列和黑名单。
+ *
+ * @return string 形如 1750000000|a1b2… 的令牌。
+ */
+function yuki_comment_token() {
+	$issued = time();
+
+	return $issued . '|' . yuki_comment_token_sign( $issued );
+}
+
+/**
+ * 令牌是否可信：格式对、签名对，而且已经放过判定窗口。
+ *
+ * @param mixed $token 表单提交上来的令牌。
+ * @return bool
+ */
+function yuki_comment_token_is_valid( $token ) {
+	if ( ! is_string( $token ) ) {
+		return false;
+	}
+
+	$parts = explode( '|', $token );
+	if ( 2 !== count( $parts ) || ! ctype_digit( $parts[0] ) ) {
+		return false;
+	}
+
+	if ( ! hash_equals( yuki_comment_token_sign( $parts[0] ), $parts[1] ) ) {
+		return false;
+	}
+
+	// 从表单渲染到提交短于 3 秒的，视作机器人
+	return ( time() - (int) $parts[0] ) >= 3;
+}
+
+/**
+ * 表单里的蜜罐与令牌。
+ *
+ * 挂在 comment_form 上，而不是 comment_form_after_fields：后者要等字段循环跑到最后一个
+ * 字段才触发，插件把 fields 清空时它就不触发了，那种站上所有访客都会因为「没带令牌」被拦掉。
+ */
+function yuki_comment_form_fields() {
+	?>
+	<p class="yuki-comment-trap" aria-hidden="true">
+		<label for="<?php echo esc_attr( yuki_comment_trap_field() ); ?>"><?php esc_html_e( '这一栏请保持空白', 'yuki' ); ?></label>
+		<input type="text" name="<?php echo esc_attr( yuki_comment_trap_field() ); ?>" id="<?php echo esc_attr( yuki_comment_trap_field() ); ?>" value="" tabindex="-1" autocomplete="off" />
+	</p>
+	<input type="hidden" name="<?php echo esc_attr( yuki_comment_token_field() ); ?>" value="<?php echo esc_attr( yuki_comment_token() ); ?>" />
+	<?php
+}
+add_action( 'comment_form', 'yuki_comment_form_fields' );
+
+/**
+ * 判定并挡在入库之前：填了蜜罐、令牌不对、或者页面刚渲染出来就提交的，一律按垃圾处理。
+ *
+ * 只判定「访客在评论表单里交上来的」那一种：蜜罐和令牌是一套表单协议，
+ * 没渲染过评论表单的调用路径（REST、XML-RPC、定时任务、命令行、导入脚本）手上
+ * 不该有令牌，也谈不上遵守它——按机器人处理只会把别处正常入库的评论静默吞掉。
+ * 这些路径上核心自己的审核、黑名单与频率限制照旧生效。
+ *
+ * 这里不校 nonce：WordPress 的评论表单本来就不带 nonce（wp-comments-post.php 不校），
+ * 硬加一个会让所有访客提交失败。取到的值一律先 wp_unslash，再按格式校验。
+ *
+ * @param int|string $approved 原本的审批状态。
+ * @return int|string|WP_Error 判定为机器人时返回不带 data 的 WP_Error。
+ */
+function yuki_comment_guard( $approved ) {
+	$is_form_post = 'POST' === ( $_SERVER['REQUEST_METHOD'] ?? '' )
+		&& ! defined( 'XMLRPC_REQUEST' )
+		&& ! defined( 'REST_REQUEST' )
+		&& ! wp_doing_cron();
+
+	if ( ! $is_form_post || is_user_logged_in() ) {
+		return $approved;
+	}
+
+	// 表单永远只会交上一个字符串；交来数组或别的东西本身就说明不是正常访客
+	$trap = $_POST[ yuki_comment_trap_field() ] ?? '';
+	if ( ! is_string( $trap ) || '' !== trim( wp_unslash( $trap ) ) ) {
+		return new WP_Error( 'yuki_comment_spam' );
+	}
+
+	$token = isset( $_POST[ yuki_comment_token_field() ] ) ? wp_unslash( $_POST[ yuki_comment_token_field() ] ) : '';
+	if ( ! yuki_comment_token_is_valid( $token ) ) {
+		return new WP_Error( 'yuki_comment_spam' );
+	}
+
+	return $approved;
+}
+add_filter( 'pre_comment_approved', 'yuki_comment_guard' );
