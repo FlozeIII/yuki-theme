@@ -350,6 +350,13 @@ img { max-width: 100%; height: auto; display: block; }
   color: var(--yuki-muted-foreground);
 }
 .yuki-widget .tagcloud a:hover { border-color: var(--yuki-primary); color: var(--yuki-primary-700); }
+.yuki-hitokoto {
+  margin: 0;
+  padding: 2px 0 2px 14px;
+  border-left: 3px solid var(--yuki-primary);
+}
+.yuki-hitokoto p { margin: 0; font-size: 14px; line-height: 1.8; color: var(--yuki-ink-2); }
+.yuki-hitokoto cite { display: block; margin-top: 8px; font-size: 12px; font-style: normal; color: var(--yuki-muted-foreground); }
 
 /* ============================================
    评论

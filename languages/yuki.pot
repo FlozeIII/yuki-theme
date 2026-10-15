@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Yuki 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-15T15:36:20+00:00\n"
+"POT-Creation-Date: 2026-10-15T16:01:48+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -55,8 +55,12 @@ msgid "Yuki 页脚设置"
 msgstr ""
 
 #. translators: %s: 站点名
-#: inc/comment-deletion.php:143
+#: inc/comment-deletion.php:160
 msgid "[%s] 需要的话，你可以删掉自己那条评论"
+msgstr ""
+
+#: sidebar.php:35
+msgid "一言"
 msgstr ""
 
 #: single.php:56
@@ -69,6 +73,10 @@ msgstr ""
 
 #: functions.php:174
 msgid "不使用（关闭说说）"
+msgstr ""
+
+#: functions.php:567
+msgid "世界很大，今天先走到这里。"
 msgstr ""
 
 #: functions.php:25
@@ -84,7 +92,7 @@ msgid "作者简介"
 msgstr ""
 
 #. translators: %s: 站点名 */ __( '[%s] 需要的话，你可以删掉自己那条评论', 'yuki' ), wp_specialchars_decode( (string) get_option( 'blogname' ), ENT_QUOTES ) ); $body = array( sprintf( /* translators: %s: 文章标题
-#: inc/comment-deletion.php:150
+#: inc/comment-deletion.php:167
 msgid "你在《%s》下留了一条评论："
 msgstr ""
 
@@ -116,7 +124,7 @@ msgstr ""
 msgid "写下你的想法…"
 msgstr ""
 
-#: sidebar.php:35
+#: sidebar.php:50
 msgid "分类"
 msgstr ""
 
@@ -124,11 +132,11 @@ msgstr ""
 msgid "切换主题"
 msgstr ""
 
-#: inc/comment-deletion.php:251
+#: inc/comment-deletion.php:268
 msgid "删除之后无法恢复。"
 msgstr ""
 
-#: inc/comment-deletion.php:202
+#: inc/comment-deletion.php:219
 msgid "删除这条评论？"
 msgstr ""
 
@@ -136,7 +144,7 @@ msgstr ""
 msgid "发表评论"
 msgstr ""
 
-#: inc/comment-deletion.php:265
+#: inc/comment-deletion.php:282
 msgid "回到站点首页"
 msgstr ""
 
@@ -152,16 +160,24 @@ msgstr ""
 msgid "头像来源"
 msgstr ""
 
-#: inc/comment-deletion.php:156
+#: inc/comment-deletion.php:173
 msgid "如果写错了想删掉，打开下面这个链接，确认之后就会删除。链接只能用一次，过期后失效。"
 msgstr ""
 
-#: inc/comment-deletion.php:262
+#: inc/comment-deletion.php:279
 msgid "它可能已经用过一次，或者已经过期了。想删的话，重新发一条评论即可拿到新链接。"
+msgstr ""
+
+#: functions.php:571
+msgid "安静下来，连呼吸都像在念一首诗。"
 msgstr ""
 
 #: functions.php:158
 msgid "承载说说的分类"
+msgstr ""
+
+#: functions.php:568
+msgid "把心事折成纸飞机，交给明天的风。"
 msgstr ""
 
 #: comments.php:38
@@ -181,22 +197,30 @@ msgid "搜索："
 msgstr ""
 
 #: functions.php:67
-msgid "放任意小工具即接管侧边栏；一个都不放则使用主题内置的默认小工具（作者简介、分类、标签云、热门文章）。"
+msgid "放任意小工具即接管侧边栏；一个都不放则使用主题内置的默认小工具（作者简介、一言、分类、标签云、热门文章）。"
 msgstr ""
 
 #: functions.php:65
 msgid "文章侧边栏"
 msgstr ""
 
-#: sidebar.php:81
+#: sidebar.php:96
 msgid "暂无数据"
+msgstr ""
+
+#: functions.php:566
+msgid "暮色四合的时候，连风都放慢了脚步。"
+msgstr ""
+
+#: functions.php:569
+msgid "月光落在窗台上，像一句没写完的诗。"
 msgstr ""
 
 #. Description of the theme
 msgid "极简 × 二次元风格 WordPress 博客主题。暖白底色 + 柔和堇紫主色，内置浅色/深色模式滑动开关，纵向文章列表，文章页带侧边栏与备案号占位。"
 msgstr ""
 
-#: sidebar.php:50
+#: sidebar.php:65
 msgid "标签云"
 msgstr ""
 
@@ -208,7 +232,7 @@ msgstr ""
 msgid "没有找到匹配的文章，换个关键词试试。"
 msgstr ""
 
-#: sidebar.php:62
+#: sidebar.php:77
 msgid "热门文章"
 msgstr ""
 
@@ -220,7 +244,7 @@ msgstr ""
 msgid "短碎片内容。这个分类里的文章不出现在首页与博客列表，只在自己的归档里。"
 msgstr ""
 
-#: inc/comment-deletion.php:256
+#: inc/comment-deletion.php:273
 msgid "确认删除"
 msgstr ""
 
@@ -244,7 +268,7 @@ msgstr ""
 msgid "订阅更新"
 msgstr ""
 
-#: inc/comment-deletion.php:203
+#: inc/comment-deletion.php:220
 msgid "评论已删除"
 msgstr ""
 
@@ -256,11 +280,15 @@ msgstr ""
 msgid "说说"
 msgstr ""
 
+#: functions.php:570
+msgid "路过人间，顺便看了看花开。"
+msgstr ""
+
 #: index.php:37
 msgid "还没有文章，去后台发布第一篇吧。"
 msgstr ""
 
-#: functions.php:548
+#: functions.php:678
 msgid "这一栏请保持空白"
 msgstr ""
 
@@ -272,7 +300,7 @@ msgstr ""
 msgid "这个归档下还没有文章。"
 msgstr ""
 
-#: inc/comment-deletion.php:204
+#: inc/comment-deletion.php:221
 msgid "这个链接已经无效了"
 msgstr ""
 
@@ -280,7 +308,7 @@ msgstr ""
 msgid "这个页面走失了"
 msgstr ""
 
-#: inc/comment-deletion.php:159
+#: inc/comment-deletion.php:176
 msgid "这封邮件是因为有人在站点评论时填了这个邮箱。不是你，忽略即可。"
 msgstr ""
 
@@ -292,7 +320,7 @@ msgstr ""
 msgid "这条评论正在等待审核。这是预览，审核通过后才会公开显示。"
 msgstr ""
 
-#: inc/comment-deletion.php:260
+#: inc/comment-deletion.php:277
 msgid "那条评论已经不在了。"
 msgstr ""
 
@@ -302,6 +330,10 @@ msgstr ""
 
 #: functions.php:140
 msgid "镜像站点地址，例如 https://mirror.example.cn，会拼成 地址/avatar/哈希；直接粘贴含 /avatar/ 的完整前缀也可以。仅在上一项选「自定义镜像」时生效。"
+msgstr ""
+
+#: functions.php:565
+msgid "雪落得很轻，像是怕吵醒这个下午。"
 msgstr ""
 
 #: footer.php:29

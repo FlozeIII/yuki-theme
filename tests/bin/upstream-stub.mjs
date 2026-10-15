@@ -4,7 +4,7 @@
 // 控制面刻意放在**文件**上而不是 HTTP 上：测试要能在 stub 整个死掉之后照样读得到
 // 命中次数、照样改得了状态，而这在「通过 stub 自己控制 stub」时是做不到的。
 //
-//   <var>/upstream/mode      ok | 500 | garbage（默认 ok）
+//   <var>/upstream/mode      ok | 500 | garbage | hang（默认 ok）
 //   <var>/upstream/body.txt  mode=ok 时返回的正文
 //   <var>/upstream/hits.log  每个上游请求追加一行：<ISO 时间> <方法> <路径>
 //
@@ -70,6 +70,18 @@ const server = http.createServer((req, res) => {
   if (current === 'garbage') {
     res.writeHead(200, { 'content-type': 'text/html; charset=utf-8' });
     return res.end(GARBAGE);
+  }
+
+  // 接住请求，然后什么都不回。
+  //
+  // 「上游超时」在本地只有这一种造法：把 stub 杀掉得到的是**连接被拒**——那是另一种
+  // 失败，快得很，验不出「取回不能拖慢页面」。这里让连接挂着，客户端只能自己按
+  // 超时收场，于是主题设的那个 timeout 才真的被测到。
+  //
+  // 兜底 60 秒后销毁连接：验收不回收的话，这一次请求的 socket 会挂到进程结束。
+  if (current === 'hang') {
+    res.setTimeout(60000, () => res.destroy());
+    return;
   }
 
   res.writeHead(200, { 'content-type': 'application/json; charset=utf-8' });

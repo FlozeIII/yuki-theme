@@ -32,6 +32,21 @@ $author_name = get_the_author();
 	</div>
 
 	<div class="yuki-widget">
+		<h3><?php esc_html_e( '一言', 'yuki' ); ?></h3>
+		<?php
+		// 取回与兜底都交给 yuki_hitokoto()，这里只管显示：上游给的东西（兜底句也一样）
+		// 一律 esc_html 之后再输出，第三方返回什么都不会变成页面上的标记。
+		$yuki_quote = yuki_hitokoto();
+		?>
+		<blockquote class="yuki-hitokoto">
+			<p><?php echo esc_html( $yuki_quote['text'] ); ?></p>
+			<?php if ( ! empty( $yuki_quote['source'] ) ) : ?>
+				<cite><?php echo esc_html( $yuki_quote['source'] ); ?></cite>
+			<?php endif; ?>
+		</blockquote>
+	</div>
+
+	<div class="yuki-widget">
 		<h3><?php esc_html_e( '分类', 'yuki' ); ?></h3>
 		<ul>
 			<?php

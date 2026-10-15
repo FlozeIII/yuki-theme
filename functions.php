@@ -64,7 +64,7 @@ function yuki_widgets_init() {
 	register_sidebar( array(
 		'name'          => __( '文章侧边栏', 'yuki' ),
 		'id'            => 'sidebar-single',
-		'description'   => __( '放任意小工具即接管侧边栏；一个都不放则使用主题内置的默认小工具（作者简介、分类、标签云、热门文章）。', 'yuki' ),
+		'description'   => __( '放任意小工具即接管侧边栏；一个都不放则使用主题内置的默认小工具（作者简介、一言、分类、标签云、热门文章）。', 'yuki' ),
 		'before_widget' => '<div id="%1$s" class="yuki-widget widget %2$s">',
 		'after_widget'  => '</div>',
 		'before_title'  => '<h3>',
@@ -446,6 +446,136 @@ function yuki_shuoshuo_activate() {
 	set_theme_mod( 'yuki_shuoshuo_category', $term_id );
 }
 add_action( 'after_switch_theme', 'yuki_shuoshuo_activate' );
+
+/* ---------------------------------------------
+ * 一言
+ *
+ * 站点上露出一句随机的话。取回在**服务端**做：访客的浏览器不碰第三方，
+ * 上游也只会被敲一次（结果缓存一小时）。
+ *
+ * 这是本主题唯一的**不自足功能**（见 CONTEXT.md）——离开上游就没内容，
+ * 所以兜底是必要条件而不是加分项：超时、非 2xx、返回的东西解析不出来，
+ * 一律退回主题自带的句子，页面上不会缺一块。
+ * --------------------------------------------- */
+
+/**
+ * 现在要显示的那句话。先看缓存，没有就取一次。
+ *
+ * 缓存一小时。**取回失败时把兜底句也缓存起来**（短一些，5 分钟）：不缓存的话，
+ * 上游每挂一次、访客每打开一个页面都要等一遍超时——「上游挂了页面也没明显变慢」
+ * 就成了空话。冷却期比成功时短得多，为的是上游恢复之后站点能自己回来。
+ *
+ * @return array{text:string,source:string}
+ */
+function yuki_hitokoto() {
+	$cached = get_transient( 'yuki_hitokoto' );
+
+	if ( is_array( $cached ) && isset( $cached['text'] ) && '' !== $cached['text'] ) {
+		return $cached;
+	}
+
+	$quote = yuki_hitokoto_fetch();
+
+	if ( '' === $quote['text'] ) {
+		$quote = yuki_hitokoto_fallback();
+		set_transient( 'yuki_hitokoto', $quote, 5 * MINUTE_IN_SECONDS );
+
+		return $quote;
+	}
+
+	set_transient( 'yuki_hitokoto', $quote, HOUR_IN_SECONDS );
+
+	return $quote;
+}
+
+/**
+ * 向上游要一句。
+ *
+ * 失败一律返回空 text，不抛错、也不返回 WP_Error：调用方只需要回答「拿到了没有」，
+ * 多一种失败形态就多一处要处理的分支，而它们在页面上是同一件事。
+ *
+ * 超时 2 秒。这一段在页面渲染路径上，不能按 WordPress 默认的 5 秒算——那个数值是
+ * 给「后台去取个东西」定的，不是给「访客在等这一页」定的。
+ *
+ * @return array{text:string,source:string}
+ */
+function yuki_hitokoto_fetch() {
+	$empty = array(
+		'text'   => '',
+		'source' => '',
+	);
+
+	$response = wp_remote_get(
+		'https://v1.hitokoto.cn/?encode=json&charset=utf-8',
+		array( 'timeout' => 2 )
+	);
+
+	if ( is_wp_error( $response ) || 200 !== (int) wp_remote_retrieve_response_code( $response ) ) {
+		return $empty;
+	}
+
+	$data = json_decode( wp_remote_retrieve_body( $response ), true );
+
+	if ( ! is_array( $data ) || ! isset( $data['hitokoto'] ) || ! is_string( $data['hitokoto'] ) ) {
+		return $empty;
+	}
+
+	$text = yuki_hitokoto_clean( $data['hitokoto'] );
+
+	if ( '' === $text ) {
+		return $empty;
+	}
+
+	return array(
+		'text'   => $text,
+		// 出处是一言的惯例（各站都带着显示），有就带上；没有就只显示句子
+		'source' => isset( $data['from'] ) && is_string( $data['from'] ) ? yuki_hitokoto_clean( $data['from'] ) : '',
+	);
+}
+
+/**
+ * 把上游给的字符串收拾成能显示的一行：控制字符换成空格、掐掉两端空白。
+ *
+ * **刻意不在这里剥标签。** 转义是输出那一端的事（`sidebar.php` 里的 `esc_html`）。
+ * 在入口先剥一道的话，输出处的转义就再也没有东西可验了——两边都做，
+ * 事后也分不清起作用的是哪一边。
+ *
+ * @param string $raw 上游给的原文。
+ * @return string
+ */
+function yuki_hitokoto_clean( $raw ) {
+	// 上游理应是 UTF-8（json_decode 不认别的），但带 /u 的正则在非法字节上
+	// 会整体返回 null，那就退回原串，别把整句话弄丢
+	$text = preg_replace( '/[\x00-\x1F\x7F]+/u', ' ', $raw );
+
+	return trim( is_string( $text ) ? $text : $raw );
+}
+
+/**
+ * 主题自带的那几句，上游不可用时随机取一句。
+ *
+ * **不依赖网络**，随主题一起发出去——spec 里「自带兜底」那条就落在这里。
+ *
+ * 句子是自己写的：现成的一言多半有版权归属，而这段代码要跟着主题分发出去。
+ *
+ * @return array{text:string,source:string}
+ */
+function yuki_hitokoto_fallback() {
+	$lines = array(
+		__( '雪落得很轻，像是怕吵醒这个下午。', 'yuki' ),
+		__( '暮色四合的时候，连风都放慢了脚步。', 'yuki' ),
+		__( '世界很大，今天先走到这里。', 'yuki' ),
+		__( '把心事折成纸飞机，交给明天的风。', 'yuki' ),
+		__( '月光落在窗台上，像一句没写完的诗。', 'yuki' ),
+		__( '路过人间，顺便看了看花开。', 'yuki' ),
+		__( '安静下来，连呼吸都像在念一首诗。', 'yuki' ),
+	);
+
+	return array(
+		'text'   => $lines[ array_rand( $lines ) ],
+		'source' => '',
+	);
+}
 
 /* ---------------------------------------------
  * 评论表单样式类
