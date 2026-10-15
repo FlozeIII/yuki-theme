@@ -501,7 +501,14 @@ img { max-width: 100%; height: auto; display: block; }
   transition: opacity 0.25s ease, visibility 0.25s;
 }
 .yuki-search-overlay.is-open { opacity: 1; visibility: visible; }
-.yuki-search-backdrop { position: absolute; inset: 0; background: rgba(45, 45, 53, 0.35); }
+/* 两件事分开：backdrop-filter 负责模糊页面本身，background 负责压暗 */
+.yuki-search-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(45, 45, 53, 0.35);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+}
 .dark .yuki-search-backdrop { background: rgba(0, 0, 0, 0.5); }
 .yuki-search-dialog {
   position: relative;
