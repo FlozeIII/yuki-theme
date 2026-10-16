@@ -860,11 +860,15 @@ function yuki_comment_flatten( $comments ) {
 			$depth++;
 		}
 
-		if ( $depth > 2 && $top_id !== $id ) {
-			yuki_comment_set_reply_target( $id, (int) $comment->comment_parent );
+		$true_parent    = (int) $comment->comment_parent;
+		$display_parent = yuki_comment_display_parent( $depth, $top_id, $true_parent );
+
+		// 该挂到别处去：记下它真正回的是谁，再把它挂到该去的地方
+		if ( $display_parent !== $true_parent ) {
+			yuki_comment_set_reply_target( $id, $true_parent );
 
 			$flattened                 = clone $comment;
-			$flattened->comment_parent = (string) $top_id;
+			$flattened->comment_parent = (string) $display_parent;
 			$out[]                     = $flattened;
 			continue;
 		}
@@ -929,7 +933,32 @@ function yuki_comment_list_args() {
 		'avatar_size' => 40,
 		// 自己渲染每条评论：层级压平之后还要标出「回复 @谁」，核心的印记里没有这个位置
 		'callback'    => 'yuki_comment_template',
+		// 回复的层数上限。列表走 wp_list_comments() 时这一步由它自己填；端点那边不走它
+		// （只渲染一条，见 inc/comment-submit.php），所以这里写明白——两边必须同值，
+		// 否则「这条还能不能回」在两条路上会不一样。
+		'max_depth'   => get_option( 'thread_comments' ) ? (int) get_option( 'thread_comments_depth' ) : -1,
 	);
+}
+
+/**
+ * 一条评论在**显示层级**里挂在谁下面。
+ *
+ * 「深于两层的回复压到第二层」这条规则就写在这一处，两个调用点都从这儿取：
+ *   - 列表渲染：那份压平（yuki_comment_flatten()），它按**当前这一页**的评论算出来的
+ *     层级喂进来；
+ *   - 端点：新交上来的那条回复该挂到谁下面（它手上只有数据库那一支，没有「页」）。
+ *
+ * @param int $depth       它真实的层级（顶层是 1）。
+ * @param int $top_id      它那一支的顶层祖先。
+ * @param int $true_parent 它真正回的那条。
+ * @return int 显示时的父评论 id；0 表示显示在最外面那一层。
+ */
+function yuki_comment_display_parent( $depth, $top_id, $true_parent ) {
+	if ( $depth > 2 ) {
+		return (int) $top_id;
+	}
+
+	return (int) $true_parent;
 }
 
 /**

@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Yuki 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-16T13:58:20+00:00\n"
+"POT-Creation-Date: 2026-10-16T16:06:25+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -100,7 +100,7 @@ msgstr ""
 msgid "你在《%s》下留了一条评论："
 msgstr ""
 
-#: functions.php:1010
+#: functions.php:1043
 msgid "你有 %s 条评论正在等待审核，通过之后才会公开显示。"
 msgstr ""
 
@@ -284,7 +284,7 @@ msgstr ""
 msgid "评论已删除"
 msgstr ""
 
-#: functions.php:1030
+#: functions.php:1063
 msgid "评论（%s）"
 msgstr ""
 

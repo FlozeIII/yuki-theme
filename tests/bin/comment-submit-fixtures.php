@@ -69,6 +69,23 @@ const YUKI_SUBMIT_KNOWN_EMAIL  = 'submit-known@example.test';
 /** 待审评论作者的邮箱。 */
 const YUKI_SUBMIT_PENDING_EMAIL = 'submit-pending@example.test';
 
+/**
+ * 一小段讨论：甲在最外面，乙回甲，丙回乙。
+ *
+ * 「回复落在被回复的那条下面」有三种情形，靠这三条才测得全：
+ *   - 回甲（它就在最外面）→ 新回复挂在甲下面；
+ *   - 回乙（它在第二层）→ 新回复的**真实**层级到了第三层，显示上被压到甲下面；
+ *   - 回丙（它自己就是被压到第二层的那条）→ 同理，还是挂到甲下面。
+ * 后两种必须标出「回复 @乙」「回复 @丙」——缩进说明不了它在回谁。
+ *
+ * 日期写死：列表按 comment_date_gmt 排，同秒插入的话先后就没有保证了。
+ */
+const YUKI_SUBMIT_THREAD = array(
+	'a' => array( 'author' => YUKI_SUBMIT_MARK . ' 甲', 'email' => 'submit-thread-a@example.test', 'date' => '2020-01-02 00:03:00' ),
+	'b' => array( 'author' => YUKI_SUBMIT_MARK . ' 乙', 'email' => 'submit-thread-b@example.test', 'date' => '2020-01-02 00:04:00' ),
+	'c' => array( 'author' => YUKI_SUBMIT_MARK . ' 丙', 'email' => 'submit-thread-c@example.test', 'date' => '2020-01-02 00:05:00' ),
+);
+
 function yuki_fx_emit( $data ) {
 	echo wp_json_encode( $data ), "\n";
 }
@@ -153,7 +170,65 @@ function yuki_fx_seed_comments( $post_id ) {
 	return array(
 		'known_id'   => (int) $known,
 		'pending_id' => (int) $pending,
+		'thread'     => yuki_fx_seed_thread( $post_id ),
 	);
+}
+
+/** 一小段讨论：甲 → 乙（回甲）→ 丙（回乙），外加一对「父评论还在待审」的。 */
+function yuki_fx_seed_thread( $post_id ) {
+	$ids    = array();
+	$parent = 0;
+
+	foreach ( YUKI_SUBMIT_THREAD as $key => $who ) {
+		$ids[ $key ] = (int) wp_insert_comment( array(
+			'comment_post_ID'      => $post_id,
+			'comment_author'       => $who['author'],
+			'comment_author_email' => $who['email'],
+			'comment_content'      => sprintf( '%s 第 %s 条。', YUKI_SUBMIT_MARK, strtoupper( $key ) ),
+			'comment_approved'     => 1,
+			'comment_parent'       => $parent,
+			'comment_author_IP'    => '127.0.0.1',
+			'comment_date'         => $who['date'],
+			'comment_date_gmt'     => $who['date'],
+		) );
+
+		$parent = $ids[ $key ];
+	}
+
+	/*
+	 * 一条**已公开**的回复，它的父评论还在待审——而且待审的不是本人的。
+	 *
+	 * 这一对是给「两条路算出来的层级必须一致」用的：列表查询按 include_unapproved 取评论，
+	 * 陌生访客的那次查询里没有那条待审的父评论，所以这条已公开的回复在页面上被当成最外面
+	 * 那一层；端点那边要是顺着数据库一路上溯，就会算出一个页面根本不会用的层级。
+	 */
+	$held = (int) wp_insert_comment( array(
+		'comment_post_ID'      => $post_id,
+		'comment_author'       => YUKI_SUBMIT_MARK . ' 待审的父评论',
+		'comment_author_email' => 'submit-thread-held@example.test',
+		'comment_content'      => YUKI_SUBMIT_MARK . ' 这条还在待审，陌生人看不见它。',
+		'comment_approved'     => 0,
+		'comment_parent'       => 0,
+		'comment_author_IP'    => '127.0.0.1',
+		'comment_date'         => '2020-01-02 00:06:00',
+		'comment_date_gmt'     => '2020-01-02 00:06:00',
+	) );
+
+	$ids['orphan'] = (int) wp_insert_comment( array(
+		'comment_post_ID'      => $post_id,
+		'comment_author'       => YUKI_SUBMIT_MARK . ' 待审者的回复',
+		'comment_author_email' => 'submit-thread-orphan@example.test',
+		'comment_content'      => YUKI_SUBMIT_MARK . ' 回上一条，但那条还在待审。',
+		'comment_approved'     => 1,
+		'comment_parent'       => $held,
+		'comment_author_IP'    => '127.0.0.1',
+		'comment_date'         => '2020-01-02 00:07:00',
+		'comment_date_gmt'     => '2020-01-02 00:07:00',
+	) );
+
+	$ids['orphan_parent'] = $held;
+
+	return $ids;
 }
 
 /**
@@ -234,6 +309,12 @@ switch ( $yuki_fx_cmd ) {
 		$state['removed_previous'] = $removed;
 		$state['known_id']         = $seeded['known_id'];
 		$state['pending_id']       = $seeded['pending_id'];
+		$state['thread']           = $seeded['thread'];
+		$state['thread_authors']   = array(
+			'a' => YUKI_SUBMIT_THREAD['a']['author'],
+			'b' => YUKI_SUBMIT_THREAD['b']['author'],
+			'c' => YUKI_SUBMIT_THREAD['c']['author'],
+		);
 		yuki_fx_emit( $state );
 		break;
 

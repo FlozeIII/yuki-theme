@@ -89,33 +89,132 @@
   }
 
   /**
-   * 把新评论贴到列表里。
+   * 把新评论贴到列表里，**贴到它该在的那一层**。
    *
-   * 回复的落位是下一件工单的事，这里一律贴到列表末尾——顶层评论本来就该在那儿。
-   * 列表还不存在时（这篇文章还没有评论）连列表一起补上，位置与没脚本时一致：表单前面。
+   * 该挂在谁下面由服务端算好（`data.parent`，0 表示最外面那一层）——「深于两层的回复
+   * 压到第二层」那条规则只有服务端一处，这里不重新判一遍：各判一遍迟早会判岔，
+   * 而判岔的时候两边看起来都对。
+   *
+   * 返回贴进去的那一个节点（后面要拿它做滚动与重新挂事件）。
    */
-  function insert(html) {
+  function insert(html, parentId) {
     if (!html) {
+      return null;
+    }
+
+    var holder = null;
+
+    if (parentId) {
+      var parent = document.getElementById('comment-' + parentId);
+
+      if (parent) {
+        holder = parent.querySelector(':scope > ul.children');
+
+        if (!holder) {
+          holder = document.createElement('ul');
+          holder.className = 'children';
+          parent.appendChild(holder);
+          // 有回复的那条在服务端渲染时会多一枚 parent 类，这里补上，
+          // 免得同一条评论在「刚回复完」与「刷新之后」长得不一样
+          parent.classList.add('parent');
+        }
+      }
+    }
+
+    if (!holder) {
+      holder = section.querySelector('.yuki-comment-list');
+
+      if (!holder) {
+        holder = document.createElement('ul');
+        holder.className = 'yuki-comment-list';
+
+        var anchor = document.getElementById('respond') || form;
+        anchor.parentNode.insertBefore(holder, anchor);
+      }
+    }
+
+    holder.insertAdjacentHTML('beforeend', html);
+
+    /*
+     * 新贴进来的那一段里也有「回复」入口。**不用自己去给它挂事件**：核心的 comment-reply
+     * 在 document.body 上装了一个 MutationObserver（childList + subtree），新加的节点它会
+     * 自己认出来并绑上（comment-reply.js 的 observeChanges()／handleChanges()，那句注释
+     * 写着「comments loaded late」就是这件事）。
+     *
+     * 这里曾经手动调过一次 `window.addComment.init(inserted)`——理由是「新来的它不认得」，
+     * 那句是错的。而且每调一次它都会把取消链接与表单的键盘处理再绑一层（那两处不按 context
+     * 过滤），白攒听众。
+     */
+    return holder.lastElementChild;
+  }
+
+  /**
+   * 新评论不在视野里才把它带进视野，已经在视野里就什么都不做。
+   *
+   * 用最小距离（`block: 'nearest'`）。**别照搬没脚本那条路的跳转**：原生会滚是因为整页
+   * 重载之后人已经不知道滚到哪儿了，那是重载的补偿，不是设计意图。
+   */
+  function reveal(element) {
+    if (!element) {
       return;
     }
 
-    var list = section.querySelector('.yuki-comment-list');
+    var box = element.getBoundingClientRect();
+    var height = window.innerHeight || document.documentElement.clientHeight;
 
-    if (!list) {
-      list = document.createElement('ul');
-      list.className = 'yuki-comment-list';
-
-      var anchor = document.getElementById('respond') || form;
-      anchor.parentNode.insertBefore(list, anchor);
+    if (box.top >= 0 && box.bottom <= height) {
+      return;
     }
 
-    list.insertAdjacentHTML('beforeend', html);
+    element.scrollIntoView({ block: 'nearest' });
+  }
+
+  /**
+   * 告诉核心的 comment-reply「这次回复结束了」——让它自己把表单搬回原处、把父评论清掉。
+   *
+   * 它没有对外开一个 `cancelReply()`，取消就是那个取消链接上的点击处理（锚点的默认行为
+   * 已经被它拦掉了，所以点它不会跳走）。**没装上那个脚本时不能点**：那时没人拦默认行为，
+   * 点一下会整页跳走——宁可不回位，也不要为这点事重载。
+   */
+  function endReply() {
+    var parent = form.querySelector('[name="comment_parent"]');
+
+    // 本来就不在回复状态，没有要收的东西
+    if (!parent || !parent.value || '0' === parent.value) {
+      return;
+    }
+
+    /*
+     * 表单被搬进评论里的时候，回位交给核心：它搬的时候在页尾留了一个占位元素，取消链接上
+     * 的点击处理认得它，会把自己搬回去、把父评论清掉、把标题还原。
+     */
+    if (window.addComment && window.addComment.moveForm && form.closest('li[id^="comment-"]')) {
+      var cancel = document.getElementById('cancel-comment-reply-link');
+
+      if (cancel) {
+        cancel.click();
+        return;
+      }
+    }
+
+    /*
+     * 没搬过的时候，核心那套取消**没有落点**——它要的占位元素根本不存在，点取消链接也不会有
+     * 反应。这条路上「这次回复结束了」只剩一件事，而它是必须做的：**把父评论清掉**。
+     *
+     * 什么时候会走到这儿：从 `?replytocom=N` 进来。那是核心给没脚本的人留的那条路（回复入口
+     * 的 href 就是它），父评论由服务端填好、表单仍在页尾，核心的 comment-reply 从头到尾没参与。
+     * 不清的话，下一条评论会**悄悄又变成一条回复**，而页面上一点异样都看不出来。
+     *
+     * 代价说清楚：标题会停在「回复 X」。原生那条路是靠跳转回评论页把它带走的，这里没有跳转。
+     * 那是纯外观，而且只在「从 ?replytocom 进来」这一种情形里出现，不值得为它去改核心的标题节点。
+     */
+    parent.value = '0';
   }
 
   /** 落定之后的收尾。 */
   function accept(data) {
     say('');
-    insert(data.html);
+    var inserted = insert(data.html, data.parent || 0);
     // 先补列表再补标题：标题要插在列表前面，而列表可能刚由上一行建出来
     paintHeading(data.heading);
     paintNotice(data.notice || '');
@@ -124,22 +223,36 @@
     if (textarea) {
       textarea.value = '';
     }
+
+    endReply();
+
+    /*
+     * 滚不滚，要**等布局落定之后**再决定。
+     *
+     * 上面两件事都改动页面高度：贴进来一条评论、把表单从评论里搬回页尾。位置变了，
+     * 浏览器还会在下一帧做一次滚动锚定的补偿——当场量出来的位置，等补偿完就不作数了。
+     * 量早了的后果是实打实的：这一件实际踩过——回复被判定成「本来就看得见」于是不滚，
+     * 而表单搬回页尾之后它已经在视野外面了。
+     *
+     * 两帧：第一帧让布局与锚定落下来，第二帧再量、再滚。
+     */
+    var afterLayout = function (fn) {
+      if (!window.requestAnimationFrame) {
+        fn();
+        return;
+      }
+
+      window.requestAnimationFrame(function () {
+        window.requestAnimationFrame(fn);
+      });
+    };
+
+    afterLayout(function () {
+      reveal(inserted);
+    });
   }
 
   form.addEventListener('submit', function (event) {
-    /*
-     * 只接管顶层评论。
-     *
-     * 回复要落到被回复的那条下面，那是下一件工单的事；在那之前让它照原样整页提交——
-     * 今天那条路总是对的，别把它弄差。回复表单是核心的 comment-reply 脚本搬过来的，
-     * 所以这里看的是表单里那个隐藏字段，而不是「表单现在在哪儿」。
-     */
-    var parent = form.querySelector('[name="comment_parent"]');
-
-    if (parent && parent.value && '0' !== parent.value) {
-      return;
-    }
-
     event.preventDefault();
 
     say('');

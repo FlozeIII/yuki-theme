@@ -41,6 +41,22 @@ if ( ! defined( 'ABSPATH' ) ) {
  * nonce（wp-comments-post.php 不校），而开着页面缓存的站上，硬加一个只会让访客莫名
  * 其妙地失败。说清楚这道门挡不住什么：它挡的是手滑与刷新，挡不住刻意绕。
  *
+ * 收下了就回 200 与这几样（脚本照着它把结果画出来）：
+ *
+ * ```
+ * {
+ *   id:       落定的评论 id
+ *   parent:   它该挂在谁下面（**显示层级**上的父评论 id，0 表示最外面那一层）
+ *   approved: 已公开还是还在待审
+ *   html:     那一条的 HTML，与列表里其它评论出自同一个模板
+ *   heading:  列表上方那句「评论（N）」
+ *   notice:   列表上方那句待审提示；这位访客没有待审评论时是空串
+ * }
+ * ```
+ *
+ * 收不下就回 4xx 与 `{ code, message }`；message 为空表示「服务端什么也不说」，
+ * 脚本只把表单退回去（见 yuki_comment_submit_error()）。
+ *
  * @param WP_REST_Request $request 请求；字段全在 $_POST 里，这个对象上没有东西要读。
  * @return WP_REST_Response|WP_Error
  */
@@ -92,10 +108,37 @@ function yuki_comment_submit_endpoint( $request ) {
 	// 而不是这一笔请求带着的 cookie——新访客的第一笔提交还没有 cookie 可读。
 	$notice_email = is_user_logged_in() ? '' : strtolower( (string) $result->comment_author_email );
 
+	/*
+	 * 这条该挂在谁下面、算第几层，**服务端说了算**。
+	 *
+	 * 脚本不做第二遍判断：「深于两层的回复压到第二层」这条规则只在一处写着
+	 * （functions.php 的 yuki_comment_display_parent()），各判一遍迟早会判岔，
+	 * 而判岔的时候两边看起来都对。
+	 */
+	$place = yuki_comment_place( $result, (string) $result->comment_author_email );
+
+	/*
+	 * 还有一种「收了但永远显示不出来」的结果：**它那一支在页面上会被整支丢掉**。
+	 *
+	 * 开了嵌套讨论时，comments_template() 在把评论交给 walker 之前会按「最外面那一层 +
+	 * 各自的子孙」重建一次树（comment-template.php:1461 把 hierarchical 设成 threaded，
+	 * 1561-1576 那一节做重建，子评论是另外查的）。所以一条评论只要有一个祖先不在同一次
+	 * 可见集合里——待审且不是本人的、或者进了回收站——它那一支就整个不在列表里。
+	 *
+	 * 这种回复是能提交上来的（父评论已公开，核心那道「不能回待审评论」拦不住），但它
+	 * **永远不会出现在页面上**：原生那条路此时跳到一个不显示它的地址上去，访客白跳一趟。
+	 * 处理办法与上面那条被核心判成垃圾的一样：如实说「没收下」，脚本把表单退回去，
+	 * 写的东西还在手里。
+	 */
+	if ( $place['cut'] ) {
+		return yuki_comment_submit_error( new WP_Error( 'yuki_comment_rejected' ) );
+	}
+
 	return rest_ensure_response( array(
 		'id'       => (int) $result->comment_ID,
+		'parent'   => $place['parent'],
 		'approved' => '1' === (string) $result->comment_approved,
-		'html'     => yuki_comment_render_one( $result ),
+		'html'     => yuki_comment_render_one( $result, $place['depth'] ),
 		'heading'  => yuki_comment_count_heading_html( $post_id ),
 		'notice'   => yuki_comment_pending_notice_html( yuki_comment_pending_count( $post_id, $notice_email ) ),
 	) );
@@ -151,9 +194,12 @@ function yuki_comment_submit_error( WP_Error $error ) {
  * 而访客一刷新就变了样。
  *
  * @param WP_Comment $comment 刚落定的评论。
+ * @param int        $depth   它在显示层级里的层数（顶层是 1）——见 yuki_comment_place()。
  * @return string
  */
-function yuki_comment_render_one( $comment ) {
+function yuki_comment_render_one( $comment, $depth = 1 ) {
+	$args = yuki_comment_list_args();
+
 	$as_author = static function () use ( $comment ) {
 		return array(
 			'comment_author'       => $comment->comment_author,
@@ -164,11 +210,157 @@ function yuki_comment_render_one( $comment ) {
 
 	add_filter( 'wp_get_current_commenter', $as_author );
 
-	$html = wp_list_comments( yuki_comment_list_args() + array( 'echo' => false ), array( $comment ) );
+	/*
+	 * 直接调 walker 的那一步，而不是 wp_list_comments()。
+	 *
+	 * 理由只有一条，但它足够硬：**「它挂在第几层」在这里得是入口参数**。`depth` 只有在走
+	 * 一整个列表时才推得出来，而这一条该在第几层，服务端已经算好了（见 yuki_comment_place()）。
+	 *
+	 * 交给 `wp_list_comments()` 会怎样：它先按 `comment_parent` 把元素分成两摞
+	 * （class-wp-walker.php:221-227），父评论不在数组里的那条落进 `$children_elements`；
+	 * 那一摞最后会走「孤儿」那条路被画出来（同文件 399-406，进去时是 `$depth = 0`）。
+	 * 所以**画是画得出**，只是印成最外面那一层——回复会变成 `depth-1`，缩进与「回复 @谁」
+	 * 都对不上。（这里先前被我写成「什么也不画」，是错的；照那句看代码的人会以为可以换回去。）
+	 *
+	 * `start_el()` 收到之后会**先自增**再写进全局 `$comment_depth`
+	 * （class-walker-comment.php:177-178），而 `comment_class()` 读的就是那个全局
+	 * （comment-template.php:577）——所以上面传 `$depth - 1`。
+	 */
+	$walker   = new Walker_Comment();
+	$output   = '';
+	$children = array();
+
+	$walker->display_element( $comment, $children, (int) $args['max_depth'], max( 0, (int) $depth - 1 ), array( $args ), $output );
 
 	remove_filter( 'wp_get_current_commenter', $as_author );
 
-	return (string) $html;
+	return trim( (string) $output );
+}
+
+/**
+ * 这一条会不会出现在列表页上（就这位访客而言）。
+ *
+ * 与 `comments_template()` 取评论的那一套对齐：已公开的都在；没公开的只有**本人的**那份
+ * 在（核心靠 `include_unapproved` 做这件事）；垃圾与回收站里的都不在。
+ *
+ * @param WP_Comment $comment      评论。
+ * @param string     $viewer_email 这次提交的人。
+ * @return bool
+ */
+function yuki_comment_visible_on_page( $comment, $viewer_email ) {
+	if ( '1' === (string) $comment->comment_approved ) {
+		return true;
+	}
+
+	// 垃圾与回收站里的：谁也不在页面上看见
+	if ( '0' !== (string) $comment->comment_approved ) {
+		return false;
+	}
+
+	if ( (int) $comment->user_id > 0 && (int) $comment->user_id === get_current_user_id() ) {
+		return true;
+	}
+
+	return '' !== $viewer_email
+		&& strtolower( (string) $comment->comment_author_email ) === strtolower( $viewer_email );
+}
+
+/**
+ * 一条评论在**真实层级**里的深度（顶层是 1）与它那一支的顶层祖先 id。
+ *
+ * 走数据库那一支，但**只在「这位访客在页面上看得见的那些」里走**。
+ *
+ * 这一条不是洁癖：列表那边压平时手上只有当前这一页查出来的评论（`comments_array` 给什么
+ * 就压什么），一条评论的父评论要是没在那次查询里——待审且不是本人的、在回收站里的、
+ * 或者分页分到别页去了——压平就在那儿停住，把它当成最外面那一层。这里必须停在同一处：
+ * 走过头会算出一个页面根本不会用的层级，新回复于是被挂到刷新之后又不在那儿的位置上。
+ * 这一件实际踩过（一条已公开的回复，它的父评论还在待审）。
+ *
+ * 坏数据里的自环与互环用 $seen 兜住（那也算「断了」）。
+ *
+ * `cut` 是「走到一半走不下去了」：还有父评论，但那位访客在页面上看不见它（或者是条坏数据）。
+ * 这件事得单独报出来——那意味着这条评论**永远不会出现在页面上**，见下方的说明。
+ *
+ * @param int    $comment_id   评论 id。
+ * @param string $viewer_email 这次提交的人，用来判断「待审的这条是不是他自己的」。
+ * @return array{depth:int,top:int,cut:bool}
+ */
+function yuki_comment_true_ancestry( $comment_id, $viewer_email = '' ) {
+	$id    = (int) $comment_id;
+	$depth = 1;
+	$top   = $id;
+	$cut   = false;
+	$seen  = array( $id => true );
+
+	$current = get_comment( $id );
+
+	while ( $current instanceof WP_Comment && $current->comment_parent ) {
+		$parent_id = (int) $current->comment_parent;
+
+		if ( isset( $seen[ $parent_id ] ) ) {
+			$cut = true;
+			break;
+		}
+
+		$parent = get_comment( $parent_id );
+
+		if ( ! $parent instanceof WP_Comment || ! yuki_comment_visible_on_page( $parent, $viewer_email ) ) {
+			$cut = true;
+			break;
+		}
+
+		$seen[ $parent_id ] = true;
+		$current            = $parent;
+		$top                = $parent_id;
+		$depth++;
+	}
+
+	return array(
+		'depth' => $depth,
+		'top'   => $top,
+		'cut'   => $cut,
+	);
+}
+
+/**
+ * 刚落定的这条评论在**显示层级**里该挂到谁下面、算第几层。
+ *
+ * 判断交给 yuki_comment_display_parent()——「深于两层压到第二层」那条规则与列表压平共用
+ * 一份；这里只负责把它需要的三个数（真实层级、顶层祖先、真正回的那条）数出来。
+ *
+ * @param WP_Comment $comment      刚落定的评论。
+ * @param string     $viewer_email 这次提交的人；判断「待审的祖先他自己看不看得见」要用。
+ * @return array{parent:int,depth:int,cut:bool} parent 是显示时的父评论 id（0 表示最外面那一层）；
+ *                                              cut 为真表示这条评论页面根本不会显示（见端点里的处理）。
+ */
+function yuki_comment_place( $comment, $viewer_email = '' ) {
+	$top_only = array(
+		'parent' => 0,
+		'depth'  => 1,
+		'cut'    => false,
+	);
+
+	// 没开嵌套讨论：列表那边一律平铺（max_depth 是 -1），这里也得跟着平铺，
+	// 不然就地画出来的那一条会比刷新之后的层级深一层。
+	if ( ! get_option( 'thread_comments' ) ) {
+		return $top_only;
+	}
+
+	$parent = (int) $comment->comment_parent;
+
+	if ( ! $parent ) {
+		return $top_only;
+	}
+
+	$ancestry = yuki_comment_true_ancestry( $parent, $viewer_email );
+
+	return array(
+		// 新评论的真实层级 = 它回的那条的真实层级 + 1
+		'parent' => yuki_comment_display_parent( $ancestry['depth'] + 1, $ancestry['top'], $parent ),
+		// 显示层级最多两层：挂上去的那条总在最外面那一层，所以新评论总在第二层
+		'depth'  => 2,
+		'cut'    => $ancestry['cut'],
+	);
 }
 
 /**
@@ -200,10 +392,20 @@ function yuki_comment_submit_script() {
 		return;
 	}
 
+	/*
+	 * 依赖里带上核心的 `comment-reply`。
+	 *
+	 * 主题原来没有排它：回复入口是 html5 形状的锚点（带 data-*、没有 onclick），而核心只让
+	 * **区块**与 theme-compat 去排这个脚本——经典主题不排。于是点「回复」以前是整页跳到
+	 * `?replytocom=N`，由核心在服务端把表单的父评论填好（那条路现在仍然通：锚点的 href 没动，
+	 * 没脚本时照旧）。
+	 *
+	 * 这一件非带上它不可：**表单得先搬到被回复的那条下面**，「提交完再回到原位」才说得通。
+	 */
 	wp_enqueue_script(
 		'yuki-comment-submit',
 		get_template_directory_uri() . '/assets/js/comment-submit.js',
-		array(),
+		array( 'comment-reply' ),
 		'1.0.0',
 		true
 	);

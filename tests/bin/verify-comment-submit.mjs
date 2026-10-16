@@ -497,7 +497,107 @@ check(
   `待审：${replyToHeld.status} ${JSON.stringify(replyToHeld.json).slice(0, 100)} / 不存在：${replyToMissing.status} ${JSON.stringify(replyToMissing.json).slice(0, 100)}`,
 );
 
-/* ================= 6. 两条路吐出同一个结果 ================= */
+/* ================= 6. 回复落在被回复的那条下面 ================= */
+
+section('回复的落位');
+
+/*
+ * 新回复该挂在谁下面，由**服务端**算好告诉脚本——「深于两层的回复压到第二层」这条规则
+ * 只在 functions.php 里写着一份，脚本不做第二遍判断（各判一遍迟早会判岔，而两边看起来都对）。
+ *
+ * 三种情形都要走到：
+ *   - 回最外面那条（回头客）→ 就挂在它下面；
+ *   - 回乙（它在第二层）→ 新回复的真实层级到了第三层，显示上被压到甲下面；
+ *   - 回丙（它自己就是被压到第二层的那条）→ 同理，还是挂到甲下面。
+ */
+const replyTo = (targetId, label) => viaEndpoint(postUrl, endpoint, {
+  comment: `${MARK} 回复 ${label} ${RUN}`,
+  author: `${MARK} 回复者`,
+  email: `submit-reply-${RUN}-${label}@example.test`,
+  consent: true,
+  extraFields: { comment_parent: String(targetId) },
+});
+
+const replyK = await replyTo(setup.known_id, 'k');
+const replyB = await replyTo(setup.thread.b, 'b');
+const replyC = await replyTo(setup.thread.c, 'c');
+
+check(
+  '三条回复都收下了',
+  [replyK, replyB, replyC].every((r) => r.status === 200),
+  [replyK, replyB, replyC].map(describe).join(' ／ '),
+);
+
+check(
+  '回最外面那条：就落在它下面',
+  replyK.json?.parent === setup.known_id,
+  `parent=${replyK.json?.parent}，本该是 ${setup.known_id}`,
+);
+check(
+  '回第二层那条：落到它那一支最外面那条下面',
+  replyB.json?.parent === setup.thread.a,
+  `parent=${replyB.json?.parent}，本该是 ${setup.thread.a}（乙的真实层级到了第三层）`,
+);
+check(
+  '回被压下来的那条：同样落到最外面那条下面',
+  replyC.json?.parent === setup.thread.a,
+  `parent=${replyC.json?.parent}，本该是 ${setup.thread.a}`,
+);
+
+const fragmentOf = (res) => String(res.json?.html || '');
+
+check(
+  '回话里那一段只有新的一条（没把「挂上去的那条」也一起带出来）',
+  (fragmentOf(replyB).match(/<li\b/g) || []).length === 1
+    && fragmentOf(replyB).indexOf(`<li id="comment-${replyB.json?.id}"`) >= 0,
+  `里面 ${(fragmentOf(replyB).match(/<li\b/g) || []).length} 个 <li>：${fragmentOf(replyB).slice(0, 140)}`,
+);
+check('它带着第二层的印记', /depth-2/.test(fragmentOf(replyB)), fragmentOf(replyB).slice(0, 140));
+check(
+  '它标着「回复 @谁」',
+  /yuki-comment-reply-to/.test(fragmentOf(replyB)) && fragmentOf(replyB).includes(setup.thread_authors.b),
+  fragmentOf(replyB).slice(0, 200),
+);
+check(
+  '标的是它**真正**回的那条（乙），不是它挂上去的那条（甲）',
+  !fragmentOf(replyB).includes(setup.thread_authors.a),
+  fragmentOf(replyB).slice(0, 200),
+);
+check(
+  '回丙那条标的是丙',
+  fragmentOf(replyC).includes(setup.thread_authors.c),
+  fragmentOf(replyC).slice(0, 200),
+);
+check(
+  '回最外面那条标的是回头客，且也是第二层的印记',
+  fragmentOf(replyK).includes(setup.known_author) && /depth-2/.test(fragmentOf(replyK)),
+  fragmentOf(replyK).slice(0, 200),
+);
+
+/*
+ * 一条**已公开**的回复，它的父评论还在待审（而且不是本人的）。
+ *
+ * 开了嵌套讨论时，comments_template() 交给 walker 之前会按「最外面那一层 + 各自的子孙」
+ * 重建一次树，子评论是另外查的（comment-template.php:1561-1576）。这条的父评论不在那次
+ * 可见集合里，所以**这一支整支都不在列表里**——它根本不上页面。
+ *
+ * 于是「回它」这件事本身就该被如实拒掉：收下来是一条永远显示不出来的评论（原生那条路
+ * 是跳到一个不显示它的页面上去）。与「核心判成垃圾」那一条同样处理：话留空，表单退回。
+ */
+const replyToOrphan = await replyTo(setup.thread.orphan, 'orphan');
+
+check(
+  '回一条页面根本不会显示的评论：不收下',
+  replyToOrphan.status >= 400,
+  `parent=${replyToOrphan.json?.parent}，回话：${JSON.stringify(replyToOrphan.json).slice(0, 120)}`,
+);
+check(
+  '而且什么也不多说',
+  !!replyToOrphan.json && !replyToOrphan.json.message,
+  `回话：${JSON.stringify(replyToOrphan.json).slice(0, 140)}`,
+);
+
+/* ================= 7. 两条路吐出同一个结果 ================= */
 
 section('两条路吐出同一个结果');
 
@@ -554,7 +654,7 @@ check(
     + ` ／ 表单：${cmpNative.setCookies.map((c) => String(c).split(';')[0]).join(' | ') || '(无)'}`,
 );
 
-/* ================= 7. 无 JS 那条路照旧 ================= */
+/* ================= 8. 无 JS 那条路照旧 ================= */
 
 section('无 JS 那条路');
 
@@ -631,7 +731,7 @@ check(
   '表单协议字段不见了',
 );
 
-/* ================= 8. 别的入口不受影响 ================= */
+/* ================= 9. 别的入口不受影响 ================= */
 
 section('别的入口');
 
@@ -667,7 +767,7 @@ check(
   JSON.stringify(imported).slice(0, 160),
 );
 
-/* ================= 9. 真浏览器：页面不动，评论就地出现 ================= */
+/* ================= 10. 真浏览器 ================= */
 
 section('真浏览器');
 
@@ -754,7 +854,7 @@ let browser = null;
 try {
   browser = await launch();
 
-  /* ---- 9a. 待审那条：就地出现、页面没动、提示跟着加一 ---- */
+  /* ---- 10a. 待审那条：就地出现、页面没动、提示跟着加一 ---- */
 
   try {
     const page = await openPost(browser);
@@ -846,7 +946,7 @@ try {
     check('浏览器里跑到底（无头 Edge）', false, err.message);
   }
 
-  /* ---- 9b. 已公开那条：计数加一 ---- */
+  /* ---- 10b. 已公开那条：计数加一 ---- */
 
   try {
     const page = await openPost(browser);
@@ -880,7 +980,8 @@ try {
     check(
       '评论计数加了 1',
       numberOf(after.heading) === headingBefore + 1,
-      `之前 ${headingBefore}，之后 ${numberOf(after.heading)}`,
+      `之前 ${headingBefore}，之后 ${numberOf(after.heading)}`
+        + `（这篇文章上公开的：现在 ${approvedCountNow()}）`,
     );
 
     await page.close();
@@ -888,7 +989,7 @@ try {
     check('浏览器里跑到底（第二趟：已公开）', false, err.message);
   }
 
-  /* ---- 9c. 请求在路上时按钮点不动 ---- */
+  /* ---- 10c. 请求在路上时按钮点不动 ---- */
 
   try {
     const page = await openPost(browser);
@@ -948,7 +1049,7 @@ try {
     check('浏览器里跑到底（第三趟：提交中和出错时）', false, err.message);
   }
 
-  /* ---- 9d. 填了蜜罐时静默退回 ---- */
+  /* ---- 10d. 填了蜜罐时静默退回 ---- */
 
   try {
     const page = await openPost(browser);
@@ -978,7 +1079,7 @@ try {
     check('浏览器里跑到底（第四趟：蜜罐）', false, err.message);
   }
 
-  /* ---- 9e. 服务端说了话，就把它放到页面上 ---- */
+  /* ---- 10e. 服务端说了话，就把它放到页面上 ---- */
 
   try {
     const page = await openPost(browser);
@@ -1015,7 +1116,7 @@ try {
     check('浏览器里跑到底（第五趟：服务端说的话）', false, err.message);
   }
 
-  /* ---- 9f. 这篇文章还没有评论：列表与计数一起补上 ---- */
+  /* ---- 10f. 这篇文章还没有评论：列表与计数一起补上 ---- */
 
   try {
     const blank = tryFx('blank-post');
@@ -1079,7 +1180,7 @@ try {
     check('浏览器里跑到底（空白文章那一趟）', false, err.message);
   }
 
-  /* ---- 9g. 核心自己判成垃圾的那一条，页面上不画出来 ---- */
+  /* ---- 10g. 核心自己判成垃圾的那一条，页面上不画出来 ---- */
 
   try {
     const page = await openPost(browser);
@@ -1121,6 +1222,390 @@ try {
     const restored = tryFx('blocklist');
     check('关键词还原了', restored.now === '', `现在是 ${JSON.stringify(restored.now)}`);
   }
+
+  /* ---- 10h. 回复：落在被回复的那条下面，表单回到底部 ---- */
+
+  try {
+    const page = await openPost(browser);
+    const target = setup.thread.a;
+
+    // 前提：核心那个脚本得真的在这一页上。主题以前没排它（经典主题不排，只有区块与
+    // theme-compat 排），那时点「回复」是整页跳到 ?replytocom=N。
+    check(
+      '页面上排上了核心的 comment-reply',
+      /comment-reply(\.min)?\.js/.test(await page.evaluate(`(function () {
+        var out = [];
+        var s = document.querySelectorAll('script[src]');
+        for (var i = 0; i < s.length; i++) { out.push(s[i].getAttribute('src')); }
+        return out.join(' ');
+      })()`)),
+      '脚本不在页面上，点「回复」只会跳走',
+    );
+    // 没脚本时那条路照旧：锚点的 href 还是核心认的那个 ?replytocom=
+    check(
+      '回复入口的 href 照旧是 ?replytocom=（没脚本时走得通）',
+      /replytocom=\d+/.test(await page.evaluate(`document.querySelector('.comment-reply-link').getAttribute('href')`)),
+      await page.evaluate(`document.querySelector('.comment-reply-link').getAttribute('href')`),
+    );
+
+    /*
+     * 先点那条的「回复」，让**核心的** comment-reply 把表单搬过来。
+     *
+     * 这件事本身是这个主题原来缺的：回复入口是 html5 形状的锚点（带 data-*、没有 onclick），
+     * 而核心的 comment-reply.js 只由区块与 theme-compat 去排队——经典主题不排它。于是以前
+     * 点「回复」是整页跳到 ?replytocom=N、由核心在服务端把表单的父评论填好。现在把它排上，
+     * 没有脚本时那条路仍然照旧（锚点的 href 没变）。
+     */
+    const moved = await page.evaluate(`(function () {
+      var links = document.querySelectorAll('.comment-reply-link');
+      var a = document.querySelector('.comment-reply-link[data-commentid="${target}"]');
+      var seen = [];
+      for (var i = 0; i < links.length; i++) { seen.push(links[i].getAttribute('data-commentid')); }
+      if (!a) { return { found: false, want: '${target}', seen: seen }; }
+      a.click();
+      var form = document.getElementById('commentform');
+      var holder = form.closest('li[id^="comment-"]');
+      return {
+        found: true,
+        parent: form.querySelector('[name="comment_parent"]').value,
+        holder: holder ? holder.id : '',
+      };
+    })()`);
+
+    check('那条评论上有「回复」入口', moved.found === true, `想要 ${moved.want}，页面上有 ${JSON.stringify(moved.seen)}`);
+    check(
+      '点了之后表单搬到那条评论下面（核心的 comment-reply 在干活）',
+      moved.parent === String(target) && moved.holder === `comment-${target}`,
+      JSON.stringify(moved),
+    );
+
+    const replyBody = `${MARK} 浏览器回复 ${RUN}`;
+    await fillAndSubmit(page, { body: replyBody, email: `submit-browser-reply-${RUN}@example.test` });
+
+    const placed = await waitFor(
+      page,
+      `(function () {
+        var holder = document.getElementById('comment-${target}');
+        var kids = holder ? holder.querySelector(':scope > ul.children') : null;
+        var last = kids ? kids.lastElementChild : null;
+        var form = document.getElementById('commentform');
+        var root = document.querySelector('.yuki-comment-list');
+        var lastRoot = root ? root.lastElementChild : null;
+        var says = function (el) { return !!el && el.textContent.indexOf(${JSON.stringify(replyBody)}) >= 0; };
+        return {
+          seen: says(last),
+          inChildren: says(last),
+          lastId: last ? last.id : '',
+          depth: last ? last.className : '',
+          atListEnd: says(lastRoot),
+          formBackAtBottom: !form.closest('li[id^="comment-"]')
+            && form.querySelector('[name="comment_parent"]').value === '0',
+          textarea: form.querySelector('textarea[name="comment"]').value,
+          stillHere: window.__yukiStillHere,
+        };
+      })()`,
+      (state) => state.inChildren === true,
+    );
+
+    check('回复就地出现在被回复的那条的子列表里', placed.inChildren === true, JSON.stringify(placed).slice(0, 220));
+    check('没有被追到列表末尾', placed.atListEnd === false, '跑到列表末尾去了');
+    check('它带着第二层的印记', /depth-2/.test(placed.depth), `类是 ${JSON.stringify(placed.depth)}`);
+    check(
+      '提交完表单回到了页面底部，并清空',
+      placed.formBackAtBottom === true && placed.textarea === '',
+      `回位=${placed.formBackAtBottom} 输入框=${JSON.stringify(placed.textarea)}`,
+    );
+    check('页面没有重新加载', placed.stillHere === 'yes', '记号不见了');
+
+    /*
+     * 刚贴进来那一段里也有「回复」入口，它得是活的：核心的 comment-reply 在 document.body
+     * 上装了 MutationObserver，新加的节点它自己会认出来绑上事件，所以这里点下去表单该搬过来。
+     * （这一条先前是靠手动调一次 `init()` 兜的，那次调用是多余的。）
+     */
+    const nested = await page.evaluate(`(function () {
+      var li = document.getElementById(${JSON.stringify(placed.lastId)});
+      var a = li ? li.querySelector('.comment-reply-link') : null;
+      if (!a) { return { found: false }; }
+      a.click();
+      var form = document.getElementById('commentform');
+      return { found: true, parent: form.querySelector('[name="comment_parent"]').value };
+    })()`);
+
+    check(
+      '新贴进来那条上的「回复」也是活的',
+      nested.found === true && nested.parent === String(placed.lastId).replace('comment-', ''),
+      JSON.stringify(nested),
+    );
+
+    // 换一次页面再看：这一条落到哪儿，服务端自己渲染的那份必须说同一件事
+    await page.goto(postUrl);
+    const serverPlaced = await page.evaluate(`(function () {
+      var li = document.getElementById(${JSON.stringify(placed.lastId)});
+      var holder = li ? li.parentElement : null;
+      var up = holder ? holder.closest('li[id^="comment-"]') : null;
+      return {
+        id: li ? li.id : '(没有)',
+        under: up ? up.id : '(没有)',
+        inChildren: !!(holder && holder.classList.contains('children')),
+      };
+    })()`);
+
+    check(
+      '换一次页面再看，它落在同一个地方（就地画出来的与服务端说的是同一件事）',
+      serverPlaced.inChildren === true && serverPlaced.under === `comment-${target}`,
+      JSON.stringify(serverPlaced),
+    );
+
+    await page.close();
+  } catch (err) {
+    check('浏览器里跑到底（回复那一趟）', false, err.message);
+  }
+
+  /* ---- 10i. 滚动：不在视野里就带进去，已经在视野里就不动 ---- */
+
+  try {
+    const target = setup.thread.a;
+    const page = await openPost(browser);
+
+    /** 那条新评论现在在哪儿（拿评论正文找它，再往上取它那一层 li）。 */
+    const whereIs = (text) => `(function () {
+      var nodes = document.querySelectorAll('.comment-content');
+      for (var i = 0; i < nodes.length; i++) {
+        if (nodes[i].textContent.indexOf(${JSON.stringify(text)}) >= 0) {
+          var li = nodes[i].closest('li');
+          var b = li.getBoundingClientRect();
+          return {
+            top: Math.round(b.top),
+            bottom: Math.round(b.bottom),
+            viewport: window.innerHeight,
+            y: Math.round(window.scrollY),
+          };
+        }
+      }
+      return null;
+    })()`;
+
+    /**
+     * 至少在屏幕上露着头。
+     *
+     * 不要求「整条一像素不差地全在视口里」：脚本用的是「最小距离」，落点正好贴着视口边缘，
+     * 而这页上的头像是**远端图片**，它们晚一拍加载进来会把内容再推开几十像素——贴着边缘的
+     * 东西经不起这一下。要证的是「看见它了」。脚本有没有滚，另一条断言数的是
+     * `scrollIntoView` 的调用次数，那条不受这些位移影响。
+     */
+    const onScreen = (box) => box !== null && box.top >= 0 && box.top < box.viewport;
+
+    /*
+     * 数「有没有人要求滚动」。
+     *
+     * 只看 `window.scrollY` 变了没有是不够的：**把表单搬回页尾本身就会改动页面高度**，
+     * 浏览器会为它做一次滚动锚定的补偿，scrollY 跟着变——那不是脚本滚的。
+     * 这一件要验的是「脚本滚没滚」，那就数它滚的动作本身。
+     */
+    const watchScrolls = `(function () {
+      window.__yukiScrolls = 0;
+      var real = Element.prototype.scrollIntoView;
+      Element.prototype.scrollIntoView = function () {
+        window.__yukiScrolls++;
+        return real.apply(this, arguments);
+      };
+    })()`;
+
+    /*
+     * 情形一：新回复本来就该在视野里。
+     *
+     * 定位要放在**点完「回复」之后**：那一下会把表单搬到评论里，页面高度当场就变了，
+     * 在那之前量出来的位置不作数。对准的是目标那一条的**下沿**（新回复会贴在它里面、
+     * 紧跟着它），留出下面大半屏——表单等会儿还要从上面搬回页尾，那会让内容再往上走
+     * 一段，所以不能贴着视野下沿放。
+     */
+    await page.setViewport(1200, 1200);
+    await page.goto(postUrl);
+    await page.evaluate(watchScrolls);
+    await page.evaluate(`document.querySelector('.comment-reply-link[data-commentid="${target}"]').click()`);
+    await page.evaluate(`(function () {
+      var li = document.getElementById('comment-${target}');
+      window.scrollBy(0, li.getBoundingClientRect().bottom - window.innerHeight * 0.55);
+    })()`);
+    await sleep(250);
+
+    const nearBody = `${MARK} 滚动 近的 ${RUN}`;
+    await fillAndSubmit(page, { body: nearBody, email: `submit-scroll-near-${RUN}@example.test` });
+
+    await waitFor(page, whereIs(nearBody), (box) => box !== null);
+    // 滚动是在一次布局之后才决定的（见脚本里那段说明），所以等它落定再量
+    await sleep(400);
+
+    const near = await page.evaluate(whereIs(nearBody));
+    const nearScrolls = await page.evaluate(`window.__yukiScrolls`);
+    check(
+      '已经在视野里时脚本没有滚',
+      nearScrolls === 0,
+      `页面被要求滚了 ${nearScrolls} 次，它当时在 ${JSON.stringify(near)}`,
+    );
+    // 用「露着头」而不是「一像素不差地全在里面」：脚本的落点贴着视口边缘，而这一页的头像是
+    // 远端图片，它们晚一拍加载进来会把内容再推开几十像素。要证的是「它本来就看得见，所以
+    // 不用滚」，那件事上面那条已经钉住了，这条只是补一句「它确实在屏幕上」。
+    check('而且它确实在视野里', onScreen(near), JSON.stringify(near));
+
+    /*
+     * 情形二：新回复离得很远。
+     *
+     * 挑列表**最下面**那条有回复入口的来回复，页面停在最上面——新回复会落在视野底下
+     * 很远的地方，这一回只能靠脚本把它带进来。
+     *
+     * 之所以要挑「远」的：把表单搬回页尾本身会改动页面高度，浏览器会顺手做一次滚动锚定的
+     * 补偿，那一补偿有时候**正好**把新回复带进视野（位置近的时候就发生过）。那样验的就不是
+     * 脚本了。离得足够远，锚定那几百像素的补偿就够不着它。
+     */
+    await page.goto(postUrl);
+    await page.evaluate(watchScrolls);
+
+    // 挑一条**还没有回复**的（叶子）：这样它下面那个 ul.children 得由脚本现场建出来，
+    // 顺带把「新回复是头一条时，子列表与 parent 类都由脚本补上」也验了。
+    const bottomTarget = await page.evaluate(`(function () {
+      var items = document.querySelectorAll('.yuki-comment-list > li');
+      for (var i = items.length - 1; i >= 0; i--) {
+        var a = items[i].querySelector('.comment-reply-link');
+        if (!a) { continue; }
+        if (items[i].querySelector(':scope > ul.children')) { continue; }
+        var box = items[i].getBoundingClientRect();
+        var id = items[i].id.replace('comment-', '');
+        a.click();
+        return { id: id, top: Math.round(box.top) };
+      }
+      return null;
+    })()`);
+
+    /*
+     * 点「回复」会把表单搬到评论里，而核心的 moveForm 还会把焦点放进第一个输入框——
+     * 浏览器为着焦点自己就滚下去了。想验「脚本滚不滚」，得先把这一下理干净：
+     * 收掉焦点，再回到页面最上面。上面量到的 top 是**页面在最上面时**的相对位置，
+     * 所以它 > 视口高度就等于「离得很远」。
+     */
+    await page.evaluate(`(function () {
+      if (document.activeElement && document.activeElement.blur) { document.activeElement.blur(); }
+      window.scrollTo(0, 0);
+    })()`);
+    await sleep(250);
+
+    check(
+      '列表最下面那条有回复入口，而且它离视口很远',
+      bottomTarget !== null && bottomTarget.top > 1200,
+      `${JSON.stringify(bottomTarget)}（视口高 1200）`,
+    );
+
+    const farBody = `${MARK} 滚动 远的 ${RUN}`;
+    await fillAndSubmit(page, { body: farBody, email: `submit-scroll-far-${RUN}@example.test` });
+
+    await waitFor(page, whereIs(farBody), (box) => box !== null);
+    await sleep(400);
+
+    const far = await page.evaluate(whereIs(farBody));
+    check('不在视野里时脚本把它带进了视野', onScreen(far), JSON.stringify(far));
+    check('为它滚了一次', (await page.evaluate(`window.__yukiScrolls`)) === 1, '没滚，或者滚了不止一次');
+    check('页面没有重新加载', (await page.evaluate(`window.__yukiStillHere`)) === 'yes', '记号不见了');
+
+    /*
+     * 那条本来没有回复：子列表是脚本现场建出来的，父评论那枚 `parent` 类也是补上的
+     * （服务端渲染时它自己会带上，补上是为了「刚回复完」与「刷新之后」长得一样）。
+     */
+    const leaf = await page.evaluate(`(function () {
+      var li = document.getElementById('comment-${bottomTarget && bottomTarget.id}');
+      var kids = li ? li.querySelector(':scope > ul.children') : null;
+      return {
+        hasChildrenList: !!kids,
+        hasParentClass: !!li && li.className.split(/\\s+/).indexOf('parent') >= 0,
+      };
+    })()`);
+
+    check('子列表是脚本建出来的', leaf.hasChildrenList === true, JSON.stringify(leaf));
+    check('父评论那枚 parent 类补上了（刷新之后也是这个样子）', leaf.hasParentClass === true, JSON.stringify(leaf));
+
+    await page.close();
+  } catch (err) {
+    check('浏览器里跑到底（滚动那一趟）', false, err.message);
+  }
+
+  /* ---- 10j. 从 ?replytocom= 进来的人，回的是被压到第二层的那条 ---- */
+
+  try {
+    /*
+     * 这条地址是核心给**没脚本**的人留的（回复入口的 href 就是它），父评论由它在服务端填好。
+     * 有脚本的人也可能从这种地址进来——分享出去的链接、直接打开、或者中键新开一个标签页。
+     * 那条路上核心的 comment-reply 从头到尾没参与，所以「这次回复结束了」只剩我们自己要做：
+     * 把父评论清掉，否则下一条评论会悄悄又变成一条回复。
+     *
+     * 挑丙来回复还顺带验了压平那一条：丙**显示上**在第二层，它真实的层级是第三层，所以新回复
+     * 该挂到甲下面（那一支最外面那条），而不是丙下面。就地画出来的与服务端渲染的必须是同一个
+     * 地方——换一次页面再问一遍。
+     */
+    const page = await openPost(browser, `${postUrl}?replytocom=${setup.thread.c}#respond`);
+
+    const before = await page.evaluate(`(function () {
+      var form = document.getElementById('commentform');
+      return {
+        parent: form.querySelector('[name="comment_parent"]').value,
+        insideComment: !!form.closest('li[id^="comment-"]'),
+      };
+    })()`);
+
+    check(
+      '核心在服务端把父评论填好了（这条路的起点）',
+      before.parent === String(setup.thread.c),
+      JSON.stringify(before),
+    );
+    check(
+      '表单还在页尾——核心的 comment-reply 从头到尾没参与',
+      before.insideComment === false,
+      JSON.stringify(before),
+    );
+
+    const viaBody = `${MARK} 从 replytocom 进来的 ${RUN}`;
+    await fillAndSubmit(page, { body: viaBody, email: `submit-via-replytocom-${RUN}@example.test` });
+
+    const viaAfter = await waitFor(
+      page,
+      `(function () {
+        var holder = document.getElementById('comment-${setup.thread.a}');
+        var kids = holder ? holder.querySelector(':scope > ul.children') : null;
+        var form = document.getElementById('commentform');
+        return {
+          placed: !!kids && kids.lastElementChild.textContent.indexOf(${JSON.stringify(viaBody)}) >= 0,
+          lastId: kids ? kids.lastElementChild.id : '',
+          parent: form.querySelector('[name="comment_parent"]').value,
+          textarea: form.querySelector('textarea[name="comment"]').value,
+          stillHere: window.__yukiStillHere,
+        };
+      })()`,
+      (state) => state.placed === true,
+    );
+
+    check('它落到了那一支最外面那条下面（不是丙下面）', viaAfter.placed === true, '没落进甲的子列表');
+    check('父评论清干净了（下一条不会再默默变成回复）', viaAfter.parent === '0', `父评论是 ${viaAfter.parent}`);
+    check('输入框清空了', viaAfter.textarea === '', JSON.stringify(viaAfter.textarea));
+    check('页面没有重新加载', viaAfter.stillHere === 'yes', '记号不见了');
+
+    // 换一次页面再问：服务端自己渲染的那一份，说的必须是同一个地方
+    await page.goto(postUrl);
+    const viaServer = await page.evaluate(`(function () {
+      var li = document.getElementById(${JSON.stringify(viaAfter.lastId)});
+      var holder = li ? li.parentElement : null;
+      var up = holder ? holder.closest('li[id^="comment-"]') : null;
+      return { id: li ? li.id : '(没有)', under: up ? up.id : '(没有)', inChildren: !!(holder && holder.classList.contains('children')) };
+    })()`);
+
+    check(
+      '压下来的那种，换一次页面看也落在同一个地方',
+      viaServer.inChildren === true && viaServer.under === `comment-${setup.thread.a}`,
+      JSON.stringify(viaServer),
+    );
+
+    await page.close();
+  } catch (err) {
+    check('浏览器里跑到底（从 ?replytocom 进来那一趟）', false, err.message);
+  }
+
 
 } catch (err) {
   check('无头浏览器起得来', false, err.message);
