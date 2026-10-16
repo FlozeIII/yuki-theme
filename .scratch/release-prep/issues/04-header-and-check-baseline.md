@@ -53,6 +53,10 @@
 
 - `screenshot.png` 进「必需文件」那一组——「包里有截图」只有这一层看得见。
 - 另起一段读**包里那一份** `style.css`，逐项核对官方列的十个头部字段，并看住 `Tested up to` 是纯数字。
+  解析本身落在 `tests/bin/theme-css.mjs` 的 `themeHeader()`（spec 的 Testing Decisions 就写着
+  「头部字段那条断言直接用它，不重写解析」）：它收的是**文本**而不是路径，所以工作区那份与
+  包里那份喂得进同一个函数，行尾归一也就只有一处。包里的 `style.css` 在这个脚本里只读一次、
+  只解析一次——「主题名」那条与这十个字段共用一份。
 
 断言读的是产物：包按 HEAD 出，所以**改之前跑就是红的**。
 
@@ -156,10 +160,13 @@ INFO（5）：
    兜底页头（`theme-compat/header.php:46`）。跑一次 `comment_form()` 实测「没有 enqueue；注册：是」，
    活页面上也确实没有 `comment-reply.min.js`——**经典的评论表单这条路，核心不会替你装它**。
    后果：点「回复」是**整页跳转**（`?replytocom=N#respond`），不是把表单搬到那条评论下面。
-   它不是缺陷（那条降级路功能完整、嵌套也对），但它是**评论增强**那条线上的一件事：
-   `comment-submit-ajax` 的工单 02 假设了这个脚本存在（spec 原话「调核心 comment-reply 脚本自带的
-   取消回复，别自己搬 DOM」）。**留给那一件**，理由：修它要碰 `functions.php` 与 `comments.php`，
-   两个都在 `AGENTS.md` 第一条的共享清单上，而那个会话此刻正占着 `functions.php`。
+   它不是缺陷：没有任何坏掉的东西给使用者撞上（回复照样发得出去、嵌套也对），只是少了一层增强，
+   而 Theme Check 也只给了 INFO。按 spec 那把尺子（「它是不是一个使用者会撞上的功能缺陷或呈现缺陷」）
+   它落不进这一轮要修的那些。就算要加，那也是**评论增强**那条线上的一件事——
+   `comment-submit-ajax` 的工单 02 正文里已经假设这个脚本存在（spec 原话「调核心 comment-reply 脚本
+   自带的取消回复，别自己搬 DOM」），归它顺手做才对。**留给那一件。**
+   （顺带一提，真去动它还要碰 `functions.php` 与 `comments.php`——两个都在共享清单上、
+   那个会话此刻正占着 `functions.php`；但那是次要的一条，判断不靠它。）
 9. **「只用一个翻译域」（INFO）**：这是好的，不是要修的事。
 
 ### 七、能装
@@ -213,3 +220,59 @@ WordPress 认得出它是一支主题（`errors` 是 `false`），名字、作�
 - **一处给下一个会话的提醒**：上面第六节第 8 条——`comment-reply` 脚本在这个主题上从来没被
   enqueue 过（`git log -S"comment-reply"` 在 `functions.php`/`comments.php` 里只有一条注释改动，
   没有过 enqueue），而 `comment-submit-ajax` 工单 02 的正文假设它存在。
+
+## Standards
+
+两个独立审查代理按 `7d309dd` 起点审本件（两个提交：`1b48bb7` 代码、`f84c1de` 工单记录）。
+起点先说清：我最初记的是 `a372988`，那是**上一件**工单（评论提交不刷新）的提交，三点 diff 会把
+那一件两千多行一起卷进来，改成 `1b48bb7` 的父提交 `7d309dd`。工作树里另一个会话未提交的改动
+（`functions.php`、`inc/comment-submit.php`、`assets/js/comment-submit.js`、两份 `comment-submit`
+测试件）明确排除在审查范围外，也不许动。
+
+规范轴：**0 项硬违反**、1 项气味（判断题），已修。它逐条核过 `AGENTS.md` 第 1/3/5 条（只提自己的
+路径、共享文件挂占位、生成物按 HEAD 重建的理由）、`docs/agents/issue-tracker.md` 的写法
+（`Status:` 保持 `ready-for-agent`，与 01–03 一致，triage 标签里没有「已完成」这一档）、
+`tests/README.md` 的断言规矩（断言认外部可观察的产物、报告走 `report.mjs`）。
+
+它报的那条气味，以及按它给的修法做的事：
+
+- **Duplicated Code**。新加的那段自己把 `style.css` 读成文本、统一行尾、再抓表头——与
+  `tests/bin/theme-css.mjs:18` 的 `themeCss()` 是同一段，连「CRLF 统一成 `\n`」的理由都重抄了
+  一遍；同一个文件里还有一处对同一份 CSS 用 `/\r?\n/` 的另一种行尾处理。它指出 spec 的
+  Testing Decisions 点名的正是这条（「头部字段那条断言**直接用它**，不重写解析」）。
+  已收进 `tests/bin/theme-css.mjs` 的 **`themeHeader()`**：参数是**文本**不是路径——产物那份
+  ZIP 条目才喂得进去；行尾归一只剩 `lf()` 一处，`themeCss()` 也改走它。`verify-package.mjs` 里
+  包内 `style.css` 只读一次、只解析一次，「主题名」那条与十个头部字段共用那一份。
+- 同一处它还点了脆弱：`/\*([\s\S]*?)\*\//` 隐含「表头是第一块注释」却没锚定。已在 `themeHeader()`
+  里从 `^\s*` 锚起——表头不在开头时读出来是**空的**，而不是悄悄读到文件中间那块
+  （实测：先写规则再写注释，返回 `{}`）。
+
+工单轴另外指出一处备查：spec 说「已有那十项不动」，而改动前官方列的十个字段实际只存在八项——
+§1 里写「另外八个字段」比说「十项没动」更准。这不是本件的问题。
+
+复核结论：Standards 0 项未解决。那条气味已修，实跑 `node tests/bin/verify-package.mjs` **56/56**。
+
+## Spec
+
+工单轴：**0 项**。六条验收勾选项逐条实核过，包括对着被 ignore 的两份 Theme Check 日志数条目
+（产物 `1`/`1`/`18`/`5`，工作区 `14`/`15`/`18`/`5`；差出来的 13 条 REQUIRED 与 14 条 WARNING
+全部指向 `tests/` 下被包排除的文件，与 §5 一字不差），并实跑 `node tests/bin/verify-package.mjs`
+（56/56）。结论：没有缺失或半成品的要求、没有范围扩张、没有「看着做了但做错」。
+
+三点它专门核了，值得留下：
+
+- **`style.css` 那两行不算范围扩张。** spec 的 Implementation Decisions「体检」一节自己点名
+  「`style.css` 头部补齐两处：`Author`、`Tested up to`」，另有用户故事 22/23/24 与 Testing
+  Decisions 的「`style.css` 头部：官方列的字段齐全，含这次新增的两项」。那句「这一轮唯一动到
+  主题代码的两处」只约束修 bug 的两条（`wp_link_pages`、确认页标题），与头部补齐是同节并列——
+  是 spec 自己的表述松，不是本件越界。
+- **「读的是产物，不是工作区」成立**：核过 `package-theme.mjs` 确实从 `git archive HEAD` 出包，
+  并把 attributes 隔离掉。
+- **`comment-reply` 的机制描述与核心源码一致**（`script-loader.php:1059` 只注册；enqueue 只在
+  `blocks/comments.php:82`、`blocks/post-comments-form.php:52`、`theme-compat/header.php:46`）。
+
+它提了一条批评，已照办：**「不修 comment-reply」的理由里不该把并发当理由**——如果那真是 bug，
+spec 的「真缺陷当场修掉」不会因为有别的会话占着文件而豁免。说得对，§6 第 8 条已改成先讲判断
+（不是缺陷、没有给使用者撞上的坏掉的东西），并发只作次要一句。
+
+复核结论：Spec 0 项未解决。
