@@ -6,6 +6,7 @@ import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { crc32, inflateRawSync } from 'node:zlib';
 import { check, report, section } from './report.mjs';
+import { themeHeader } from './theme-css.mjs';
 
 const repo = path.resolve(import.meta.dirname, '../..');
 const temp = fs.mkdtempSync(path.join(os.tmpdir(), 'yuki-package-'));
@@ -64,6 +65,8 @@ try {
   if (fs.existsSync(output)) {
     const entries = readZip(output);
     const names = [...entries.keys()];
+    // 包里的 style.css 读一次、解析一次，下面「主题名」与「头部那十个字段」两处都用它。
+    const header = themeHeader(entries.get('yuki/style.css')?.toString() ?? '');
     check('顶层只有 yuki/ 一个目录', names.length > 0 && names.every((name) => name.startsWith('yuki/')));
     check('ZIP 路径没有反斜杠或越级路径', names.every((name) => !name.includes('\\') && !name.split('/').includes('..')));
     for (const file of ['style.css', 'index.php', 'comments.php', 'LICENSE', 'README.md',
@@ -74,21 +77,18 @@ try {
       'AGENTS.md', 'CONTEXT.md', 'DESIGN.md']) {
       check(`包里没有 ${file}`, !names.some((name) => name === `yuki/${file}` || name.startsWith(`yuki/${file}/`)));
     }
-    check('样式表仍声明主题名 Yuki', /Theme Name: Yuki\r?\n/.test(entries.get('yuki/style.css')?.toString() || ''));
+    check('样式表仍声明主题名 Yuki', header['Theme Name'] === 'Yuki', `读到「${header['Theme Name'] ?? ''}」`);
     check('包内文件均可解压且 CRC 正确', entries.size > 0, `${entries.size} 个目录或文件`);
 
     // 工单 04：官方列的头部字段逐项看**包里那一份**。工作区里少一个字段看不出后果，
-    // 使用者装上以后才看得出来；所以这里读的是产物，不是工作区（换行按提交中的字节来）。
+    // 使用者装上以后才看得出来；所以这里读的是产物，不是工作区。
     section('包里 style.css 的头部');
-    const css = (entries.get('yuki/style.css')?.toString() || '').replace(/\r\n/g, '\n');
-    const header = /\/\*([\s\S]*?)\*\//.exec(css)?.[1] ?? '';
-    const field = (name) => new RegExp(`^${name}:\\s*(.*)$`, 'm').exec(header)?.[1]?.trim() ?? '';
     for (const name of ['Theme Name', 'Author', 'Description', 'Version', 'Requires at least',
       'Tested up to', 'Requires PHP', 'License', 'License URI', 'Text Domain']) {
-      check(`头部有 ${name}`, field(name) !== '', `读到「${field(name)}」`);
+      check(`头部有 ${name}`, (header[name] ?? '') !== '', `读到「${header[name] ?? ''}」`);
     }
-    check('Tested up to 只写数字，不写成 WP 7.1', /^\d+(\.\d+)*$/.test(field('Tested up to')),
-      `读到「${field('Tested up to')}」`);
+    check('Tested up to 只写数字，不写成 WP 7.1', /^\d+(\.\d+)*$/.test(header['Tested up to'] ?? ''),
+      `读到「${header['Tested up to'] ?? ''}」`);
   }
 
   section('不支持的排除语法');

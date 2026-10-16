@@ -1,21 +1,44 @@
-// 从主题的 style.css 里读 token 与规则，以及几个算颜色的小工具。
+// 从主题的 style.css 里读 token、规则与头部字段，以及几个算颜色的小工具。
 //
 // 工单 03（评论区的配色）与工单 08（说说归档的版式）都要做同一类事情：断言某处的颜色
 // 就是某个 token、以及在真浏览器里量到的颜色与 token 对得上。同一段解析写两遍就会分叉，
-// 所以放这里共用。
+// 所以放这里共用。工单 04 要的是同一份 style.css 的**头部字段**（对产物那份读），
+// 也就落在同一个道理上。
 //
 // 用法：
-//   import { themeCss, cssBlock, tokens, hexToRgb, contrast } from './theme-css.mjs';
+//   import { themeCss, themeHeader, cssBlock, tokens, hexToRgb, contrast } from './theme-css.mjs';
 //   const css = themeCss();
 //   const dark = tokens( '.dark' );
+//   const header = themeHeader( css );   // 也可以喂产物里那份（ZIP 条目的文本）
 
 import fs from 'node:fs';
 import path from 'node:path';
 import { REPO_ROOT } from './lib.mjs';
 
-/** style.css 的内容，换行统一成 \n（工作区里是 CRLF，按行找东西会找不到）。 */
+/** 行尾统一成 \n：工作区里是 CRLF，包里是提交中的字节，按行找东西会找不到。 */
+function lf(text) {
+  return text.replace(/\r\n/g, '\n');
+}
+
+/** 仓库里那份 style.css 的内容。 */
 export function themeCss() {
-  return fs.readFileSync(path.join(REPO_ROOT, 'style.css'), 'utf8').replace(/\r\n/g, '\n');
+  return lf(fs.readFileSync(path.join(REPO_ROOT, 'style.css'), 'utf8'));
+}
+
+/**
+ * style.css 开头那段注释的表头：读一次，给一份 `键: 值`。
+ *
+ * 收在这里而不是各处自己写一遍：要读的有时候不是仓库里那份，而是**产物里那份**
+ * （ZIP 条目，与工作区不是同一串字节），所以参数是文本而不是路径——「行尾归一」与
+ * 「表头就是开头那块注释」这两件事也就只写这一处。
+ */
+export function themeHeader(css) {
+  const block = /^\s*\/\*([\s\S]*?)\*\//.exec(lf(css))?.[1] ?? '';
+  const header = {};
+  for (const m of block.matchAll(/^([^:\n]+):[ \t]*(.*)$/gm)) {
+    header[m[1].trim()] = m[2].trim();
+  }
+  return header;
 }
 
 /** 取一个 `选择器 { ... }` 块的内容，找不到返回空串。 */
