@@ -11,6 +11,7 @@
 //   await page.setViewport( 1200, 900 );
 //   await page.goto( url );
 //   const bg = await page.evaluate( `getComputedStyle(document.body).backgroundColor` );
+//   const png = await page.screenshot();     // 量完之后同样能把它截下来（工单 02）
 //   await page.close(); await browser.close();
 //
 // 环境变量 YUKI_EDGE 可以换浏览器可执行文件。
@@ -190,6 +191,24 @@ export async function newPage(browser, { colorScheme = 'light' } = {}) {
       }
 
       return result.result.value;
+    },
+
+    /**
+     * 把当前视口截成一张图，返回它的字节。
+     *
+     * 必须**在 setViewport() 与 goto() 之后**调用：视口定下布局、页面画完，才有得截。
+     * 只截视口那么大（captureBeyondViewport: false），不是整页长图——官方的主题截图要的就是一屏。
+     *
+     * 不要退回 `msedge --screenshot --window-size=…` 那类老办法：它按更宽的默认布局渲染再裁剪，
+     * 出来的图会像横向溢出（见文件头那段）。这里走的是 CDP，跟 measure() 用的是同一个视口。
+     *
+     * @param {object} options { format: 'png' | 'jpeg' }
+     * @return {Promise<Buffer>} 图片字节。
+     */
+    async screenshot({ format = 'png' } = {}) {
+      const { data } = await send('Page.captureScreenshot', { format, captureBeyondViewport: false });
+      if (!data) throw new Error('截图没有返回数据');
+      return Buffer.from(data, 'base64');
     },
 
     async close() {

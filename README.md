@@ -34,10 +34,29 @@ node tests/bin/package-theme.mjs /path/to/yuki.zip
 node tests/bin/verify-package.mjs
 ```
 
+## 重拍首页截图
+
+顶层的 `screenshot.png` 是主题在「外观 → 主题」里的那张脸：真实渲染出来的首页，浅色形态，1200×900（官方要求是「不大于 1200×900」且 4:3）。它随仓库提交，正常发布不需要重拍；要换一张时先让本地站跑起来，再按顺序跑：
+
+```bash
+# 这台机器上没有系统级的 php，用便携版的全路径（见 tests/README.md 的环境变量表）
+"C:/Users/Floze/wp-dev/tools/php/php.exe" tests/bin/screenshot-fixtures.php "C:/Users/Floze/wp-dev/wordpress"
+node tests/bin/make-screenshot.mjs
+```
+
+第一条往本地站放进 6 篇标题与缩略图都像正常博客的演示文章，并**置顶**占住首页第一屏——这个本地站同时开着别的会话，它们的造数文章日期更新，不置顶就会插到演示文章中间（见脚本头）。演示文章都带 `_yuki_screenshot_demo` 标记，重跑会先撤掉上一轮，可反复执行。
+
+截图走无头浏览器（CDP），在**设好视口之后**产出，不是 `--screenshot --window-size` 那类先按更宽布局渲染再裁剪的老办法。拍之前它先确认首页模板在、文章够数、视口里的缩略图都加载完了，任一不成立就报错停下、不覆盖已有的图；拍完会把第一屏的标题打出来。
+
+```bash
+node tests/bin/verify-screenshot.mjs
+```
+
 ## 结构
 
 ```
 yuki-theme/
+├── screenshot.png         后台「外观 → 主题」里的主题预览图（1200×900，浅色首页）
 ├── style.css              主题头 + 全部设计 Token 与样式
 ├── functions.php          主题设置、资源加载、自定义器（备案号 / 头像源）
 ├── header.php             导航 + 搜索入口 + 主题滑动开关

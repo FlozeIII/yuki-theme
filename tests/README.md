@@ -46,6 +46,11 @@ node tests/bin/verify-harness.mjs   # 基建自己的验收（工单 01）
 验收脚本和后续工单的测试都从 `tests/bin/lib.mjs` 取公共辅助：`get` / `postForm`、
 `readMails` / `linksIn`、`startStub` / `stopStub` / `stubSetMode` / `stubHits` / `probe`。
 
+另外三份共用件，都是「同一段写两遍就会分叉」才抽出来的：`report.mjs`（断言与报告）、
+`theme-css.mjs`（读 `style.css` 的 token、算颜色）、`homepage.mjs`（工单 02：首页第一屏的
+视口与选择器——产 `screenshot.png` 的那条命令与验收那条共用一份）。`browser.mjs` 是无头
+Edge 那个观察点本身。
+
 ### 观察点一：邮件捕获
 
 `wp_mail()` 的每一封邮件被写进 `var/mail.log`，格式：
