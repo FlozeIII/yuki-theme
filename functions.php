@@ -686,10 +686,10 @@ add_action( 'comment_form', 'yuki_comment_form_fields' );
 /**
  * 判定并挡在入库之前：填了蜜罐、令牌不对、或者页面刚渲染出来就提交的，一律按垃圾处理。
  *
- * 只判定「访客在评论表单里交上来的」那一种：蜜罐和令牌是一套表单协议，
- * 没渲染过评论表单的调用路径（REST、XML-RPC、定时任务、命令行、导入脚本）手上
- * 不该有令牌，也谈不上遵守它——按机器人处理只会把别处正常入库的评论静默吞掉。
- * 这些路径上核心自己的审核、黑名单与频率限制照旧生效。
+ * 只判定「访客在评论表单里交上来的」那一种——这个范围由 yuki_comment_is_form_post()
+ * 划，端点（inc/comment-submit.php）那条路也在里面。蜜罐和令牌是一套表单协议，
+ * 没渲染过评论表单的调用路径手上不该有它，也谈不上遵守它——按机器人处理只会把别处
+ * 正常入库的评论静默吞掉。这些路径上核心自己的审核、黑名单与频率限制照旧生效。
  *
  * 这里不校 nonce：WordPress 的评论表单本来就不带 nonce（wp-comments-post.php 不校），
  * 硬加一个会让所有访客提交失败。取到的值一律先 wp_unslash，再按格式校验。
@@ -698,12 +698,7 @@ add_action( 'comment_form', 'yuki_comment_form_fields' );
  * @return int|string|WP_Error 判定为机器人时返回不带 data 的 WP_Error。
  */
 function yuki_comment_guard( $approved ) {
-	$is_form_post = 'POST' === ( $_SERVER['REQUEST_METHOD'] ?? '' )
-		&& ! defined( 'XMLRPC_REQUEST' )
-		&& ! defined( 'REST_REQUEST' )
-		&& ! wp_doing_cron();
-
-	if ( ! $is_form_post || is_user_logged_in() ) {
+	if ( ! yuki_comment_is_form_post() || is_user_logged_in() ) {
 		return $approved;
 	}
 
@@ -721,6 +716,55 @@ function yuki_comment_guard( $approved ) {
 	return $approved;
 }
 add_filter( 'pre_comment_approved', 'yuki_comment_guard' );
+
+/**
+ * 这次请求是不是「访客在评论表单里交上来的那一笔」。
+ *
+ * 原生入口是一次非 REST 的 POST；端点（inc/comment-submit.php）是**同一笔提交**，
+ * 只是走了 REST 那道门，所以它进处理前会先亮明身份。
+ *
+ * 为什么非要有这枚标记：守卫本来放过所有 REST 请求（别的 REST 调用手上不该有蜜罐与
+ * 令牌），而端点的回调里 REST_REQUEST **是定义着的**（wp-includes/rest-api.php:478，
+ * rest_api_loaded() 定义完就往下分发）——不亮明身份，端点上填了蜜罐也照收，
+ * 防垃圾在端点上就等于没有。
+ *
+ * @return bool
+ */
+function yuki_comment_is_form_post() {
+	if ( yuki_comment_form_post_flag() ) {
+		return true;
+	}
+
+	return 'POST' === ( $_SERVER['REQUEST_METHOD'] ?? '' )
+		&& ! defined( 'XMLRPC_REQUEST' )
+		&& ! defined( 'REST_REQUEST' )
+		&& ! wp_doing_cron();
+}
+
+/**
+ * 端点进处理前调一次：声明「这一笔就是评论表单的那笔提交」。
+ */
+function yuki_comment_form_post_declare() {
+	yuki_comment_form_post_flag( true );
+}
+
+/**
+ * 那枚标记本身。传 $set 即改写，不传就是读。
+ *
+ * 静态，只活在这一次请求里——它描述的就是「这次请求现在在干什么」。
+ *
+ * @param bool|null $set 要设成的值；null 表示只读。
+ * @return bool
+ */
+function yuki_comment_form_post_flag( $set = null ) {
+	static $declared = false;
+
+	if ( null !== $set ) {
+		$declared = (bool) $set;
+	}
+
+	return $declared;
+}
 
 /* ---------------------------------------------
  * 评论增强 · 层级与呈现
@@ -871,6 +915,129 @@ function yuki_comment_template( $comment, $args, $depth ) {
 	) );
 }
 
+/**
+ * 评论列表的渲染参数。
+ *
+ * 列表（comments.php）与端点各取一次，但只有**一份定义**。两边各写一套的话，
+ * 新插进去的那一条与列表里其它评论迟早会长得不一样，而单独看哪一边都正常。
+ *
+ * @return array
+ */
+function yuki_comment_list_args() {
+	return array(
+		'style'       => 'ul',
+		'avatar_size' => 40,
+		// 自己渲染每条评论：层级压平之后还要标出「回复 @谁」，核心的印记里没有这个位置
+		'callback'    => 'yuki_comment_template',
+	);
+}
+
+/**
+ * 这位访客在这篇文章上有几条评论还在等审核。
+ *
+ * 「哪些待审评论能被这位访客看见」由核心决定——comments_template() 会把
+ * wp_get_unapproved_comment_author_email() 的结果塞进 include_unapproved，
+ * 而那个函数在没有跳转参数时会退回读评论者 cookie
+ * （wp-includes/comment.php:2112-2114，那一步取的是 wp_get_current_commenter()）。
+ * 这里数的是同一批人里还没通过的那几条，提示与列表因此说的是同一件事。
+ *
+ * 数的是**整篇文章**上的条数，不是某一页上的：列表分页时提示会说到「总共有几条」，
+ * 它不承诺这些评论都在这一屏上。
+ *
+ * 代价是每次渲染文章页、并且这位访客带着评论者 cookie 时，多一次查询。只有带身份的
+ * 访客才走得到这里，而且查的是这篇文章上「还没通过」的那几条——绝大多数页面上是空的。
+ *
+ * @param int    $post_id 文章 id。
+ * @param string $email   访客身份；空串表示没有身份，没有身份就一条也不属于他。
+ * @return int
+ */
+function yuki_comment_pending_count( $post_id, $email ) {
+	$email   = strtolower( (string) $email );
+	$post_id = (int) $post_id;
+
+	if ( '' === $email || ! $post_id ) {
+		return 0;
+	}
+
+	// 取回来在 PHP 里比，不用 get_comments 的 author_email 参数：那是一次 SQL 相等比较，
+	// 而本地的 SQLite 上它区分大小写，邮箱大小写差一点就数不出来了。
+	$pending = get_comments( array(
+		'post_id' => $post_id,
+		'status'  => 'hold',
+	) );
+
+	$count = 0;
+
+	foreach ( $pending as $comment ) {
+		if ( strtolower( (string) $comment->comment_author_email ) === $email ) {
+			$count++;
+		}
+	}
+
+	return $count;
+}
+
+/**
+ * 当前这位访客的身份（评论者 cookie，或者一次性跳转参数里那个邮箱）。
+ *
+ * 登录用户返回空串：提示是给访客看的，而核心对他们另有一套——include_unapproved
+ * 里放的是用户 id，不按邮箱认（comments_template() 里那两行）。
+ *
+ * @return string
+ */
+function yuki_comment_viewer_email() {
+	if ( is_user_logged_in() ) {
+		return '';
+	}
+
+	return strtolower( (string) wp_get_unapproved_comment_author_email() );
+}
+
+/**
+ * 列表上方那句待审提示。条数为 0 时返回空串——页面上就不该出现这句话。
+ *
+ * 列表与端点共用这一份：端点插完一条待审评论之后要就地把这句话换掉，两边各写一句的话，
+ * 措辞迟早会不一样，而两边看起来都对。
+ *
+ * @param int $count 这位访客的待审条数。
+ * @return string
+ */
+function yuki_comment_pending_notice_html( $count ) {
+	$count = (int) $count;
+
+	if ( $count <= 0 ) {
+		return '';
+	}
+
+	$text = sprintf(
+		/* translators: %s: 等待审核的评论条数（已按本地习惯分组，例如 1,234） */
+		__( '你有 %s 条评论正在等待审核，通过之后才会公开显示。', 'yuki' ),
+		number_format_i18n( $count )
+	);
+
+	return '<p class="yuki-pending-notice">' . esc_html( $text ) . '</p>';
+}
+
+/**
+ * 评论列表的标题（「评论（3）」）。
+ *
+ * 数的是**已经公开**的条数（核心的 comment_count），待审的不算——与没脚本那条路
+ * 渲染出来的完全一致。那枚类名是给脚本认的：提交成功之后就地换成服务端算好的这一份，
+ * 免得出现「标题说 0 条、列表里却有一条」这种自相矛盾。
+ *
+ * @param int $post_id 文章 id。
+ * @return string
+ */
+function yuki_comment_count_heading_html( $post_id ) {
+	$text = sprintf(
+		/* translators: %s: comment count */
+		__( '评论（%s）', 'yuki' ),
+		number_format_i18n( get_comments_number( $post_id ) )
+	);
+
+	return '<h3 class="yuki-comment-count">' . esc_html( $text ) . '</h3>';
+}
+
 /* ---------------------------------------------
  * 独立的功能模块
  *
@@ -879,3 +1046,4 @@ function yuki_comment_template( $comment, $args, $depth ) {
  * --------------------------------------------- */
 require_once get_template_directory() . '/inc/comment-deletion.php';
 require_once get_template_directory() . '/inc/comment-likes.php';
+require_once get_template_directory() . '/inc/comment-submit.php';

@@ -189,9 +189,12 @@ export function tagAttrs(tag) {
  * 而「来得太快」被挡下的样子和「忘了带令牌」一模一样，不等等就分不清自己在验什么。
  *
  * @param {string} postUrl  文章地址（表单所在的那个页面）
- * @param {object} options  comment / author / email / url / settleMs
+ * @param {object} options  comment / author / email / url / cookie / consent / extraFields / settleMs / target
+ *                          target 给定时改投它（主题自己的端点就是这么验的：**同一份字段**，
+ *                          只换投递地址——两边各读一遍表单迟早会读歪，而读歪之后
+ *                          看起来仍然像「提交成功了」）。
  */
-export async function submitComment(postUrl, { comment, author = 'YUKI-TEST 访客', email = 'yuki-test@example.test', url = '', cookie = '', consent = false, extraFields = {}, settleMs = 3200 } = {}) {
+export async function submitComment(postUrl, { comment, author = 'YUKI-TEST 访客', email = 'yuki-test@example.test', url = '', cookie = '', consent = false, extraFields = {}, settleMs = 3200, target = '' } = {}) {
   const page = await get(postUrl);
   if (page.status !== 200) {
     throw new Error(`取评论表单页失败：${postUrl} 返回 ${page.status}`);
@@ -243,13 +246,15 @@ export async function submitComment(postUrl, { comment, author = 'YUKI-TEST 访�
   // 既然已经费劲去读真实表单了，就没道理把「往哪提交」这一条写死。
   const formTag = form[0].match(/<form\b[^>]*>/i)?.[0] || '';
   const action = tagAttrs(formTag).action;
-  const target = action ? new URL(action, postUrl).href : `${SITE}/wp-comments-post.php`;
+  const destination = target
+    ? new URL(target, postUrl).href
+    : (action ? new URL(action, postUrl).href : `${SITE}/wp-comments-post.php`);
 
   await new Promise((resolve) => setTimeout(resolve, settleMs));
 
-  const response = await postForm(target, fields, { cookie });
+  const response = await postForm(destination, fields, { cookie });
 
-  return { ...response, fields, target, waitedMs: settleMs };
+  return { ...response, fields, target: destination, waitedMs: settleMs };
 }
 
 /* ---------- 邮件捕获 ---------- */
