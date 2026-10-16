@@ -40,6 +40,15 @@ get_header();
 
 					<div class="yuki-prose">
 						<?php the_content(); ?>
+						<?php
+						/*
+						 * 用分页标记（`<!--nextpage-->`）切开的文章，读者得能走到下一页。
+						 * 用核心默认的包裹与文案，它落在 `.yuki-prose` 里，排版跟着正文走
+						 * （另配样式要动共享的 `style.css`，不在这一件里）。
+						 * 没有分页标记的文章，核心自己什么都不输出，不会多出空的翻页区。
+						 */
+						wp_link_pages();
+						?>
 					</div>
 
 					<?php if ( get_the_tag_list() ) : ?>

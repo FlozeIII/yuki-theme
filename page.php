@@ -33,6 +33,11 @@ get_header();
 
 			<div class="yuki-prose">
 				<?php the_content(); ?>
+				<?php
+				// 静态页面的正文同样可以用分页标记切开，同一处缺陷在这儿也一样存在。
+				// 理由与取舍见 single.php 那一处。
+				wp_link_pages();
+				?>
 			</div>
 
 			<?php comments_template(); ?>
