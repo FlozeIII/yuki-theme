@@ -4,11 +4,35 @@
 
 ## 安装
 
-1. 把 `yuki-theme` 文件夹打包为 zip（或直接把文件夹拷到 `wp-content/themes/`）。
+1. 将发行包 `yuki.zip` 上传到 WordPress 后台 → 外观 → 主题 → 安装主题 → 上传主题；也可解压到 `wp-content/themes/`，得到 `yuki/` 目录。
 2. WordPress 后台 → 外观 → 主题 → 启用 **Yuki**。
 3. 外观 → 菜单：创建菜单并指定到「主导航」位置。
 4. 外观 → 自定义 → **Yuki 页脚设置**：填写 ICP 备案号 / 公安备案号（留空则显示占位）。
 5. 外观 → 自定义 → **Yuki 头像设置**：Gravatar 在境内访问不了，国内主机请改选 Cravatar 或自填镜像地址。
+
+## 从源码打包
+
+需要 Node.js 22.2+ 和 Git，无需 WP-CLI 或安装 npm 依赖。在仓库内运行：
+
+```bash
+node tests/bin/package-theme.mjs
+```
+
+默认输出 `.scratch/release-prep/yuki.zip`，也可指定输出文件：
+
+```bash
+node tests/bin/package-theme.mjs /path/to/yuki.zip
+```
+
+打包读取 **HEAD 中的主题文件与 `.distignore`**，排除开发、验证与协作文档，解开后顶层只有 `yuki/`。先提交要发布的改动；未提交修改和未跟踪文件不会进入包。命令会打印采用的提交号。
+
+`.distignore` 是唯一的排除清单，只支持从主题根目录起算的字面路径（目录可带末尾 `/`）、空行与 `#` 注释；通配、取反和转义语法会报错停下。
+
+包内容的验收也可直接用 Node 运行，不需要 WordPress 或 WP-CLI：
+
+```bash
+node tests/bin/verify-package.mjs
+```
 
 ## 结构
 
