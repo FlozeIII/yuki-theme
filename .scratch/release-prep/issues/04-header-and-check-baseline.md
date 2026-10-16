@@ -208,6 +208,11 @@ WordPress 认得出它是一支主题（`errors` 是 `false`），名字、作�
 所以报告里按红线如实写，但**这一条红不算在本件账上**，也没有去替那个会话改它——它正在动这几个
 文件（`holds.md` 里 `functions.php` 那一行就是它挂的）。要重跑请在它收工之后。
 
+审查之后又改了那个共用件（`f635f83`：头部解析从 `verify-package.mjs` 收进
+`tests/bin/theme-css.mjs`），所以**用到它的五份脚本各重跑一遍**：打包 56、点赞 63、嵌套 53、
+截图 15、说说版式 43，全绿（输出在 `.scratch/release-prep/04-regression-results-theme-css.log`）。
+其余脚本不 import 它，没有重跑。
+
 ### 九、共享文件与账
 
 - 动 `style.css` 之前按 `AGENTS.md` 第 1 条在 `.scratch/holds.md` 挂了一行，提交后删掉。
@@ -250,7 +255,10 @@ WordPress 认得出它是一支主题（`errors` 是 `false`），名字、作�
 工单轴另外指出一处备查：spec 说「已有那十项不动」，而改动前官方列的十个字段实际只存在八项——
 §1 里写「另外八个字段」比说「十项没动」更准。这不是本件的问题。
 
-复核结论：Standards 0 项未解决。那条气味已修，实跑 `node tests/bin/verify-package.mjs` **56/56**。
+复核结论：Standards 0 项未解决。那条气味已修（提交 `f635f83`），并请**同一个代理独立复验**过：
+解析只剩一处、参数语义写进了注释、行尾归一合一、工作区那份 CRLF 喂进去照样解析得对，
+无新硬违反；它另外核了 `theme-css.mjs` 不在 `AGENTS.md` 的共享清单上（清单里只有 `lib.mjs`），
+所以这次 refactor 不需要挂占位。实跑 `node tests/bin/verify-package.mjs` **56/56**。
 
 ## Spec
 
