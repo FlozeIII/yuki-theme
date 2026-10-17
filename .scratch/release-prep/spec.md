@@ -166,3 +166,5 @@ Theme Check 走官方的 WP-CLI 命令，**但它不进验收脚本**（理由�
 - **演示内容**：截图需要几篇带缩略图的文章；dev 环境里现有什么，开工时先核，太空就先造。造数脚本要写明它改了哪些全站设置——本地环境是所有会话共用的。
 - 这一件会**牵出下一件**：Theme Check 的 RECOMMENDED 里，「前台呈现与编辑器对齐」（编辑器样式、区块支持、对齐与图注的 CSS 类）是一类真缺陷，但属于设计工作，不在这件里。它和先前记下的「主题没有 `theme.json`」是同一件事。
 - 修那两处缺陷会碰到**文章模板**与 `inc/comment-deletion.php`——都不在 `AGENTS.md` 的共享文件清单上，所以这一件仍然不与**评论提交不刷新**撞车（那一件动的是 `functions.php`、`comments.php`、`assets/js/`）。
+- **2026-10-17 续篇**：Further Notes 里点名的下一件已拆到 `.scratch/editor-alignment/spec.md`（保持 classic 形态，见 ADR 0003）。发布收尾本身拆成两张新工单：`issues/05-release-mechanics.md`（发版机制与文档，可与编辑器并行）与 `issues/06-final-release-check.md`（从 `v1.1.0` 出包并跑最终体检，blocked by 05 与编辑器两件）。
+
