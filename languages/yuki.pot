@@ -2,9 +2,9 @@
 # This file is distributed under the GNU General Public License v2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Yuki 1.0.0\n"
+"Project-Id-Version: Yuki 1.1.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-17T04:04:47+00:00\n"
+"POT-Creation-Date: 2026-10-17T08:27:54+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,7 +18,7 @@ msgstr ""
 msgid "%1$s %2$s"
 msgstr ""
 
-#: functions.php:309
+#: functions.php:337
 msgid "%d 分钟阅读"
 msgstr ""
 
@@ -26,19 +26,19 @@ msgstr ""
 msgid "%s 条评论"
 msgstr ""
 
-#: functions.php:128
+#: functions.php:156
 msgid "Cravatar（境内镜像）"
 msgstr ""
 
-#: functions.php:123
+#: functions.php:151
 msgid "Gravatar 在境内访问不了，国内主机建议选 Cravatar 或自填镜像。"
 msgstr ""
 
-#: functions.php:127
+#: functions.php:155
 msgid "Gravatar（默认，境内不可用）"
 msgstr ""
 
-#: functions.php:91
+#: functions.php:119
 msgid "ICP 备案号"
 msgstr ""
 
@@ -46,15 +46,15 @@ msgstr ""
 msgid "Pingback："
 msgstr ""
 
-#: functions.php:112
+#: functions.php:140
 msgid "Yuki 头像设置"
 msgstr ""
 
-#: functions.php:148
+#: functions.php:176
 msgid "Yuki 说说设置"
 msgstr ""
 
-#: functions.php:81
+#: functions.php:109
 msgid "Yuki 页脚设置"
 msgstr ""
 
@@ -75,15 +75,15 @@ msgstr ""
 msgid "下一篇"
 msgstr ""
 
-#: functions.php:174
+#: functions.php:202
 msgid "不使用（关闭说说）"
 msgstr ""
 
-#: functions.php:567
+#: functions.php:595
 msgid "世界很大，今天先走到这里。"
 msgstr ""
 
-#: functions.php:25
+#: functions.php:29
 msgid "主导航"
 msgstr ""
 
@@ -101,7 +101,7 @@ msgid "你在《%s》下留了一条评论："
 msgstr ""
 
 #. translators: %s: 等待审核的评论条数（已按本地习惯分组，例如 1,234）
-#: functions.php:1093
+#: functions.php:1138
 msgid "你有 %s 条评论正在等待审核，通过之后才会公开显示。"
 msgstr ""
 
@@ -109,15 +109,15 @@ msgstr ""
 msgid "你的邮箱地址"
 msgstr ""
 
-#: functions.php:92
+#: functions.php:120
 msgid "例如：京ICP备2026XXXXXX号，显示在页脚备案区"
 msgstr ""
 
-#: functions.php:104
+#: functions.php:132
 msgid "例如：京公网安备 110XXXXXXXXX号（可选）"
 msgstr ""
 
-#: functions.php:103
+#: functions.php:131
 msgid "公安备案号"
 msgstr ""
 
@@ -125,7 +125,7 @@ msgstr ""
 msgid "共找到 %d 篇文章"
 msgstr ""
 
-#: footer.php:53
+#: footer.php:53 functions.php:63
 msgid "关闭"
 msgstr ""
 
@@ -165,7 +165,11 @@ msgstr ""
 msgid "回复 @%s"
 msgstr ""
 
-#: functions.php:122
+#: functions.php:64
+msgid "图片查看"
+msgstr ""
+
+#: functions.php:150
 msgid "头像来源"
 msgstr ""
 
@@ -177,19 +181,19 @@ msgstr ""
 msgid "它可能已经用过一次，或者已经过期了。想删的话，重新发一条评论即可拿到新链接。"
 msgstr ""
 
-#: functions.php:571
+#: functions.php:599
 msgid "安静下来，连呼吸都像在念一首诗。"
 msgstr ""
 
-#: functions.php:158
+#: functions.php:186
 msgid "承载说说的分类"
 msgstr ""
 
-#: functions.php:568
+#: functions.php:596
 msgid "把心事折成纸飞机，交给明天的风。"
 msgstr ""
 
-#: functions.php:753
+#: functions.php:790
 msgid "提交得有点快，这条没能收下——再点一次提交就好。"
 msgstr ""
 
@@ -209,11 +213,11 @@ msgstr ""
 msgid "搜索："
 msgstr ""
 
-#: functions.php:67
+#: functions.php:95
 msgid "放任意小工具即接管侧边栏；一个都不放则使用主题内置的默认小工具（作者简介、一言、分类、标签云、热门文章）。"
 msgstr ""
 
-#: functions.php:65
+#: functions.php:93
 msgid "文章侧边栏"
 msgstr ""
 
@@ -221,16 +225,24 @@ msgstr ""
 msgid "暂无数据"
 msgstr ""
 
-#: functions.php:566
+#: functions.php:594
 msgid "暮色四合的时候，连风都放慢了脚步。"
 msgstr ""
 
-#: functions.php:569
+#: functions.php:597
 msgid "月光落在窗台上，像一句没写完的诗。"
 msgstr ""
 
 #. Description of the theme
 msgid "极简 × 二次元风格 WordPress 博客主题。暖白底色 + 柔和堇紫主色，内置浅色/深色模式滑动开关，纵向文章列表，文章页带侧边栏与备案号占位。"
+msgstr ""
+
+#: functions.php:66
+msgid "查看大图"
+msgstr ""
+
+#: functions.php:65
+msgid "查看大图：%s"
 msgstr ""
 
 #: sidebar.php:65
@@ -245,6 +257,10 @@ msgstr ""
 msgid "没有找到匹配的文章，换个关键词试试。"
 msgstr ""
 
+#: inc/comment-likes.php:247
+msgid "点得有点快，歇一下再试。"
+msgstr ""
+
 #: template-parts/comment-like.php:29
 msgid "点赞"
 msgstr ""
@@ -257,7 +273,7 @@ msgstr ""
 msgid "独立创作者"
 msgstr ""
 
-#: functions.php:435
+#: functions.php:463
 msgid "短碎片内容。这个分类里的文章不出现在首页与博客列表，只在自己的归档里。"
 msgstr ""
 
@@ -269,11 +285,11 @@ msgstr ""
 msgid "编辑"
 msgstr ""
 
-#: functions.php:129
+#: functions.php:157
 msgid "自定义镜像"
 msgstr ""
 
-#: functions.php:139
+#: functions.php:167
 msgid "自定义镜像地址"
 msgstr ""
 
@@ -290,7 +306,7 @@ msgid "评论已删除"
 msgstr ""
 
 #. translators: %s: comment count
-#: functions.php:1113
+#: functions.php:1158
 msgid "评论（%s）"
 msgstr ""
 
@@ -298,11 +314,11 @@ msgstr ""
 msgid "说点什么"
 msgstr ""
 
-#: functions.php:431
+#: functions.php:459
 msgid "说说"
 msgstr ""
 
-#: functions.php:570
+#: functions.php:598
 msgid "路过人间，顺便看了看花开。"
 msgstr ""
 
@@ -310,11 +326,11 @@ msgstr ""
 msgid "还没有文章，去后台发布第一篇吧。"
 msgstr ""
 
-#: functions.php:690
+#: functions.php:727
 msgid "这一栏请保持空白"
 msgstr ""
 
-#: functions.php:159
+#: functions.php:187
 msgid "这个分类里的文章不出现在首页与博客列表，只保留它自己的归档页。选「不使用」则整项功能不生效。"
 msgstr ""
 
@@ -354,11 +370,11 @@ msgstr ""
 msgid "链接可能已经失效，或者内容被移到了别处。试试搜索："
 msgstr ""
 
-#: functions.php:140
+#: functions.php:168
 msgid "镜像站点地址，例如 https://mirror.example.cn，会拼成 地址/avatar/哈希；直接粘贴含 /avatar/ 的完整前缀也可以。仅在上一项选「自定义镜像」时生效。"
 msgstr ""
 
-#: functions.php:565
+#: functions.php:593
 msgid "雪落得很轻，像是怕吵醒这个下午。"
 msgstr ""
 

@@ -57,6 +57,14 @@ function yuki_assets() {
 
 	wp_enqueue_script( 'yuki-theme-toggle', get_template_directory_uri() . '/assets/js/theme-toggle.js', array(), $version, true );
 	wp_enqueue_script( 'yuki-search-overlay', get_template_directory_uri() . '/assets/js/search-overlay.js', array(), $version, true );
+	wp_enqueue_script( 'yuki-image-lightbox', get_template_directory_uri() . '/assets/js/image-lightbox.js', array(), $version, true );
+
+	wp_localize_script( 'yuki-image-lightbox', 'yukiImageLightbox', array(
+		'closeLabel'     => __( '关闭', 'yuki' ),
+		'dialogLabel'    => __( '图片查看', 'yuki' ),
+		'openLabel'      => __( '查看大图：%s', 'yuki' ),
+		'openLabelPlain' => __( '查看大图', 'yuki' ),
+	) );
 }
 add_action( 'wp_enqueue_scripts', 'yuki_assets' );
 

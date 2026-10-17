@@ -46,6 +46,9 @@ Tags: blog, minimal, two-columns, light, dark
   --yuki-layout-gap: 48px;
   --yuki-gutter: 24px;
 
+  --yuki-overlay-backdrop: rgba(24, 24, 31, 0.92);
+  --yuki-overlay-foreground: #F3F0EA;
+
   --yuki-shadow-1: 0 1px 2px rgba(45, 45, 53, 0.04), 0 1px 1px rgba(45, 45, 53, 0.02);
   --yuki-shadow-2: 0 8px 24px -8px rgba(45, 45, 53, 0.05);
 
@@ -777,10 +780,93 @@ img { max-width: 100%; height: auto; display: block; }
 
 body.yuki-search-locked { overflow: hidden; }
 
+/* ============================================
+   图片灯箱
+   ============================================ */
+.yuki-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 110;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.25s ease, visibility 0.25s;
+}
+.yuki-lightbox.is-open { opacity: 1; visibility: visible; }
+.yuki-lightbox-backdrop {
+  position: absolute;
+  inset: 0;
+  background: var(--yuki-overlay-backdrop);
+}
+.yuki-lightbox-figure {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  max-width: 92vw;
+  max-height: 90vh;
+  margin: 0;
+  transform: scale(0.98);
+  transition: transform 0.25s cubic-bezier(0.45, 0, 0.2, 1);
+}
+.yuki-lightbox.is-open .yuki-lightbox-figure { transform: none; }
+.yuki-lightbox-image {
+  width: auto;
+  height: auto;
+  max-width: 92vw;
+  max-height: 85vh;
+  object-fit: contain;
+  border-radius: var(--yuki-radius-lg);
+  background: var(--yuki-muted);
+}
+.yuki-lightbox-caption {
+  max-width: 92vw;
+  margin: 0;
+  color: var(--yuki-overlay-foreground);
+  font-size: 13px;
+  line-height: 1.6;
+  text-align: center;
+}
+.yuki-lightbox-close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  cursor: pointer;
+  border: 1px solid transparent;
+  border-radius: var(--yuki-radius-pill);
+  background: transparent;
+  color: var(--yuki-overlay-foreground);
+  font-size: 28px;
+  line-height: 1;
+  transition: border-color 180ms ease, background-color 180ms ease;
+}
+.yuki-lightbox-close:hover { border-color: var(--yuki-overlay-foreground); }
+.yuki-lightbox-close:focus-visible { outline: 2px solid var(--yuki-overlay-foreground); outline-offset: 2px; }
+body.yuki-lightbox-locked { overflow: hidden; }
+.yuki-prose img.yuki-lightbox-trigger,
+.yuki-shuoshuo-body img.yuki-lightbox-trigger { cursor: zoom-in; }
+
+@media (max-width: 640px) {
+  .yuki-lightbox { padding: 16px; }
+  .yuki-lightbox-close { top: 12px; right: 12px; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .yuki-search-overlay,
-  .yuki-search-dialog { transition: none; }
-  .yuki-search-dialog { transform: none; }
+  .yuki-search-dialog,
+  .yuki-lightbox,
+  .yuki-lightbox-figure { transition: none; }
+  .yuki-search-dialog,
+  .yuki-lightbox-figure { transform: none; }
 }
 
 /* 窄屏收紧导航 */

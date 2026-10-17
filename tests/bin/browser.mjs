@@ -94,8 +94,8 @@ export async function withBrowser(fn) {
  * @param {object} options   { colorScheme, width, height, expression }
  * @return {Promise<*>} expression 的值。
  */
-export async function measure(browser, url, { colorScheme = 'light', width = 1200, height = 900, expression } = {}) {
-  const page = await newPage(browser, { colorScheme });
+export async function measure(browser, url, { colorScheme = 'light', reducedMotion = false, width = 1200, height = 900, expression } = {}) {
+  const page = await newPage(browser, { colorScheme, reducedMotion });
 
   try {
     await page.setViewport(width, height);
@@ -116,7 +116,7 @@ export async function measure(browser, url, { colorScheme = 'light', width = 120
  * @param {object} options { colorScheme: 'light' | 'dark' }
  * @return {Promise<object>} { setViewport, goto, evaluate, close }
  */
-export async function newPage(browser, { colorScheme = 'light' } = {}) {
+export async function newPage(browser, { colorScheme = 'light', reducedMotion = false } = {}) {
   const res = await fetch(`http://127.0.0.1:${browser.port}/json/new?about:blank`, { method: 'PUT' });
   if (!res.ok) {
     throw new Error(`开页面失败：HTTP ${res.status}`);
@@ -161,7 +161,10 @@ export async function newPage(browser, { colorScheme = 'light' } = {}) {
   await send('Page.enable');
   await send('Runtime.enable');
   await send('Emulation.setEmulatedMedia', {
-    features: [{ name: 'prefers-color-scheme', value: colorScheme }],
+    features: [
+      { name: 'prefers-color-scheme', value: colorScheme },
+      { name: 'prefers-reduced-motion', value: reducedMotion ? 'reduce' : 'no-preference' },
+    ],
   });
 
   return {
