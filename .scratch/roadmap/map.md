@@ -43,7 +43,8 @@ Type: map
 ## 当前批次
 
 **第一批：A · 图片灯箱。** spec：`.scratch/image-lightbox/spec.md`；工单：
-`.scratch/image-lightbox/issues/01-image-lightbox.md`。纯前端、不引外部库、不进数据模型；验收走真浏览器。
+`.scratch/image-lightbox/issues/01-image-lightbox.md`。**实现已完成（`a48c32d`），待随下一版发布。**
+纯前端、不引外部库、不进数据模型；验收走真浏览器。
 
 ## 决策记录
 

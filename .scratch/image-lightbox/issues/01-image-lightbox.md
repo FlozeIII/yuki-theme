@@ -65,6 +65,8 @@ Tab 在浮层内循环、关闭后回到触发图；锁背景滚动；`prefers-r
 - `languages/yuki.pot` 按 `AGENTS.md` 第 5 条重建：`git archive HEAD` 到临时目录，只把本件改过的
   `functions.php` 拷进去，再跑生成器；**没有扫工作区**。生成 92 条，四条新文案的 `#:` 分别指向
   `functions.php:63-66`，与源码一致。
+- 重建时顺带补进了一条 `1.1.1` 补丁漏掉的文案：「点得有点快，歇一下再试。」（点赞限流，对应
+  `inc/comment-likes.php:247`）。上一版发版时 pot 没有跟着重建，这次一起补上。
 
 ### 验收
 
