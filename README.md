@@ -2,6 +2,10 @@
 
 暖白底色 + 柔和堇紫主色的极简博客主题，带浅色/深色模式滑动开关、纵向文章列表、文章页侧边栏与备案号占位。
 
+## 许可
+
+Yuki 以 **GPL-2.0-or-later** 发布，是 **100% GPL 兼容**的自由软件：可用于任何站点（包括商业站点），也可以修改、再分发。完整条款见 [`LICENSE`](LICENSE)。
+
 ## 安装
 
 1. 将发行包 `yuki.zip` 上传到 WordPress 后台 → 外观 → 主题 → 安装主题 → 上传主题；也可解压到 `wp-content/themes/`，得到 `yuki/` 目录。
@@ -24,7 +28,13 @@ node tests/bin/package-theme.mjs
 node tests/bin/package-theme.mjs /path/to/yuki.zip
 ```
 
-打包读取 **HEAD 中的主题文件与 `.distignore`**，排除开发、验证与协作文档，解开后顶层只有 `yuki/`。先提交要发布的改动；未提交修改和未跟踪文件不会进入包。命令会打印采用的提交号。
+要打某个标签或提交，而不是当前 `HEAD`，加 `--rev`：
+
+```bash
+node tests/bin/package-theme.mjs --rev v1.0.0 /path/to/yuki.zip
+```
+
+打包读取**指定提交**（默认 `HEAD`）中的主题文件与 `.distignore`，排除开发、验证与协作文档，解开后顶层只有 `yuki/`。先提交要发布的改动；未提交修改和未跟踪文件不会进入包。`--rev` 接受标签或提交号，打包前会先解析成提交；找不到时命令报错停下，不会退回 `HEAD`。命令会打印解析后的提交号。
 
 `.distignore` 是唯一的排除清单，只支持从主题根目录起算的字面路径（目录可带末尾 `/`）、空行与 `#` 注释；通配、取反和转义语法会报错停下。
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // 从已提交快照打包，避免共享工作树里别的会话的改动进入发布物。
-// 用法：node tests/bin/package-theme.mjs [输出.zip]
+// 用法：node tests/bin/package-theme.mjs [--rev <sha|tag>] [输出.zip]
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
@@ -9,12 +9,16 @@ import { spawnSync } from 'node:child_process';
 
 const repo = path.resolve(import.meta.dirname, '../..');
 
-function git(...args) {
-  const result = spawnSync('git', ['-c', 'core.autocrlf=false', ...args], {
+function gitResult(...args) {
+  return spawnSync('git', ['-c', 'core.autocrlf=false', ...args], {
     cwd: repo,
     encoding: 'utf8',
     env: { ...process.env, GIT_ATTR_NOSYSTEM: '1' },
   });
+}
+
+function git(...args) {
+  const result = gitResult(...args);
   if (result.error) throw result.error;
   if (result.status !== 0) throw new Error(result.stderr.trim() || `git 退出码 ${result.status}`);
   return result.stdout;
@@ -23,10 +27,40 @@ function git(...args) {
 let staging;
 let archiveRepo;
 try {
-  if (process.argv.length > 3) throw new Error('用法：node tests/bin/package-theme.mjs [输出.zip]');
-  const output = path.resolve(process.argv[2] || path.join(repo, '.scratch/release-prep/yuki.zip'));
+  const usage = '用法：node tests/bin/package-theme.mjs [--rev <sha|tag>] [输出.zip]';
+  let outputArg;
+  let requestedRev = 'HEAD';
+  let revGiven = false;
+  const args = process.argv.slice(2);
+  for (let index = 0; index < args.length; index++) {
+    const arg = args[index];
+    if (arg === '--rev') {
+      if (revGiven) throw new Error(`--rev 只能给一次。${usage}`);
+      const value = args[++index];
+      if (value === undefined || value === '' || value.startsWith('-')) {
+        throw new Error(`--rev 后面要跟一个提交号或标签。${usage}`);
+      }
+      requestedRev = value;
+      revGiven = true;
+    } else if (arg.startsWith('-')) {
+      throw new Error(`不认识的选项：${arg}。${usage}`);
+    } else if (outputArg !== undefined) {
+      throw new Error(`只能给一个输出文件。${usage}`);
+    } else {
+      outputArg = arg;
+    }
+  }
+  const output = path.resolve(outputArg || path.join(repo, '.scratch/release-prep/yuki.zip'));
   if (path.extname(output).toLowerCase() !== '.zip') throw new Error('输出文件必须以 .zip 结尾');
-  const revision = git('rev-parse', 'HEAD').trim();
+
+  // 标签与提交号都先解析成提交，再看后续读清单、出包只认这一个提交。
+  // 解析失败必须停下：退回 HEAD 会让「从标签出包」悄悄变成「从 HEAD 出包」。
+  const resolved = gitResult('rev-parse', '--verify', '--end-of-options', `${requestedRev}^{commit}`);
+  if (resolved.error) throw resolved.error;
+  if (resolved.status !== 0 || !resolved.stdout.trim()) {
+    throw new Error(`找不到提交或标签：${requestedRev}`);
+  }
+  const revision = resolved.stdout.trim();
   const exclusions = git('show', `${revision}:.distignore`)
     .split(/\r?\n/)
     .flatMap((raw, index) => {
@@ -57,7 +91,7 @@ try {
   git(`--git-dir=${archiveRepo}`, '-c', `core.attributesFile=${path.join(archiveRepo, 'no-attributes')}`,
     'archive', '--format=zip', '--prefix=yuki/', `--output=${staging}`, revision, '--', '.', ...exclusions);
   fs.renameSync(staging, output);
-  console.log(`主题包：${output}\n提交：${revision}`);
+  console.log(`主题包：${output}\n提交：${revision}${revGiven ? `\n来源：${requestedRev}` : ''}`);
 } catch (error) {
   console.error(`打包失败：${error.message}`);
   process.exitCode = 1;

@@ -54,6 +54,11 @@ function commit(cwd) {
     '-c', 'commit.gpgsign=false', 'commit', '--quiet', '-m', 'package fixture');
 }
 
+function sameEntries(left, right) {
+  return left.size === right.size &&
+    [...left].every(([name, content]) => right.has(name) && right.get(name).equals(content));
+}
+
 try {
   const output = path.join(temp, 'yuki.zip');
   const result = spawnSync(process.execPath, [path.join(repo, 'tests/bin/package-theme.mjs'), output], {
@@ -164,6 +169,46 @@ try {
   commit(fixture);
   const failed = spawnSync(process.execPath, [fixtureScript, preserved], { encoding: 'utf8' });
   check('报错不会毁掉已有包', failed.status !== 0 && fs.readFileSync(preserved, 'utf8') === 'previous good package');
+
+  section('指定提交出包');
+  // 独立的小仓库：标签指着第一次提交，HEAD 是第二次。两个提交的内容不同，
+  // 「从标签出包」才有别于「悄悄退回 HEAD」可看。
+  const revFixture = path.join(temp, 'rev-fixture');
+  fs.mkdirSync(path.join(revFixture, 'tests/bin'), { recursive: true });
+  fs.copyFileSync(path.join(repo, 'tests/bin/package-theme.mjs'),
+    path.join(revFixture, 'tests/bin/package-theme.mjs'));
+  fs.writeFileSync(path.join(revFixture, '.distignore'), 'tests/\n.distignore\n');
+  fs.writeFileSync(path.join(revFixture, 'index.php'), '<?php // 标签那一版\n');
+  git(revFixture, 'init', '--quiet');
+  git(revFixture, 'config', 'core.autocrlf', 'true');
+  commit(revFixture);
+  const taggedCommit = git(revFixture, 'rev-parse', 'HEAD').trim();
+  git(revFixture, 'tag', 'v0.0.1');
+  fs.writeFileSync(path.join(revFixture, 'index.php'), '<?php // HEAD 那一版\n');
+  fs.writeFileSync(path.join(revFixture, 'later.txt'), '标签之后才加的文件\n');
+  commit(revFixture);
+  const revScript = path.join(revFixture, 'tests/bin/package-theme.mjs');
+
+  const fromTag = path.join(temp, 'from-tag.zip');
+  const tagResult = spawnSync(process.execPath, [revScript, '--rev', 'v0.0.1', fromTag], { encoding: 'utf8' });
+  check('传标签能出包', tagResult.status === 0, tagResult.stderr.trim());
+  check('传标签时打印解析后的提交号', tagResult.stdout.includes(taggedCommit), tagResult.stdout.trim());
+  const tagEntries = fs.existsSync(fromTag) ? readZip(fromTag) : new Map();
+  check('标签出的是标签那个提交的内容',
+    tagEntries.get('yuki/index.php')?.toString() === '<?php // 标签那一版\n' && !tagEntries.has('yuki/later.txt'));
+
+  const fromSha = path.join(temp, 'from-sha.zip');
+  const shaResult = spawnSync(process.execPath, [revScript, '--rev', taggedCommit, fromSha], { encoding: 'utf8' });
+  check('传提交号能出包', shaResult.status === 0, shaResult.stderr.trim());
+  check('传提交号时打印解析后的提交号', shaResult.stdout.includes(taggedCommit), shaResult.stdout.trim());
+  check('标签与提交号打出的包内容一致',
+    tagEntries.size > 0 && sameEntries(tagEntries, fs.existsSync(fromSha) ? readZip(fromSha) : new Map()));
+
+  const missingZip = path.join(temp, 'missing-rev.zip');
+  const missingResult = spawnSync(process.execPath, [revScript, '--rev', 'no-such-rev', missingZip], { encoding: 'utf8' });
+  check('不存在的提交会报错停下', missingResult.status !== 0, missingResult.stderr.trim());
+  check('错误指出找不到哪个提交', missingResult.stderr.includes('no-such-rev'), missingResult.stderr.trim());
+  check('不存在的提交不会退回 HEAD 出包', !fs.existsSync(missingZip));
 } finally {
   fs.rmSync(temp, { recursive: true, force: true });
 }
