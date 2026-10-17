@@ -205,6 +205,34 @@ img { max-width: 100%; height: auto; display: block; }
 .yuki-empty-state .yuki-mascot { margin: 0 auto 16px; }
 .yuki-404 .yuki-mascot { margin: 0 auto 20px; }
 
+/* 空状态：对话气泡，尖角朝上指向雪兔 */
+.yuki-empty-state p {
+  position: relative;
+  display: inline-block;
+  max-width: 420px;
+  margin: 0 auto;
+  padding: 14px 18px;
+  border: 1px solid var(--yuki-border);
+  border-radius: var(--yuki-radius-lg);
+  background: var(--yuki-card);
+  color: var(--yuki-ink-2);
+  font-size: 15px;
+  line-height: 1.7;
+  text-align: left;
+}
+.yuki-empty-state p::before {
+  content: "";
+  position: absolute;
+  top: -7px;
+  left: 50%;
+  width: 12px;
+  height: 12px;
+  transform: translateX(-50%) rotate(45deg);
+  border-left: 1px solid var(--yuki-border);
+  border-top: 1px solid var(--yuki-border);
+  background: var(--yuki-card);
+}
+
 @media (max-width: 640px) {
   .yuki-mascot--lg { width: 88px; height: 88px; }
   .yuki-hero-title-row { gap: 12px; }
@@ -251,14 +279,32 @@ img { max-width: 100%; height: auto; display: block; }
 .yuki-post-meta { font-size: 12px; color: var(--yuki-muted-foreground); margin-bottom: 6px; display: flex; gap: 10px; flex-wrap: wrap; }
 .yuki-post-title { margin: 0 0 6px; font-size: 19px; font-weight: 600; line-height: 1.35; transition: color 180ms ease; }
 .yuki-post-excerpt { margin: 0; font-size: 14px; color: var(--yuki-ink-2); }
+/* 分类徽章：贴纸（轻微旋转 + 虚线边 + 一小段半透明胶带） */
 .yuki-cat-badge {
+  position: relative;
   display: inline-block;
-  padding: 2px 10px;
+  padding: 2px 12px;
+  border: 1px dashed var(--yuki-border);
   border-radius: var(--yuki-radius-pill);
-  background: var(--yuki-muted);
+  background: var(--yuki-card);
   color: var(--yuki-foreground);
   font-size: 12px;
+  transform: rotate(-2deg);
+  transition: transform 180ms ease;
 }
+.yuki-cat-badge::before {
+  content: "";
+  position: absolute;
+  top: -6px;
+  left: 50%;
+  width: 22px;
+  height: 10px;
+  transform: translateX(-50%) rotate(-4deg);
+  border-radius: 2px;
+  background: var(--yuki-primary);
+  opacity: .18;
+}
+.yuki-cat-badge:hover { transform: rotate(0); }
 
 /* 分页 */
 .yuki-pagination { display: flex; justify-content: center; gap: 8px; padding: 40px 0 64px; }
@@ -772,6 +818,7 @@ img { max-width: 100%; height: auto; display: block; }
 .yuki-post-item a:focus-visible,
 .yuki-post-nav a:focus-visible,
 .yuki-related-item a:focus-visible,
+.yuki-cat-badge:focus-visible,
 .yuki-tag:focus-visible {
   outline: 2px solid var(--yuki-ring);
   outline-offset: 2px;
@@ -972,6 +1019,8 @@ body.yuki-lightbox-locked { overflow: hidden; }
   .yuki-post-item:hover .yuki-post-thumb { transform: none; }
   .yuki-post-nav a { transition: border-color 180ms ease; }
   .yuki-post-nav a:hover { transform: none; }
+  .yuki-cat-badge { transition: none; }
+  .yuki-cat-badge:hover { transform: rotate(-2deg); }
 }
 
 /* 窄屏收紧导航 */
