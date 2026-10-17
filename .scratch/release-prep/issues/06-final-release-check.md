@@ -142,3 +142,31 @@ Yuki 1.1.0
 
 结果：<https://github.com/FlozeIII/yuki-theme/releases/tag/v1.1.0>，挂上 `yuki-1.1.0.zip`
 （168,746 字节），非草稿、非预发布。
+
+### 八、v1.1.1：发布后补丁
+
+发布后补丁（`f1887ed`）修了三处：令牌加上界一周、评论兜底判定要求 `comment_post_ID`、
+点赞每 IP 每分钟 60 次；同时把资产版本收口到 `yuki_asset_version()`，`inc/` 里两处不再写死
+`1.0.0`。
+
+- 发布提交 `df045f0`，标签 `v1.1.1`（本地已打，待推送）。
+- 包：`.scratch/release-prep/yuki-1.1.1.zip`，revision `df045f0`，与标签一致。
+- `verify-package` **65/65**。
+- Theme Check（对产物）：**REQUIRED 1 · WARNING 1 · RECOMMENDED 7 · INFO 5**，与 1.1.0 相同。
+- 临时 WordPress 根已删，共享 core 与站点 200 复核正常。
+
+**受影响评论回归（发布提交 `df045f0`）：**
+
+| 脚本 | 通过 |
+| --- | --- |
+| verify-comment-deletion | 38/38 |
+| verify-comment-likes | 63/63 |
+| verify-comment-nesting | 53/53 |
+| verify-comment-pending | 33/33 |
+| verify-comment-spam | 34/34 |
+| verify-comment-submit | 173/173 |
+
+`verify-comment-submit` 第一次跑是 172/173，红在 `guard-scope --context=form`：探针模拟表单提交时
+没有塞 `comment_post_ID`，而真实表单一定带它。修的是**测试探针**，不是产品代码；补上后复跑
+173/173。之前两次红的「太快 → 重试」浏览器场景本次也通过，仍按
+`comment-submit-ajax/issues/04-browser-retry-flake.md` 观察。

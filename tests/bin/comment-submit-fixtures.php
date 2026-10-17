@@ -466,6 +466,12 @@ switch ( $yuki_fx_cmd ) {
 			yuki_comment_token_field() => '',
 		);
 
+		// 表单那条路的处境要模拟完整：真实表单一定带 comment_post_ID，
+		// 守卫的兜底判定也要求它（否则别的插件在 POST 里调 wp_new_comment() 会被误吞）。
+		if ( 'form' === $context ) {
+			$_POST['comment_post_ID'] = yuki_fx_post_id();
+		}
+
 		$content = YUKI_SUBMIT_MARK . ' 守卫范围探针 ' . $context;
 
 		$result = wp_new_comment(
