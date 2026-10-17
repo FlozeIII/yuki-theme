@@ -54,6 +54,10 @@ Type: map
 `.scratch/motion/issues/01-motion.md`。**实现已完成，待随下一版发布。**
 只停运动、保留颜色；列表 hover 背景 + 1px 浮起；上下篇 1px；补统一焦点环。
 
+**第四批：D · 前台发说说。** spec：`.scratch/shuoshuo-composer/spec.md`；工单：
+`.scratch/shuoshuo-composer/issues/01-shuoshuo-composer.md`。**实现已完成，待随下一版发布。**
+说说归档顶部写作框；`publish_posts` 才能用；表单 POST + 重定向；失败保留正文。
+
 ## 决策记录
 
 - 2026-10-17：四类全要，按批推进；第一批选图片灯箱。极简线补上「作者工具」判据（见 `CONTEXT.md`）。
@@ -67,9 +71,10 @@ Type: map
   无关联不占位；说说文章不显示。实现与验收已完成。
 - 2026-10-17：第三批选**动效收敛**：`prefers-reduced-motion` 只停运动、保留颜色；列表 hover
   背景 + 缩略图 1px、上下篇 1px；列表/上下篇/关联/标签补同一枚焦点环。实现与验收已完成。
+- 2026-10-17：第四批选**前台发说说**：说说归档顶部写作框，`publish_posts` 才能用；
+  表单 POST + 重定向；失败保留正文。实现与验收已完成。
 - 测试基建另有一张 `comment-submit-ajax/issues/04-browser-retry-flake.md`，不挡路线图。
 
 ## Fog
 
 - 灯箱之后是否要同页多图的左右切换（B/C）。
-- 前台发说说的权限与端点形状未定。

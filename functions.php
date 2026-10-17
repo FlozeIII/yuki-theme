@@ -1172,3 +1172,4 @@ require_once get_template_directory() . '/inc/comment-deletion.php';
 require_once get_template_directory() . '/inc/comment-likes.php';
 require_once get_template_directory() . '/inc/comment-submit.php';
 require_once get_template_directory() . '/inc/related-posts.php';
+require_once get_template_directory() . '/inc/shuoshuo-composer.php';

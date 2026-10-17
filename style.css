@@ -483,6 +483,36 @@ img { max-width: 100%; height: auto; display: block; }
   .yuki-shuoshuo-item { padding: 16px 0; }
 }
 
+/* 前台发说说：归档顶部的写作框 */
+.yuki-shuoshuo-composer {
+  margin: 0 0 32px;
+  padding: 20px;
+  border: 1px solid var(--yuki-border);
+  border-radius: var(--yuki-radius-lg);
+  background: var(--yuki-card);
+}
+.yuki-shuoshuo-composer textarea {
+  width: 100%;
+  min-height: 96px;
+  padding: 12px 14px;
+  border: 1px solid var(--yuki-input);
+  border-radius: var(--yuki-radius-md);
+  background: var(--yuki-background);
+  color: var(--yuki-ink);
+  font-family: inherit;
+  font-size: 15px;
+  line-height: 1.7;
+  resize: vertical;
+}
+.yuki-shuoshuo-composer textarea:focus {
+  outline: 2px solid var(--yuki-ring);
+  outline-offset: 1px;
+  border-color: var(--yuki-primary);
+}
+.yuki-shuoshuo-composer-actions { display: flex; justify-content: flex-end; margin-top: 12px; }
+.yuki-shuoshuo-composer-message { margin: 0 0 12px; font-size: 14px; color: var(--yuki-ink-2); }
+.yuki-shuoshuo-composer-message.is-error { padding-left: 10px; border-left: 3px solid var(--yuki-border); }
+
 /* ============================================
    评论
    ============================================ */

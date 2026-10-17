@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Yuki 1.1.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-17T08:54:17+00:00\n"
+"POT-Creation-Date: 2026-10-17T09:40:29+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -105,6 +105,10 @@ msgstr ""
 msgid "你有 %s 条评论正在等待审核，通过之后才会公开显示。"
 msgstr ""
 
+#: template-parts/shuoshuo-composer.php:21
+msgid "你没有发布说说的权限。"
+msgstr ""
+
 #: footer.php:18
 msgid "你的邮箱地址"
 msgstr ""
@@ -147,6 +151,18 @@ msgstr ""
 
 #: inc/comment-deletion.php:255
 msgid "删除这条评论？"
+msgstr ""
+
+#: template-parts/shuoshuo-composer.php:31
+msgid "发一条说说"
+msgstr ""
+
+#: template-parts/shuoshuo-composer.php:19
+msgid "发布失败，请再试一次。"
+msgstr ""
+
+#: template-parts/shuoshuo-composer.php:48
+msgid "发布说说"
 msgstr ""
 
 #: comments.php:48
@@ -318,8 +334,24 @@ msgstr ""
 msgid "说点什么"
 msgstr ""
 
+#: template-parts/shuoshuo-composer.php:44 template-parts/shuoshuo-composer.php:45
+msgid "说点什么…"
+msgstr ""
+
+#: template-parts/shuoshuo-composer.php:17
+msgid "说点什么再发布。"
+msgstr ""
+
 #: functions.php:459
 msgid "说说"
+msgstr ""
+
+#: template-parts/shuoshuo-composer.php:20
+msgid "说说分类还没有配置。"
+msgstr ""
+
+#: template-parts/shuoshuo-composer.php:33
+msgid "说说已发布。"
 msgstr ""
 
 #: functions.php:598
@@ -380,6 +412,10 @@ msgstr ""
 
 #: functions.php:593
 msgid "雪落得很轻，像是怕吵醒这个下午。"
+msgstr ""
+
+#: template-parts/shuoshuo-composer.php:18
+msgid "页面过期了，刷新后再试。"
 msgstr ""
 
 #: footer.php:29

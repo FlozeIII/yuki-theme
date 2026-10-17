@@ -30,6 +30,10 @@ $yuki_is_shuoshuo = $yuki_shuoshuo_id && is_category() && (int) get_queried_obje
 </section>
 
 <main class="yuki-container">
+	<?php if ( $yuki_is_shuoshuo ) : ?>
+		<?php get_template_part( 'template-parts/shuoshuo-composer' ); ?>
+	<?php endif; ?>
+
 	<?php if ( have_posts() ) : ?>
 		<div class="<?php echo $yuki_is_shuoshuo ? 'yuki-shuoshuo-list' : 'yuki-post-list'; ?>">
 			<?php
