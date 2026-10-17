@@ -37,10 +37,13 @@ add_action( 'after_setup_theme', 'yuki_setup' );
  * 资源加载
  * --------------------------------------------- */
 function yuki_assets() {
-	wp_enqueue_style( 'yuki-style', get_stylesheet_uri(), array(), '1.0.0' );
+	// 资产版本跟着 style.css 的 Version 走：发版时只改一处，就不会有人拿到缓存里的旧样式。
+	$version = wp_get_theme()->get( 'Version' );
 
-	wp_enqueue_script( 'yuki-theme-toggle', get_template_directory_uri() . '/assets/js/theme-toggle.js', array(), '1.0.0', true );
-	wp_enqueue_script( 'yuki-search-overlay', get_template_directory_uri() . '/assets/js/search-overlay.js', array(), '1.0.0', true );
+	wp_enqueue_style( 'yuki-style', get_stylesheet_uri(), array(), $version );
+
+	wp_enqueue_script( 'yuki-theme-toggle', get_template_directory_uri() . '/assets/js/theme-toggle.js', array(), $version, true );
+	wp_enqueue_script( 'yuki-search-overlay', get_template_directory_uri() . '/assets/js/search-overlay.js', array(), $version, true );
 }
 add_action( 'wp_enqueue_scripts', 'yuki_assets' );
 
