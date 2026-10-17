@@ -86,6 +86,44 @@ function yuki_early_theme_script() {
 add_action( 'wp_head', 'yuki_early_theme_script', 1 );
 
 /* ---------------------------------------------
+ * 季节点缀色
+ * --------------------------------------------- */
+/**
+ * 按站点时区的月份返回 season-* 类。3–5 春、6–8 夏、9–11 秋、其余冬。
+ *
+ * @param int $month 1–12；0 表示取当前月份。
+ * @return string
+ */
+function yuki_season_slug( $month = 0 ) {
+	$month = $month ? (int) $month : (int) wp_date( 'n' );
+
+	if ( $month >= 3 && $month <= 5 ) {
+		return 'season-spring';
+	}
+	if ( $month >= 6 && $month <= 8 ) {
+		return 'season-summer';
+	}
+	if ( $month >= 9 && $month <= 11 ) {
+		return 'season-autumn';
+	}
+
+	return 'season-winter';
+}
+
+/**
+ * 给 body 加一个 season-* 类，供 CSS 只染装饰元素。
+ *
+ * @param string[] $classes body 类名。
+ * @return string[]
+ */
+function yuki_season_body_class( $classes ) {
+	$classes[] = yuki_season_slug();
+
+	return $classes;
+}
+add_filter( 'body_class', 'yuki_season_body_class' );
+
+/* ---------------------------------------------
  * 侧边栏
  * --------------------------------------------- */
 function yuki_widgets_init() {

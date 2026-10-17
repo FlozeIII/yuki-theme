@@ -49,6 +49,8 @@ Tags: blog, minimal, two-columns, light, dark
   --yuki-overlay-backdrop: rgba(24, 24, 31, 0.92);
   --yuki-overlay-foreground: #F3F0EA;
 
+  --yuki-season: #A5B4FC;
+
   --yuki-shadow-1: 0 1px 2px rgba(45, 45, 53, 0.04), 0 1px 1px rgba(45, 45, 53, 0.02);
   --yuki-shadow-2: 0 8px 24px -8px rgba(45, 45, 53, 0.05);
 
@@ -75,6 +77,12 @@ Tags: blog, minimal, two-columns, light, dark
   --yuki-ink-2: #C8C8D0;
   --yuki-ink-3: #9CA3AF;
 }
+
+/* 季节点缀：只染雪兔与贴纸胶带，不改主色/正文/按钮 */
+body.season-spring { --yuki-season: #F2A6C2; }
+body.season-summer { --yuki-season: #7CC7E8; }
+body.season-autumn { --yuki-season: #E8A33D; }
+body.season-winter { --yuki-season: #A5B4FC; }
 
 /* ============================================
    Base
@@ -301,7 +309,7 @@ img { max-width: 100%; height: auto; display: block; }
   height: 10px;
   transform: translateX(-50%) rotate(-4deg);
   border-radius: 2px;
-  background: var(--yuki-primary);
+  background: var(--yuki-season);
   opacity: .18;
 }
 .yuki-cat-badge:hover { transform: rotate(0); }

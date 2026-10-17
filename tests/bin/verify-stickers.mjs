@@ -25,7 +25,7 @@ const css = themeCss();
 
 check('贴纸有旋转', /\.yuki-cat-badge\s*\{[^}]*transform:\s*rotate\(-2deg\)/.test(css));
 check('贴纸有虚线边', /\.yuki-cat-badge\s*\{[^}]*border:\s*1px dashed var\(--yuki-border\)/.test(css));
-check('贴纸有胶带', /\.yuki-cat-badge::before\s*\{[^}]*background:\s*var\(--yuki-primary\)/.test(css));
+check('贴纸有胶带', /\.yuki-cat-badge::before\s*\{[^}]*background:\s*var\(--yuki-season\)/.test(css));
 check('贴纸 hover 转正', css.includes('.yuki-cat-badge:hover { transform: rotate(0); }'));
 
 check('气泡有边框与圆角',
