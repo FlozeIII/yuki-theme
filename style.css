@@ -44,6 +44,7 @@ Tags: blog, minimal, two-columns, light, dark
   --yuki-container-width: 1120px;
   --yuki-sidebar-width: 300px;
   --yuki-layout-gap: 48px;
+  --yuki-gutter: 24px;
 
   --yuki-shadow-1: 0 1px 2px rgba(45, 45, 53, 0.04), 0 1px 1px rgba(45, 45, 53, 0.02);
   --yuki-shadow-2: 0 8px 24px -8px rgba(45, 45, 53, 0.05);
@@ -88,8 +89,8 @@ body {
 }
 a { color: inherit; text-decoration: none; }
 img { max-width: 100%; height: auto; display: block; }
-.yuki-container { max-width: var(--yuki-container-width); margin: 0 auto; padding: 0 24px; }
-.yuki-narrow { max-width: var(--yuki-content-width); margin: 0 auto; padding: 0 24px; }
+.yuki-container { max-width: var(--yuki-container-width); margin: 0 auto; padding: 0 var(--yuki-gutter); }
+.yuki-narrow { max-width: var(--yuki-content-width); margin: 0 auto; padding: 0 var(--yuki-gutter); }
 
 /* 二次元点缀：柔和圆点纹理 */
 .yuki-dot-pattern {
@@ -264,14 +265,21 @@ img { max-width: 100%; height: auto; display: block; }
 }
 
 /* 正文排版 */
-.yuki-prose { font-size: 16px; line-height: 1.75; color: var(--yuki-ink-2); }
-.yuki-prose > *:first-child { margin-top: 0; }
-.yuki-prose h2 { font-size: 26px; font-weight: 600; margin: 2em 0 0.7em; color: var(--yuki-foreground); line-height: 1.3; }
-.yuki-prose h3 { font-size: 20px; font-weight: 600; margin: 1.7em 0 0.6em; color: var(--yuki-foreground); }
-.yuki-prose p { margin: 0 0 1.3em; }
-.yuki-prose a { color: var(--yuki-primary-700); text-decoration: underline; text-underline-offset: 3px; }
-.dark .yuki-prose a { color: var(--yuki-primary); }
-.yuki-prose blockquote {
+:is(.yuki-prose, .editor-styles-wrapper) { font-size: 16px; line-height: 1.75; color: var(--yuki-ink-2); }
+
+/* 编辑器画布：与单篇正文文字宽一致（768 − 两侧 24）；只在编辑器里出现。 */
+.editor-styles-wrapper {
+  max-width: calc(var(--yuki-content-width) - 2 * var(--yuki-gutter));
+  margin-left: auto;
+  margin-right: auto;
+}
+:is(.yuki-prose, .editor-styles-wrapper) > *:first-child { margin-top: 0; }
+:is(.yuki-prose, .editor-styles-wrapper) h2 { font-size: 26px; font-weight: 600; margin: 2em 0 0.7em; color: var(--yuki-foreground); line-height: 1.3; }
+:is(.yuki-prose, .editor-styles-wrapper) h3 { font-size: 20px; font-weight: 600; margin: 1.7em 0 0.6em; color: var(--yuki-foreground); }
+:is(.yuki-prose, .editor-styles-wrapper) p { margin: 0 0 1.3em; }
+:is(.yuki-prose, .editor-styles-wrapper) a { color: var(--yuki-primary-700); text-decoration: underline; text-underline-offset: 3px; }
+.dark :is(.yuki-prose, .editor-styles-wrapper) a { color: var(--yuki-primary); }
+:is(.yuki-prose, .editor-styles-wrapper) blockquote {
   margin: 1.8em 0;
   padding: 1em 1.25em;
   border-left: 3px solid var(--yuki-primary);
@@ -279,9 +287,9 @@ img { max-width: 100%; height: auto; display: block; }
   background: var(--yuki-muted);
   font-style: italic;
 }
-.yuki-prose ul, .yuki-prose ol { margin: 0 0 1.3em; padding-left: 1.5em; }
-.yuki-prose li { margin-bottom: 0.45em; }
-.yuki-prose code {
+:is(.yuki-prose, .editor-styles-wrapper) ul, :is(.yuki-prose, .editor-styles-wrapper) ol { margin: 0 0 1.3em; padding-left: 1.5em; }
+:is(.yuki-prose, .editor-styles-wrapper) li { margin-bottom: 0.45em; }
+:is(.yuki-prose, .editor-styles-wrapper) code {
   font-family: var(--yuki-font-mono);
   font-size: 0.9em;
   background: var(--yuki-muted);
@@ -289,42 +297,42 @@ img { max-width: 100%; height: auto; display: block; }
   border-radius: var(--yuki-radius-sm);
   color: var(--yuki-primary-700);
 }
-.dark .yuki-prose code { color: var(--yuki-primary); }
-.yuki-prose pre {
+.dark :is(.yuki-prose, .editor-styles-wrapper) code { color: var(--yuki-primary); }
+:is(.yuki-prose, .editor-styles-wrapper) pre {
   background: var(--yuki-card);
   border: 1px solid var(--yuki-border);
   border-radius: var(--yuki-radius-lg);
   padding: 1.2em;
   overflow-x: auto;
 }
-.yuki-prose pre code { background: transparent; padding: 0; }
-.yuki-prose figure { margin: 2em 0; }
-.yuki-prose figcaption { text-align: center; font-size: 13px; color: var(--yuki-muted-foreground); margin-top: 0.7em; }
-.yuki-prose img { border-radius: var(--yuki-radius-lg); }
+:is(.yuki-prose, .editor-styles-wrapper) pre code { background: transparent; padding: 0; }
+:is(.yuki-prose, .editor-styles-wrapper) figure { margin: 2em 0; }
+:is(.yuki-prose, .editor-styles-wrapper) figcaption { text-align: center; font-size: 13px; color: var(--yuki-muted-foreground); margin-top: 0.7em; }
+:is(.yuki-prose, .editor-styles-wrapper) img { border-radius: var(--yuki-radius-lg); }
 
 /* 对齐、图注与宽块。宽度的名字在 :root；单篇里宽块受主列约束，不跨侧栏。 */
 /* 浮动图片可能在正文末尾还没收完；清在这里，别让它流进标签、上下篇与评论区。 */
-.yuki-prose::after { content: ""; display: table; clear: both; }
-.yuki-prose .alignleft { float: left; margin: 0.4em 1.2em 1em 0; }
-.yuki-prose .alignright { float: right; margin: 0.4em 0 1em 1.2em; }
-.yuki-prose .aligncenter { display: block; margin: 1.5em auto; }
-.yuki-prose .alignwide { width: 100%; max-width: var(--yuki-wide-width); }
-.yuki-prose .alignfull { width: 100%; max-width: 100%; }
+:is(.yuki-prose, .editor-styles-wrapper)::after { content: ""; display: table; clear: both; }
+:is(.yuki-prose, .editor-styles-wrapper) .alignleft { float: left; margin: 0.4em 1.2em 1em 0; }
+:is(.yuki-prose, .editor-styles-wrapper) .alignright { float: right; margin: 0.4em 0 1em 1.2em; }
+:is(.yuki-prose, .editor-styles-wrapper) .aligncenter { display: block; margin: 1.5em auto; }
+:is(.yuki-prose, .editor-styles-wrapper) .alignwide { width: 100%; max-width: var(--yuki-wide-width); }
+:is(.yuki-prose, .editor-styles-wrapper) .alignfull { width: 100%; max-width: 100%; }
 
 /* 无侧栏的窄栏模板（page.php）才真正放宽；单篇不套这条，宽块止于主列。 */
-.yuki-narrow .yuki-prose .alignwide,
-.yuki-narrow .yuki-prose .alignfull {
+.yuki-narrow :is(.yuki-prose, .editor-styles-wrapper) .alignwide,
+.yuki-narrow :is(.yuki-prose, .editor-styles-wrapper) .alignfull {
   width: min(var(--yuki-wide-width), calc(100vw - 48px));
   margin-left: calc((100% - min(var(--yuki-wide-width), calc(100vw - 48px))) / 2);
   margin-right: 0;
 }
 
-.yuki-prose .wp-caption { max-width: 100%; margin: 1.6em 0; }
-.yuki-prose .wp-caption.alignleft { margin: 0.4em 1.2em 1em 0; }
-.yuki-prose .wp-caption.alignright { margin: 0.4em 0 1em 1.2em; }
-.yuki-prose .wp-caption img { margin: 0; }
-.yuki-prose .wp-caption-text,
-.yuki-prose .gallery-caption {
+:is(.yuki-prose, .editor-styles-wrapper) .wp-caption { max-width: 100%; margin: 1.6em 0; }
+:is(.yuki-prose, .editor-styles-wrapper) .wp-caption.alignleft { margin: 0.4em 1.2em 1em 0; }
+:is(.yuki-prose, .editor-styles-wrapper) .wp-caption.alignright { margin: 0.4em 0 1em 1.2em; }
+:is(.yuki-prose, .editor-styles-wrapper) .wp-caption img { margin: 0; }
+:is(.yuki-prose, .editor-styles-wrapper) .wp-caption-text,
+:is(.yuki-prose, .editor-styles-wrapper) .gallery-caption {
   margin-top: 0.6em;
   font-size: 13px;
   line-height: 1.6;
@@ -333,8 +341,8 @@ img { max-width: 100%; height: auto; display: block; }
 }
 
 @media (max-width: 640px) {
-  .yuki-prose .alignleft,
-  .yuki-prose .alignright { float: none; margin-left: auto; margin-right: auto; }
+  :is(.yuki-prose, .editor-styles-wrapper) .alignleft,
+  :is(.yuki-prose, .editor-styles-wrapper) .alignright { float: none; margin-left: auto; margin-right: auto; }
 }
 
 /* 标签 & 上下篇 */

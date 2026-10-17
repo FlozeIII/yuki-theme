@@ -88,9 +88,10 @@ const center = blocksMentioning('.aligncenter').join('\n');
 check('左对齐是左浮动', /float:\s*left/.test(left), left);
 check('右对齐是右浮动', /float:\s*right/.test(right), right);
 check('居中是块级 + 自动外边距', /display:\s*block/.test(center) && /margin:\s*1\.5em\s+auto/.test(center), center);
+const proseAfter = ':is(.yuki-prose, .editor-styles-wrapper)::after';
 check('正文容器清除浮动，浮动不会漏进后面的区块',
-  /clear:\s*both/.test(cssBlock(css, '.yuki-prose::after')),
-  cssBlock(css, '.yuki-prose::after') || '找不到 .yuki-prose::after');
+  /clear:\s*both/.test(cssBlock(css, proseAfter)),
+  cssBlock(css, proseAfter) || `找不到 ${proseAfter}`);
 
 const newBodies = CLASSES.flatMap((name) => blocksMentioning(name)).join('\n');
 check('新增规则没有硬编码颜色',

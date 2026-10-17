@@ -178,6 +178,27 @@ export async function newPage(browser, { colorScheme = 'light' } = {}) {
       await loaded;
     },
 
+    /**
+     * 给当前浏览器种一枚 cookie。编辑器验收要带着登录态打开 wp-admin，
+     * 而登录 cookie 可以由 WP 自己生成（见 editor-styles-fixtures.php）。
+     */
+    async setCookie({ name, value, url, domain, path = '/', httpOnly = true, sameSite = 'Lax', secure = false }) {
+      const result = await send('Network.setCookie', {
+        name, value, url, domain, path, httpOnly, sameSite, secure,
+      });
+      if (!result.success) throw new Error(`设置 cookie 失败：${name}`);
+    },
+
+    /** 轮询一段表达式，直到它为真；超时抛错。编辑器是异步长出来的，goto 的 load 不等它。 */
+    async waitFor(expression, timeoutMs = 30000, intervalMs = 250) {
+      const started = Date.now();
+      while (Date.now() - started < timeoutMs) {
+        if (await this.evaluate(expression)) return true;
+        await sleep(intervalMs);
+      }
+      throw new Error(`等待超时（${timeoutMs}ms）：${expression.slice(0, 120)}`);
+    },
+
     /** 在页面里跑一段表达式，返回它的值；页面里抛错就当失败抛出来。 */
     async evaluate(expression) {
       const result = await send('Runtime.evaluate', {
