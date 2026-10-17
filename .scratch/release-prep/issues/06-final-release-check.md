@@ -25,10 +25,9 @@
 
 **Status:** ready-for-agent
 
-实现与验收已完成（发布提交 `7953be7`；标签本地已打，**推送与 GitHub release 待站主确认**）。
+实现与验收已完成（发布提交 `7953be7`；`v1.1.0` 已推送并发布）。
 
-- [ ] `style.css` 的 `Version` 为 `1.1.0`，`v1.1.0` 打在发布提交上并推送
-      —— 本地已完成（`Version: 1.1.0`，`v1.1.0` → `7953be7`）；**推送是外向动作，待确认**
+- [x] `style.css` 的 `Version` 为 `1.1.0`，`v1.1.0` 打在发布提交上并推送
 - [x] 包用 `--rev v1.1.0` 产出，顶层目录为 `yuki/`，打印的提交号与标签一致
 - [x] `verify-package.mjs` 全绿，通过数记进本工单
 - [x] Theme Check 在**产物**上跑，四级计数与 01–04 的基线对得上
@@ -36,7 +35,7 @@
 - [x] 产物里的 `README.md` 含 GPL 声明
 - [x] 全套 `verify-*.mjs` 在发布提交上通过，数字记进本工单
 - [x] release notes 由 `git log v1.0.0..v1.1.0` 整理，未混入别的会话的提交
-- [ ] GitHub release 与 zip 已挂上（站主确认后）
+- [x] GitHub release 与 zip 已挂上（站主确认后）
 - [x] 共享环境没有被清空或改坏；`holds.md` 里自己的行已删除
 
 ## Comments
@@ -130,9 +129,13 @@ Yuki 1.1.0
 - Theme Check 仍报 1 条 REQUIRED（缺 readme.txt）——自托管分发下刻意不写，见 ADR 0002。
 ```
 
-### 七、待确认的外向动作
+### 七、外向动作（已执行）
 
-1. `git push origin v1.1.0`（标签目前只在本地）。
-2. 建 GitHub release，挂上 `.scratch/release-prep/yuki-1.1.0.zip`，正文用上面的 release notes。
+站主确认后执行：
 
-这两步都不在本次已执行范围内，等站主确认。
+1. `git push origin main`（`0153f4a..b8ac2ab`）。
+2. `git push origin v1.1.0`（远端标签指向带注释的 tag 对象 `bbbb447`，提交 `7953be7`）。
+3. `gh release create v1.1.0 .scratch/release-prep/yuki-1.1.0.zip --title "Yuki 1.1.0" --notes-file …`。
+
+结果：<https://github.com/FlozeIII/yuki-theme/releases/tag/v1.1.0>，挂上 `yuki-1.1.0.zip`
+（168,746 字节），非草稿、非预发布。
