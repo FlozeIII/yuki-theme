@@ -43,19 +43,19 @@ Type: map
 ## 当前批次
 
 **第一批：A · 图片灯箱。** spec：`.scratch/image-lightbox/spec.md`；工单：
-`.scratch/image-lightbox/issues/01-image-lightbox.md`。**实现已完成（`a48c32d`），待随下一版发布。**
+`.scratch/image-lightbox/issues/01-image-lightbox.md`。**实现已完成（`a48c32d`），已随 v1.2.0 发布。**
 纯前端、不引外部库、不进数据模型；验收走真浏览器。
 
 **第二批：B · 关联文章。** spec：`.scratch/related-posts/spec.md`；工单：
-`.scratch/related-posts/issues/01-related-posts.md`。**实现已完成，待随下一版发布。**
+`.scratch/related-posts/issues/01-related-posts.md`。**实现已完成，已随 v1.2.0 发布。**
 同分类优先、同标签补足、最多三篇；无关联不占位，说说不显示。
 
 **第三批：C · 动效收敛。** spec：`.scratch/motion/spec.md`；工单：
-`.scratch/motion/issues/01-motion.md`。**实现已完成，待随下一版发布。**
+`.scratch/motion/issues/01-motion.md`。**实现已完成，已随 v1.2.0 发布。**
 只停运动、保留颜色；列表 hover 背景 + 1px 浮起；上下篇 1px；补统一焦点环。
 
 **第四批：D · 前台发说说。** spec：`.scratch/shuoshuo-composer/spec.md`；工单：
-`.scratch/shuoshuo-composer/issues/01-shuoshuo-composer.md`。**实现已完成，待随下一版发布。**
+`.scratch/shuoshuo-composer/issues/01-shuoshuo-composer.md`。**实现已完成，已随 v1.2.0 发布。**
 说说归档顶部写作框；`publish_posts` 才能用；表单 POST + 重定向；失败保留正文。
 
 ## 决策记录
@@ -73,6 +73,7 @@ Type: map
   背景 + 缩略图 1px、上下篇 1px；列表/上下篇/关联/标签补同一枚焦点环。实现与验收已完成。
 - 2026-10-17：第四批选**前台发说说**：说说归档顶部写作框，`publish_posts` 才能用；
   表单 POST + 重定向；失败保留正文。实现与验收已完成。
+- 2026-10-17：`v1.2.0` 发布，A–D 四批一起交付（864/864 回归，Theme Check 计数不变）。
 - 测试基建另有一张 `comment-submit-ajax/issues/04-browser-retry-flake.md`，不挡路线图。
 
 ## Fog

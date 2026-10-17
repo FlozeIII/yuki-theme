@@ -205,4 +205,6 @@ GitHub release <https://github.com/FlozeIII/yuki-theme/releases/tag/v1.1.1>，�
 `verify-comment-submit` 这一趟 **173/173**，没有复现之前那个「太快 → 重试」的浏览器抖动；
 `comment-submit-ajax/issues/04-browser-retry-flake.md` 仍然留着，下一次再出现时按它诊断。
 
-**外向动作：** `main` 与 `v1.2.0` 标签尚未推送，GitHub release 未创建——等站主确认后执行。
+**外向动作（已执行）：** `main` 推到 `087a820`，标签 `v1.2.0` 已推送；
+GitHub release <https://github.com/FlozeIII/yuki-theme/releases/tag/v1.2.0>，附件
+`yuki-1.2.0.zip`（178,441 字节），非草稿、非预发布。
