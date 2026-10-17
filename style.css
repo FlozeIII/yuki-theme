@@ -196,6 +196,7 @@ img { max-width: 100%; height: auto; display: block; }
   transition: background-color 180ms ease;
 }
 .yuki-post-item:last-child { border-bottom: none; }
+.yuki-post-item:hover { background: var(--yuki-muted); }
 /* 置顶文章：一条主色竖线，不动布局，也不写字（不引入不可翻译的 content 文本） */
 .yuki-post-item.sticky { position: relative; padding-left: 20px; }
 .yuki-post-item.sticky::before {
@@ -217,7 +218,9 @@ img { max-width: 100%; height: auto; display: block; }
   border-radius: var(--yuki-radius-md);
   overflow: hidden;
   background: var(--yuki-muted);
+  transition: transform 180ms ease;
 }
+.yuki-post-item:hover .yuki-post-thumb { transform: translateY(-1px); }
 .yuki-post-thumb img { width: 100%; height: 100%; object-fit: cover; }
 .yuki-post-meta { font-size: 12px; color: var(--yuki-muted-foreground); margin-bottom: 6px; display: flex; gap: 10px; flex-wrap: wrap; }
 .yuki-post-title { margin: 0 0 6px; font-size: 19px; font-weight: 600; line-height: 1.35; transition: color 180ms ease; }
@@ -366,9 +369,9 @@ img { max-width: 100%; height: auto; display: block; }
   border: 1px solid var(--yuki-border);
   border-radius: var(--yuki-radius-lg);
   background: var(--yuki-card);
-  transition: border-color 180ms ease;
+  transition: border-color 180ms ease, transform 180ms ease;
 }
-.yuki-post-nav a:hover { border-color: var(--yuki-primary); }
+.yuki-post-nav a:hover { border-color: var(--yuki-primary); transform: translateY(-1px); }
 .yuki-post-nav .label { font-size: 12px; color: var(--yuki-muted-foreground); margin-bottom: 8px; }
 .yuki-post-nav .title { font-weight: 500; font-size: 15px; }
 
@@ -709,6 +712,15 @@ img { max-width: 100%; height: auto; display: block; }
   border: 0;
 }
 
+/* 列表/上下篇/关联/标签的链接：与既有控件同一枚焦点环 */
+.yuki-post-item a:focus-visible,
+.yuki-post-nav a:focus-visible,
+.yuki-related-item a:focus-visible,
+.yuki-tag:focus-visible {
+  outline: 2px solid var(--yuki-ring);
+  outline-offset: 2px;
+}
+
 /* ============================================
    头部操作区 & 搜索
    ============================================ */
@@ -895,6 +907,15 @@ body.yuki-lightbox-locked { overflow: hidden; }
   .yuki-lightbox-figure { transition: none; }
   .yuki-search-dialog,
   .yuki-lightbox-figure { transform: none; }
+
+  /* 只停运动，颜色过渡保留：按钮与卡片仍然有 hover 反馈。 */
+  .theme-switch-knob { transition: background-color 0.35s ease; }
+  .yuki-btn { transition: background-color 180ms ease; }
+  .yuki-btn:hover { transform: none; }
+  .yuki-post-thumb { transition: none; }
+  .yuki-post-item:hover .yuki-post-thumb { transform: none; }
+  .yuki-post-nav a { transition: border-color 180ms ease; }
+  .yuki-post-nav a:hover { transform: none; }
 }
 
 /* 窄屏收紧导航 */

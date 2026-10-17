@@ -50,6 +50,10 @@ Type: map
 `.scratch/related-posts/issues/01-related-posts.md`。**实现已完成，待随下一版发布。**
 同分类优先、同标签补足、最多三篇；无关联不占位，说说不显示。
 
+**第三批：C · 动效收敛。** spec：`.scratch/motion/spec.md`；工单：
+`.scratch/motion/issues/01-motion.md`。**实现已完成，待随下一版发布。**
+只停运动、保留颜色；列表 hover 背景 + 1px 浮起；上下篇 1px；补统一焦点环。
+
 ## 决策记录
 
 - 2026-10-17：四类全要，按批推进；第一批选图片灯箱。极简线补上「作者工具」判据（见 `CONTEXT.md`）。
@@ -61,6 +65,8 @@ Type: map
 - 2026-10-17：键盘入口沿用既有语义；只有裸图补 `tabindex`/`role`/`aria-label`。
 - 2026-10-17：第二批选**关联文章**：同分类优先、同标签补足、最多 3 篇；放在上下篇之后、评论之前；
   无关联不占位；说说文章不显示。实现与验收已完成。
+- 2026-10-17：第三批选**动效收敛**：`prefers-reduced-motion` 只停运动、保留颜色；列表 hover
+  背景 + 缩略图 1px、上下篇 1px；列表/上下篇/关联/标签补同一枚焦点环。实现与验收已完成。
 - 测试基建另有一张 `comment-submit-ajax/issues/04-browser-retry-flake.md`，不挡路线图。
 
 ## Fog

@@ -192,6 +192,26 @@ export async function newPage(browser, { colorScheme = 'light', reducedMotion = 
       if (!result.success) throw new Error(`设置 cookie 失败：${name}`);
     },
 
+    /**
+     * 把鼠标移到某个元素的中心，触发真实的 CSS :hover。
+     *
+     * `element.dispatchEvent(new MouseEvent('mouseover'))` 不会让 :hover 生效——
+     * 那条只有真实指针事件走得到。先滚到视野中间，再发 CDP 的 mouseMoved。
+     */
+    async hover(selector) {
+      const point = await this.evaluate(`(() => {
+        const el = document.querySelector(${JSON.stringify(selector)});
+        if (!el) return null;
+        el.scrollIntoView({ block: 'center', behavior: 'instant' });
+        const r = el.getBoundingClientRect();
+        return { x: r.left + r.width / 2, y: r.top + r.height / 2 };
+      })()`);
+
+      if (!point) throw new Error(`找不到元素：${selector}`);
+
+      await send('Input.dispatchMouseEvent', { type: 'mouseMoved', x: point.x, y: point.y });
+    },
+
     /** 轮询一段表达式，直到它为真；超时抛错。编辑器是异步长出来的，goto 的 load 不等它。 */
     async waitFor(expression, timeoutMs = 30000, intervalMs = 250) {
       const started = Date.now();
