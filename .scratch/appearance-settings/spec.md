@@ -49,10 +49,15 @@ Type: spec
 - `width` 1600 / `height` 500、`flex-height`、`flex-width`；`header-text` 关掉。
 - CSS 兜底：宽度铺满、最高 420px（窄屏 220px）、`object-fit: cover`。
 
-### 第三批：强调色（待定）
+### 第三批：强调色（已实现）
 
-- 是替换全局主色，还是只染按钮/高亮？需要处理 `--yuki-primary` 的 hover/深色变体。
-- 不能与季节点缀色 `--yuki-season` 混淆：后者只染装饰。
+- 自定义器「颜色」一节加 color control `yuki_accent`，默认展示主题堇紫 `#A5B4FC`；
+  **留空不产生覆盖**，主题保持原样。
+- 输出 `:root,.dark { … }`，覆盖 `--yuki-primary`、`--yuki-primary-600/700`、
+  `--yuki-primary-foreground`、`--yuki-ring`。
+- hover 档由 `color-mix(in srgb, 强调色 82%/64%, #000)` 自动压深；按钮文字按亮度自动选
+  深墨 `#0F0F14` 或暖白 `#F3F0EA`。
+- 季节点缀色 `--yuki-season` 不受影响：它只染雪兔与贴纸胶带。
 
 ### 第四批：字体切换（待定）
 

@@ -67,6 +67,22 @@ function yuki_assets() {
 	$scrim = yuki_sanitize_background_scrim( (int) get_theme_mod( 'yuki_background_scrim', 80 ) );
 	wp_add_inline_style( 'yuki-style', ':root{--yuki-bg-scrim:' . ( $scrim / 100 ) . ';}' );
 
+	$accent = get_theme_mod( 'yuki_accent', '' );
+	$accent = $accent ? sanitize_hex_color( $accent ) : '';
+
+	if ( $accent ) {
+		wp_add_inline_style(
+			'yuki-style',
+			':root,.dark{'
+			. '--yuki-primary:' . $accent . ';'
+			. '--yuki-primary-600:color-mix(in srgb, ' . $accent . ' 82%, #000);'
+			. '--yuki-primary-700:color-mix(in srgb, ' . $accent . ' 64%, #000);'
+			. '--yuki-primary-foreground:' . yuki_accent_foreground( $accent ) . ';'
+			. '--yuki-ring:' . $accent . ';'
+			. '}'
+		);
+	}
+
 	wp_enqueue_script( 'yuki-theme-toggle', get_template_directory_uri() . '/assets/js/theme-toggle.js', array(), $version, true );
 	wp_enqueue_script( 'yuki-search-overlay', get_template_directory_uri() . '/assets/js/search-overlay.js', array(), $version, true );
 	wp_enqueue_script( 'yuki-image-lightbox', get_template_directory_uri() . '/assets/js/image-lightbox.js', array(), $version, true );
@@ -269,6 +285,19 @@ function yuki_customize_register( $wp_customize ) {
 		'type'        => 'range',
 		'input_attrs' => array( 'min' => 0, 'max' => 100, 'step' => 5 ),
 	) );
+
+	/* ---- 强调色（挂在核心的「颜色」一节里） ---- */
+
+	$wp_customize->add_setting( 'yuki_accent', array(
+		'default'           => '#A5B4FC',
+		'sanitize_callback' => 'sanitize_hex_color',
+	) );
+
+	$wp_customize->add_control( new WP_Customize_Color_Control( $wp_customize, 'yuki_accent', array(
+		'label'       => __( '强调色', 'yuki' ),
+		'description' => __( '用于链接、按钮、主题开关与选中态；留空使用主题默认的堇紫。', 'yuki' ),
+		'section'     => 'colors',
+	) ) );
 }
 
 /**
@@ -279,6 +308,31 @@ function yuki_customize_register( $wp_customize ) {
  */
 function yuki_sanitize_background_scrim( $value ) {
 	return max( 0, min( 100, (int) $value ) );
+}
+
+/**
+ * 按强调色的亮度选前景色：浅底配深墨，深底配暖白。
+ *
+ * @param string $hex 形如 #A5B4FC 的颜色。
+ * @return string
+ */
+function yuki_accent_foreground( $hex ) {
+	$hex = ltrim( (string) $hex, '#' );
+
+	if ( 3 === strlen( $hex ) ) {
+		$hex = $hex[0] . $hex[0] . $hex[1] . $hex[1] . $hex[2] . $hex[2];
+	}
+
+	if ( 6 !== strlen( $hex ) ) {
+		return '#0F0F14';
+	}
+
+	$r    = hexdec( substr( $hex, 0, 2 ) ) / 255;
+	$g    = hexdec( substr( $hex, 2, 2 ) ) / 255;
+	$b    = hexdec( substr( $hex, 4, 2 ) ) / 255;
+	$luma = 0.299 * $r + 0.587 * $g + 0.114 * $b;
+
+	return $luma > 0.6 ? '#0F0F14' : '#F3F0EA';
 }
 
 /**
