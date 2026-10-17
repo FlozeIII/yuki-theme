@@ -26,6 +26,13 @@ function yuki_setup() {
 	add_theme_support( 'custom-logo', array( 'height' => 48, 'width' => 160, 'flex-height' => true, 'flex-width' => true ) );
 	// 不设 default-color：设了之后核心会在没选背景时也输出浅色底，覆盖深色模式。
 	add_theme_support( 'custom-background' );
+	add_theme_support( 'custom-header', array(
+		'width'       => 1600,
+		'height'      => 500,
+		'flex-height' => true,
+		'flex-width'  => true,
+		'header-text' => false,
+	) );
 
 	register_nav_menus( array(
 		'primary' => __( '主导航', 'yuki' ),

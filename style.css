@@ -144,6 +144,23 @@ img { max-width: 100%; height: auto; display: block; }
 .yuki-nav .menu a:hover { color: var(--yuki-primary-700); }
 .dark .yuki-nav .menu a:hover { color: var(--yuki-primary); }
 
+/* 自定义页头图：导航上方的横幅；无图时不占位 */
+.yuki-header-image {
+  width: 100%;
+  overflow: hidden;
+  background: var(--yuki-muted);
+}
+.yuki-header-image-tag {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 420px;
+  object-fit: cover;
+}
+@media (max-width: 640px) {
+  .yuki-header-image-tag { max-height: 220px; }
+}
+
 /* ============================================
    Theme Switch — 滑动开关
    ============================================ */

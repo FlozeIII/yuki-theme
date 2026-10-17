@@ -43,10 +43,11 @@ Type: spec
 - 滑杆值通过 `wp_add_inline_style()` 输出成 `--yuki-bg-scrim`；CSS 的默认值是 `.8`。
 - 自定义器回调改到 `customize_register` 优先级 20——核心的「背景图像」一节要先注册出来。
 
-### 第二批：页头图（待定）
+### 第二批：页头图（已实现）
 
-- `custom-header` 的图放在哪：导航上方横幅 / 导航背后 / 首页 hero？下一轮定。
-- 无图时不输出标记，布局不变。
+- 原生 `custom-header`；图以**全宽横幅**放在导航上方，不链接；无图时不输出标记，布局不变。
+- `width` 1600 / `height` 500、`flex-height`、`flex-width`；`header-text` 关掉。
+- CSS 兜底：宽度铺满、最高 420px（窄屏 220px）、`object-fit: cover`。
 
 ### 第三批：强调色（待定）
 

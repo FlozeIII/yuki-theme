@@ -15,6 +15,12 @@
 <body <?php body_class(); ?>>
 <?php wp_body_open(); ?>
 
+<?php if ( get_header_image() ) : ?>
+	<div class="yuki-header-image">
+		<?php the_header_image_tag( array( 'class' => 'yuki-header-image-tag' ) ); ?>
+	</div>
+<?php endif; ?>
+
 <header class="yuki-nav">
 	<div class="brand">
 		<?php if ( has_custom_logo() ) : ?>
