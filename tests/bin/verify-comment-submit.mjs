@@ -353,9 +353,12 @@ check('填了蜜罐被端点挡下', trap.status >= 400, describe(trap));
 // 先说清「回话确实解析得开」再判有没有话：否则回话不是 JSON 时，下面那条会因为
 // `undefined` 被当成「没有话」而**白白通过**——它在验的东西正好是「什么也不说」。
 check('回话解析得开', !!trap.json && typeof trap.json === 'object', `正文：${String(trap.body).slice(0, 120)}`);
-check('挡下时没有可辨认的一句话', !trap.json?.message, `回话：${JSON.stringify(trap.json).slice(0, 120)}`);
+check('填了蜜罐时什么也不说', !trap.json?.message, `回话：${JSON.stringify(trap.json).slice(0, 120)}`);
 
-// 太快：只在怀疑，但这一件里的判定与今天一致（把话说得更细是下一件工单的事）
+/*
+ * 太快：只是个**怀疑**，而付代价的可能是手快的人（粘贴好一段话、两秒内点了提交）。
+ * 所以这里必须有一句能照做的话——与上面那条形成对照。
+ */
 const tooFast = await viaEndpoint(postUrl, endpoint, {
   comment: botBody,
   author: `${MARK} 手快`,
@@ -364,8 +367,31 @@ const tooFast = await viaEndpoint(postUrl, endpoint, {
   settleMs: 0,
 });
 check('提交太快被端点挡下', tooFast.status >= 400, describe(tooFast));
+check(
+  '太快时给了一句话（不是一片空白）',
+  typeof tooFast.json?.message === 'string' && tooFast.json.message.length > 0,
+  `回话：${JSON.stringify(tooFast.json).slice(0, 160)}`,
+);
+check(
+  '那句话的意思就是「再点一次」',
+  /再|重试|retry/i.test(tooFast.json?.message || ''),
+  `那句话：${JSON.stringify(tooFast.json?.message)}`,
+);
+check(
+  '那句话不教人绕过它（不透露判定窗口）',
+  // 先要求那句话确实在，否则空话会让这条**白白通过**——它验的正是「话里没有某某」
+  typeof tooFast.json?.message === 'string'
+    && tooFast.json.message.length > 0
+    && !/秒|计时|间隔|window/i.test(tooFast.json.message),
+  `那句话：${JSON.stringify(tooFast.json?.message)}`,
+);
+check(
+  '两种判定挡下时，看到的东西不一样',
+  !!tooFast.json?.message && !trap.json?.message,
+  `蜜罐：${JSON.stringify(trap.json?.message)} ／ 太快：${JSON.stringify(tooFast.json?.message)}`,
+);
 
-// 缺令牌：表单协议没带全
+// 缺令牌：与蜜罐同一类——不是这笔表单交上来的，照旧什么也不说
 const noToken = await viaEndpoint(postUrl, endpoint, {
   comment: botBody,
   author: `${MARK} 无令牌`,
@@ -374,6 +400,7 @@ const noToken = await viaEndpoint(postUrl, endpoint, {
   extraFields: { yuki_comment_token: '' },
 });
 check('没带令牌被端点挡下', noToken.status >= 400, describe(noToken));
+check('没带令牌也什么不说（它和蜜罐是同一类）', !noToken.json?.message, `回话：${JSON.stringify(noToken.json).slice(0, 140)}`);
 
 const botLanded = tryFx('by-email', `--email=${botEmail}`);
 check(
@@ -665,8 +692,9 @@ section('无 JS 那条路');
  *   2. 这条路有没有被脚本那一套污染（表单还是不是原来那个表单、还去不去原来的地方）。
  *
  * 四种判定只断言**外部看得见的结果**：评论落没落库、页面有没有变成错误页。
- * 刻意**不**钉住「被挡下时正文是一片空白」——那正是下一件工单要改的地方，
- * 钉在这里会让下一件工单得反过来删这条断言。
+ * 上一件在这里**刻意没钉住**「被挡下时正文是一片空白」，因为那正是这一件要改的地方。
+ * 现在改了：蜜罐与缺令牌仍然是一片空白（而且状态码一起钉住，免得「压根没发出去」
+ * 冒充「静默挡下」），「太快」则是一张带话的页面——两者必须看得出来不一样。
  */
 const nativeOkEmail = `submit-native-${RUN}@example.test`;
 const nativeOkBody = `${MARK} 无脚本 正常 ${RUN}`;
@@ -692,6 +720,15 @@ const nativeTrap = await viaNative(postUrl, {
   extraFields: { yuki_comment_note: 'i-am-a-robot' },
 });
 check('没脚本时填了蜜罐发不出去', nativeTrap.status !== 302, `实际 ${nativeTrap.status}`);
+// 蜜罐这一类是「静默」：原生入口对不带 data 的 WP_Error 走 `exit;`，回的是一片空白。
+// 这件事现在可以钉死了——「太快」那一条不再是这样（见下面几行），两者必须看得出来不一样。
+// 状态也一并钉住：`viaNative` 在网络层失败时会返回 status 0 与空正文，只验正文的话，
+// 那种「压根没发出去」也会被当成「静默挡下」而白白通过。
+check(
+  '没脚本时，蜜罐给的是白的（HTTP 200 且正文为空）',
+  nativeTrap.status === 200 && '' === String(nativeTrap.body).trim(),
+  `HTTP ${nativeTrap.status}，正文：${JSON.stringify(String(nativeTrap.body).slice(0, 120))}`,
+);
 
 const nativeFast = await viaNative(postUrl, {
   comment: `${MARK} 无脚本 太快 ${RUN}`,
@@ -700,7 +737,15 @@ const nativeFast = await viaNative(postUrl, {
   consent: true,
   settleMs: 0,
 });
-check('没脚本时提交太快发不出去', nativeFast.status !== 302, `实际 ${nativeFast.status}`);
+check('没脚本时提交太快也发不出去', nativeFast.status !== 302, `实际 ${nativeFast.status}`);
+// 那句话本身与端点说的是同一句（同一处文案），措辞上的要求在上面的端点那几条里验过了；
+// 这里只验它真的到了页面上，而且状态码是「拒绝」而不是一片空白。
+check(
+  '没脚本时，太快给的是一张带话的页面，不是一片空白',
+  // 429 而不是 403：与核心自己那条频率判定（comment_flood）同一个说法
+  nativeFast.status === 429 && /再|重试/.test(nativeFast.body),
+  `HTTP ${nativeFast.status}，正文：${JSON.stringify(String(nativeFast.body).slice(0, 160))}`,
+);
 
 const nativeNoToken = await viaNative(postUrl, {
   comment: `${MARK} 无脚本 缺令牌 ${RUN}`,
@@ -710,6 +755,13 @@ const nativeNoToken = await viaNative(postUrl, {
   extraFields: { yuki_comment_token: '' },
 });
 check('没脚本时缺令牌发不出去', nativeNoToken.status !== 302, `实际 ${nativeNoToken.status}`);
+// 缺令牌与蜜罐同一类（「不是这笔表单交上来的」）：也是静默的。**与端点那条路一致**——
+// 端点那边回的是空话，这边回的是空白。
+check(
+  '没脚本时，缺令牌也是白的（与「太快」不一样）',
+  nativeNoToken.status === 200 && '' === String(nativeNoToken.body).trim(),
+  `HTTP ${nativeNoToken.status}，正文：${JSON.stringify(String(nativeNoToken.body).slice(0, 120))}`,
+);
 
 check(
   '三种被挡下的一条都没入库',
@@ -809,7 +861,7 @@ async function openPost(browser, where = postUrl) {
  * 判定窗口是「提交时刻 − 页面渲染时刻」不足 3 秒算机器人，所以要等；
  * 不等的话这一轮验的就成了「太快被挡下」。
  */
-async function fillAndSubmit(page, { body, email, author = `${MARK} 浏览器访客`, consent = true, honeypot = '' }) {
+async function fillAndSubmit(page, { body, email, author = `${MARK} 浏览器访客`, consent = true, honeypot = '', settleMs = 3400 }) {
   await page.evaluate(`(function () {
     var form = document.getElementById('commentform');
     form.querySelector('textarea[name="comment"]').value = ${JSON.stringify(body)};
@@ -823,7 +875,7 @@ async function fillAndSubmit(page, { body, email, author = `${MARK} 浏览器访
     if (trap) trap.value = ${JSON.stringify(honeypot)};
   })()`);
 
-  await sleep(3400);
+  await sleep(settleMs);
 
   // 记号在同一页上：它还在，就说明中途没有重新加载
   await page.evaluate(`window.__yukiStillHere = 'yes';`);
@@ -1606,6 +1658,91 @@ try {
     check('浏览器里跑到底（从 ?replytocom 进来那一趟）', false, err.message);
   }
 
+
+  /* ---- 10k. 提交太快：说一句能照做的话，照做就成 ---- */
+
+  try {
+    const page = await openPost(browser);
+
+    /*
+     * 先换一枚**刚刚签出来的**令牌。
+     *
+     * 这一页上那枚签名是渲染时签的，而浏览器的 load 事件要等远端的头像图——等它回来，
+     * 那枚早过了窗口，这个情形就测不出来了。再取一次页面（这次只是 XHR，不等图片），
+     * 把新的那枚塞进表单：这正是「页面刚渲染出来人就点了提交」。
+     */
+    const refreshed = await page.evaluate(`(async function () {
+      var html = await (await fetch(location.href, { credentials: 'same-origin' })).text();
+      var m = html.match(/name="yuki_comment_token" value="([^"]+)"/) || html.match(/name='yuki_comment_token' value='([^']+)'/);
+      if (!m) { return false; }
+      document.querySelector('input[name="yuki_comment_token"]').value = m[1];
+      return true;
+    })()`);
+
+    check('换到了一枚刚签出来的令牌（不然测不出「太快」）', refreshed === true, '页面上找不到令牌字段');
+
+    const fastBody = `${MARK} 浏览器 太快 ${RUN}`;
+
+    // 不等判定窗口就提交——这正是手快的人干的事
+    await fillAndSubmit(page, { body: fastBody, email: `submit-fast-${RUN}@example.test`, settleMs: 0 });
+
+    const said = await waitFor(
+      page,
+      `(function () { var e = document.querySelector('.yuki-comment-error'); return e ? e.textContent : ''; })()`,
+      (text) => !!text,
+      40,
+    );
+
+    check('太快时页面上有一句能照做的话', /再|重试/.test(said), `页面上写着：${JSON.stringify(said)}`);
+
+    const saidState = await page.evaluate(`(function () {
+      var form = document.getElementById('commentform');
+      return {
+        text: form.querySelector('textarea[name="comment"]').value,
+        shown: document.body.textContent.includes(${JSON.stringify(fastBody)}),
+        stillHere: window.__yukiStillHere,
+      };
+    })()`);
+
+    check('那条没有出现在列表里', saidState.shown === false, '居然画出来了');
+    check('我写的内容留着（好照做）', saidState.text === fastBody, `输入框里是 ${JSON.stringify(saidState.text)}`);
+    check('页面没有重新加载（说的是同一页上的话）', saidState.stillHere === 'yes', '记号不见了');
+
+    /*
+     * 照做：过一会儿再点一次提交。窗口早过了，这一回该成功——
+     * 令牌只设下限、不设上界（见 functions.php 里那段说明），所以表单里那枚还能用。
+     */
+    await sleep(3400);
+    await page.evaluate(`window.__yukiStillHere = 'yes';`);
+    await page.evaluate(`(function () {
+      var form = document.getElementById('commentform');
+      if (form.requestSubmit) { form.requestSubmit(); } else { form.querySelector('[type="submit"]').click(); }
+    })()`);
+
+    const made = await waitFor(
+      page,
+      `(function () {
+        var nodes = document.querySelectorAll('.comment-content');
+        for (var i = 0; i < nodes.length; i++) {
+          if (nodes[i].textContent.indexOf(${JSON.stringify(fastBody)}) >= 0) { return true; }
+        }
+        return false;
+      })()`,
+      (seen) => seen === true,
+    );
+
+    check('照做再点一次就成功了', made === true, '第二次点下去没成');
+    check('第二次也没有重新加载', (await page.evaluate(`window.__yukiStillHere`)) === 'yes', '记号不见了');
+    check(
+      '成功之后那句话收掉了（不留着误导人）',
+      (await page.evaluate(`!document.querySelector('.yuki-comment-error')`)) === true,
+      '那句话还挂在页面上',
+    );
+
+    await page.close();
+  } catch (err) {
+    check('浏览器里跑到底（太快那一趟）', false, err.message);
+  }
 
 } catch (err) {
   check('无头浏览器起得来', false, err.message);

@@ -500,6 +500,18 @@ img { max-width: 100%; height: auto; display: block; }
   font-size: 14px;
   color: var(--yuki-ink-2);
 }
+/* 提交被挡下时那句话（由脚本插在表单上方）。样式与上面那条共用：设计系统里没有「危险色」，
+   新添一枚是 DESIGN.md 的事；这里要的是「看得见、不是正文里的一句话」。 */
+.yuki-comment-error {
+  margin: 0 0 16px;
+  padding: 12px 16px;
+  border: 1px solid var(--yuki-border);
+  border-left: 3px solid var(--yuki-ink-3);
+  border-radius: var(--yuki-radius-md);
+  background: var(--yuki-muted);
+  font-size: 14px;
+  color: var(--yuki-ink-2);
+}
 /* 点赞与回复排在一条动作行里 */
 .yuki-comment-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; margin-top: 12px; }
 /* 回复链接自己也带 margin-top，现在这点间距由整行来给 */

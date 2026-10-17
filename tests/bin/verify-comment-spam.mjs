@@ -45,8 +45,9 @@ const FORM_HEADERS = { 'content-type': 'application/x-www-form-urlencoded' };
 /**
  * 提交一次评论表单。
  *
- * 被挡下时核心走 wp-comments-post.php 的 `exit;` 分支：既没有跳转，也没有正文。
- * 429 是另一回事——那是内核的评论频率限制抢在前面，说明基建没装好。
+ * 被挡下时核心走 wp-comments-post.php 的 `exit;` 分支：既没有跳转，也没有正文。**有一个例外**：
+ * 提交太快那一种（工单 03 之后）要给一句能照做的话，所以它是「有正文、没跳转」。
+ * 429 另有一层含义——内核自己的评论频率限制抢在前面——那说明基建没装好。
  */
 const submit = (fields, jar = null) => postForm(
   COMMENT_URL,
@@ -183,12 +184,22 @@ const blocked = [];
 section('判定发生在入库之前');
 {
   // 页面刚渲染出来就提交。此刻令牌本身是有效签名、蜜罐也是空的，
-  // 能拦住这一次的只有判定窗口——不是别的什么顺便挡住了。
+  /*
+   * 能拦住这一次的只有判定窗口——不是别的什么顺便挡住了。
+   *
+   * 工单 03 之后这一条**不再是一片空白**：太快被挡下时要回一句能照做的话（那正是那一件
+   * 的目的，付代价的可能是手快的人）。所以这里改验「没有产生评论 + 说了一句话」。
+   * 与内核那条频率限制撞在同一个 429 上，靠正文分得开：内核说的是「Slow down」，
+   * 主题这条说的是「再点一次」。
+   */
   const marker = mark('FAST');
   const res = await submit(submitAs(form, { trap: '', token: token0, marker }));
-  const verdict = blockedNow(res);
   blocked.push(marker);
-  check('瞬间提交：没有产生评论', verdict.ok, verdict.why);
+  check(
+    '瞬间提交：没有产生评论，并且回了一句能照做的话',
+    !res.location && /再|重试/.test(res.body),
+    `status=${res.status} location=${res.location || '（无）'} 正文：${JSON.stringify(res.body.trim().slice(0, 140))}`,
+  );
 }
 {
   // 没签出令牌时也走完这条路，让断言自己去红，而不是把脚本崩掉

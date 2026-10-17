@@ -643,27 +643,39 @@ function yuki_comment_token() {
 }
 
 /**
- * 令牌是否可信：格式对、签名对，而且已经放过判定窗口。
+ * 令牌的判定，分三档。
+ *
+ * 这三档不是一回事，挡下之后该说的话也不一样：
+ *
+ *   - `missing`  格式不对、签名对不上、或者压根没带——**这不是一笔本表单交上来的提交**。
+ *                与填了蜜罐同一类：确定性的信号，什么也不用说。
+ *   - `too_fast` 令牌是真的（签名对得上，确实是本站在页面里签的），只是**页面刚渲染出来
+ *                就提交了**。这只是个怀疑，而付代价的可能是手快的人：他粘好一段话、两秒内
+ *                就点了提交。对这一种要说一句话，而且那句话得能照做。
+ *   - `ok`       两样都过。
+ *
+ * 签名对得上才是关键分界：它证明这一笔确实是从本站渲染的表单里出来的。签不出一个
+ * 以假乱真的令牌，所以「签名不对」只能是伪装或者手编的。
  *
  * @param mixed $token 表单提交上来的令牌。
- * @return bool
+ * @return string 'missing' | 'too_fast' | 'ok'
  */
-function yuki_comment_token_is_valid( $token ) {
+function yuki_comment_token_verdict( $token ) {
 	if ( ! is_string( $token ) ) {
-		return false;
+		return 'missing';
 	}
 
 	$parts = explode( '|', $token );
 	if ( 2 !== count( $parts ) || ! ctype_digit( $parts[0] ) ) {
-		return false;
+		return 'missing';
 	}
 
 	if ( ! hash_equals( yuki_comment_token_sign( $parts[0] ), $parts[1] ) ) {
-		return false;
+		return 'missing';
 	}
 
-	// 从表单渲染到提交短于 3 秒的，视作机器人
-	return ( time() - (int) $parts[0] ) >= 3;
+	// 页面渲染到提交短于 3 秒：签是真的，只是太快
+	return ( time() - (int) $parts[0] ) >= 3 ? 'ok' : 'too_fast';
 }
 
 /**
@@ -684,7 +696,18 @@ function yuki_comment_form_fields() {
 add_action( 'comment_form', 'yuki_comment_form_fields' );
 
 /**
- * 判定并挡在入库之前：填了蜜罐、令牌不对、或者页面刚渲染出来就提交的，一律按垃圾处理。
+ * 判定并挡在入库之前。
+ *
+ * 挡下有两种说法，**不能混成一个出口**：
+ *
+ *   - **确定性的机器人信号**（填了蜜罐、令牌不是本站签的、压根没带）：静默丢弃，
+ *     什么也不告诉它。错误里既不带话也不带 data——原生入口那边看到不带 data 的
+ *     WP_Error 就走 `exit;`，回的是一片空白（wp-comments-post.php）。
+ *   - **只是怀疑：提交得太快**。付代价的可能是手快的人（粘好一段话、两秒内点了提交），
+ *     所以给一句能照做的话。它带着状态码，于是原生入口会走 `wp_die` 把这句话显示出来，
+ *     而不是一片空白；端点那边把它当普通错误回话，脚本把话放到页面上。
+ *
+ * 两种都发生在**入库之前**：垃圾不落库，也不进待审队列。
  *
  * 只判定「访客在评论表单里交上来的」那一种——这个范围由 yuki_comment_is_form_post()
  * 划，端点（inc/comment-submit.php）那条路也在里面。蜜罐和令牌是一套表单协议，
@@ -695,7 +718,7 @@ add_action( 'comment_form', 'yuki_comment_form_fields' );
  * 硬加一个会让所有访客提交失败。取到的值一律先 wp_unslash，再按格式校验。
  *
  * @param int|string $approved 原本的审批状态。
- * @return int|string|WP_Error 判定为机器人时返回不带 data 的 WP_Error。
+ * @return int|string|WP_Error 判定为机器人时返回不带 data 的 WP_Error；太快时返回带状态码与一句话的。
  */
 function yuki_comment_guard( $approved ) {
 	if ( ! yuki_comment_is_form_post() || is_user_logged_in() ) {
@@ -708,8 +731,35 @@ function yuki_comment_guard( $approved ) {
 		return new WP_Error( 'yuki_comment_spam' );
 	}
 
-	$token = isset( $_POST[ yuki_comment_token_field() ] ) ? wp_unslash( $_POST[ yuki_comment_token_field() ] ) : '';
-	if ( ! yuki_comment_token_is_valid( $token ) ) {
+	$token   = isset( $_POST[ yuki_comment_token_field() ] ) ? wp_unslash( $_POST[ yuki_comment_token_field() ] ) : '';
+	$verdict = yuki_comment_token_verdict( $token );
+
+	/*
+	 * 令牌是真的，只是页面刚渲染出来就提交了。
+	 *
+	 * 第三个参数是**整数状态码**，不是数组：原生入口那边 `wp-comments-post.php` 读的是
+	 * `(int) $comment->get_error_data()`，给数组会被它用成 1。核心自己那几条也这么传
+	 * （`new WP_Error( 'comment_flood', …, 429 )`、`new WP_Error( 'comment_closed', …, 403 )`）。
+	 *
+	 * 状态码用 429 而不是 403：403 是「不许」，而这里只是「太快」——核心自己的
+	 * 频率判定（`comment_flood`）用的也是 429。
+	 *
+	 * 文案的尺度：说得清「再点一次」，但**不透露那个窗口**——告诉人「等三秒」等于把
+	 * 规则抄给写脚本的人看。
+	 */
+	if ( 'too_fast' === $verdict ) {
+		return new WP_Error(
+			'yuki_comment_too_fast',
+			__( '提交得有点快，这条没能收下——再点一次提交就好。', 'yuki' ),
+			429
+		);
+	}
+
+	/*
+	 * 剩下的**只有 `ok` 才放行**。这里刻意不写「`missing` 就挡、其余放行」：那样将来
+	 * 多出第四档时，没人改这里，它就会悄悄放行——这道门是该**失败时关着**的那一种。
+	 */
+	if ( 'ok' !== $verdict ) {
 		return new WP_Error( 'yuki_comment_spam' );
 	}
 

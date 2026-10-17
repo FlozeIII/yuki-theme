@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Yuki 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-16T16:06:25+00:00\n"
+"POT-Creation-Date: 2026-10-17T04:04:47+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -67,11 +67,11 @@ msgstr ""
 msgid "一言"
 msgstr ""
 
-#: single.php:56
+#: single.php:65
 msgid "上一篇"
 msgstr ""
 
-#: single.php:62
+#: single.php:71
 msgid "下一篇"
 msgstr ""
 
@@ -95,12 +95,13 @@ msgstr ""
 msgid "作者简介"
 msgstr ""
 
-#. translators: %s: 站点名 */ __( '[%s] 需要的话，你可以删掉自己那条评论', 'yuki' ), wp_specialchars_decode( (string) get_option( 'blogname' ), ENT_QUOTES ) ); $body = array( sprintf( /* translators: %s: 文章标题
+#. translators: %s: 文章标题
 #: inc/comment-deletion.php:167
 msgid "你在《%s》下留了一条评论："
 msgstr ""
 
-#: functions.php:1043
+#. translators: %s: 等待审核的评论条数（已按本地习惯分组，例如 1,234）
+#: functions.php:1093
 msgid "你有 %s 条评论正在等待审核，通过之后才会公开显示。"
 msgstr ""
 
@@ -140,11 +141,11 @@ msgstr ""
 msgid "切换主题"
 msgstr ""
 
-#: inc/comment-deletion.php:268
+#: inc/comment-deletion.php:304
 msgid "删除之后无法恢复。"
 msgstr ""
 
-#: inc/comment-deletion.php:219
+#: inc/comment-deletion.php:255
 msgid "删除这条评论？"
 msgstr ""
 
@@ -152,7 +153,7 @@ msgstr ""
 msgid "发表评论"
 msgstr ""
 
-#: inc/comment-deletion.php:282
+#: inc/comment-deletion.php:318
 msgid "回到站点首页"
 msgstr ""
 
@@ -172,7 +173,7 @@ msgstr ""
 msgid "如果写错了想删掉，打开下面这个链接，确认之后就会删除。链接只能用一次，过期后失效。"
 msgstr ""
 
-#: inc/comment-deletion.php:279
+#: inc/comment-deletion.php:315
 msgid "它可能已经用过一次，或者已经过期了。想删的话，重新发一条评论即可拿到新链接。"
 msgstr ""
 
@@ -186,6 +187,10 @@ msgstr ""
 
 #: functions.php:568
 msgid "把心事折成纸飞机，交给明天的风。"
+msgstr ""
+
+#: functions.php:753
+msgid "提交得有点快，这条没能收下——再点一次提交就好。"
 msgstr ""
 
 #: comments.php:49
@@ -256,7 +261,7 @@ msgstr ""
 msgid "短碎片内容。这个分类里的文章不出现在首页与博客列表，只在自己的归档里。"
 msgstr ""
 
-#: inc/comment-deletion.php:273
+#: inc/comment-deletion.php:309
 msgid "确认删除"
 msgstr ""
 
@@ -280,11 +285,12 @@ msgstr ""
 msgid "订阅更新"
 msgstr ""
 
-#: inc/comment-deletion.php:220
+#: inc/comment-deletion.php:256
 msgid "评论已删除"
 msgstr ""
 
-#: functions.php:1063
+#. translators: %s: comment count
+#: functions.php:1113
 msgid "评论（%s）"
 msgstr ""
 
@@ -304,7 +310,7 @@ msgstr ""
 msgid "还没有文章，去后台发布第一篇吧。"
 msgstr ""
 
-#: functions.php:678
+#: functions.php:690
 msgid "这一栏请保持空白"
 msgstr ""
 
@@ -316,7 +322,7 @@ msgstr ""
 msgid "这个归档下还没有文章。"
 msgstr ""
 
-#: inc/comment-deletion.php:221
+#: inc/comment-deletion.php:257
 msgid "这个链接已经无效了"
 msgstr ""
 
@@ -328,7 +334,7 @@ msgstr ""
 msgid "这封邮件是因为有人在站点评论时填了这个邮箱。不是你，忽略即可。"
 msgstr ""
 
-#: comment-likes.php:225 inc/comment-likes.php:225
+#: inc/comment-likes.php:225
 msgid "这条评论不能点赞。"
 msgstr ""
 
@@ -340,7 +346,7 @@ msgstr ""
 msgid "这条评论正在等待审核。这是预览，审核通过后才会公开显示。"
 msgstr ""
 
-#: inc/comment-deletion.php:277
+#: inc/comment-deletion.php:313
 msgid "那条评论已经不在了。"
 msgstr ""
 
