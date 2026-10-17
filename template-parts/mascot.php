@@ -13,9 +13,10 @@
 $yuki_size  = isset( $args['size'] ) && in_array( $args['size'], array( 'sm', 'lg' ), true )
 	? $args['size']
 	: 'sm';
-$yuki_class = isset( $args['class'] ) ? ' ' . sanitize_html_class( $args['class'] ) : '';
+$yuki_extra = isset( $args['class'] ) ? sanitize_html_class( $args['class'] ) : '';
+$yuki_class = 'yuki-mascot yuki-mascot--' . $yuki_size . ( $yuki_extra ? ' ' . $yuki_extra : '' );
 ?>
-<svg class="yuki-mascot yuki-mascot--<?php echo esc_attr( $yuki_size ); ?><?php echo esc_attr( $yuki_class ); ?>"
+<svg class="<?php echo esc_attr( $yuki_class ); ?>"
 	xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"
 	aria-hidden="true" focusable="false">
 	<!-- 影子 -->
