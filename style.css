@@ -183,7 +183,8 @@ img { max-width: 100%; height: auto; display: block; }
 /* ============================================
    Hero（首页顶部）
    ============================================ */
-.yuki-hero { padding: 72px 0 56px; text-align: center; }
+.yuki-hero { position: relative; overflow: hidden; padding: 72px 0 56px; text-align: center; }
+.yuki-hero .yuki-narrow { position: relative; z-index: 1; }
 .yuki-hero h1 {
   margin: 0 0 16px;
   font-size: clamp(32px, 4vw, 48px);
@@ -191,6 +192,40 @@ img { max-width: 100%; height: auto; display: block; }
   line-height: 1.18;
 }
 .yuki-hero p { margin: 0 auto; max-width: 560px; color: var(--yuki-muted-foreground); font-size: 17px; }
+
+/* hero 的樱瓣/星光：纯 CSS，只用季节色；reduced motion 下整层隐藏 */
+.yuki-hero-petals {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.yuki-hero-petals span {
+  position: absolute;
+  top: -20px;
+  width: 9px;
+  height: 9px;
+  border-radius: 50% 0 50% 0;
+  background: var(--yuki-season);
+  opacity: 0;
+  animation: yuki-petal-fall 10s linear infinite;
+  will-change: transform, opacity;
+}
+.yuki-hero-petals span:nth-child(1) { left: 6%; width: 8px; height: 8px; animation-duration: 12s; animation-delay: -3s; }
+.yuki-hero-petals span:nth-child(2) { left: 18%; width: 10px; height: 10px; animation-duration: 9s; animation-delay: -6s; }
+.yuki-hero-petals span:nth-child(3) { left: 31%; width: 7px; height: 7px; animation-duration: 13s; animation-delay: -1s; }
+.yuki-hero-petals span:nth-child(4) { left: 47%; width: 9px; height: 9px; animation-duration: 10s; animation-delay: -8s; }
+.yuki-hero-petals span:nth-child(5) { left: 62%; width: 8px; height: 8px; animation-duration: 14s; animation-delay: -4s; }
+.yuki-hero-petals span:nth-child(6) { left: 78%; width: 10px; height: 10px; animation-duration: 11s; animation-delay: -7s; }
+.yuki-hero-petals span:nth-child(7) { left: 90%; width: 7px; height: 7px; animation-duration: 12s; animation-delay: -2s; }
+
+@keyframes yuki-petal-fall {
+  0% { transform: translate3d(0, -20px, 0) rotate(0deg); opacity: 0; }
+  10% { opacity: .55; }
+  50% { transform: translate3d(26px, 160px, 0) rotate(130deg); }
+  100% { transform: translate3d(-12px, 360px, 0) rotate(260deg); opacity: 0; }
+}
 
 /* 二次元点缀：雪兔 */
 .yuki-mascot { display: block; flex: none; overflow: visible; }
@@ -1029,6 +1064,7 @@ body.yuki-lightbox-locked { overflow: hidden; }
   .yuki-post-nav a:hover { transform: none; }
   .yuki-cat-badge { transition: none; }
   .yuki-cat-badge:hover { transform: rotate(-2deg); }
+  .yuki-hero-petals { display: none; }
 }
 
 /* 窄屏收紧导航 */

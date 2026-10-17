@@ -9,6 +9,15 @@ get_header();
 ?>
 
 <section class="yuki-hero yuki-dot-pattern">
+	<div class="yuki-hero-petals" aria-hidden="true">
+		<span></span>
+		<span></span>
+		<span></span>
+		<span></span>
+		<span></span>
+		<span></span>
+		<span></span>
+	</div>
 	<div class="yuki-narrow">
 		<div class="yuki-hero-title-row">
 			<h1><?php bloginfo( 'name' ); ?></h1>
