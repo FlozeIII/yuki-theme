@@ -170,3 +170,7 @@ Yuki 1.1.0
 没有塞 `comment_post_ID`，而真实表单一定带它。修的是**测试探针**，不是产品代码；补上后复跑
 173/173。之前两次红的「太快 → 重试」浏览器场景本次也通过，仍按
 `comment-submit-ajax/issues/04-browser-retry-flake.md` 观察。
+
+**外向动作（已执行）：** `main` 推到 `2c71f3f`，标签 `v1.1.1` 已推送；
+GitHub release <https://github.com/FlozeIII/yuki-theme/releases/tag/v1.1.1>，附件
+`yuki-1.1.1.zip`（169,636 字节），非草稿、非预发布。
