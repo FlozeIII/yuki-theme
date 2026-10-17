@@ -56,8 +56,9 @@ $yuki_is_shuoshuo = $yuki_shuoshuo_id && is_category() && (int) get_queried_obje
 			) ); ?>
 		</nav>
 	<?php else : ?>
-		<div class="yuki-narrow" style="padding:80px 0;text-align:center;color:var(--yuki-muted-foreground);">
-			<p><?php esc_html_e( '这个归档下还没有文章。', 'yuki' ); ?></p>
+		<div class="yuki-narrow yuki-empty-state">
+			<?php get_template_part( 'template-parts/mascot', null, array( 'size' => 'sm' ) ); ?>
+			<p><?php esc_html_e( '雪兔翻遍了这一栏，还没有文章。', 'yuki' ); ?></p>
 		</div>
 	<?php endif; ?>
 </main>

@@ -184,6 +184,32 @@ img { max-width: 100%; height: auto; display: block; }
 }
 .yuki-hero p { margin: 0 auto; max-width: 560px; color: var(--yuki-muted-foreground); font-size: 17px; }
 
+/* 二次元点缀：雪兔 */
+.yuki-mascot { display: block; flex: none; overflow: visible; }
+.yuki-mascot--sm { width: 64px; height: 64px; }
+.yuki-mascot--lg { width: 112px; height: 112px; }
+.yuki-hero-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+.yuki-hero-title-row h1 { margin-bottom: 0; }
+.yuki-hero-title-row + p { margin-top: 16px; }
+.yuki-empty-state {
+  padding: 80px 0;
+  text-align: center;
+  color: var(--yuki-muted-foreground);
+}
+.yuki-empty-state .yuki-mascot { margin: 0 auto 16px; }
+.yuki-404 .yuki-mascot { margin: 0 auto 20px; }
+
+@media (max-width: 640px) {
+  .yuki-mascot--lg { width: 88px; height: 88px; }
+  .yuki-hero-title-row { gap: 12px; }
+}
+
 /* ============================================
    文章列表 — 纵向单列
    ============================================ */

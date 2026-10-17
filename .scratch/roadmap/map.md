@@ -58,6 +58,15 @@ Type: map
 `.scratch/shuoshuo-composer/issues/01-shuoshuo-composer.md`。**实现已完成，已随 v1.2.0 发布。**
 说说归档顶部写作框；`publish_posts` 才能用；表单 POST + 重定向；失败保留正文。
 
+### 二次元成分（跨类）
+
+见 `.scratch/anime-flavor/spec.md`，四批推进：
+
+1. **雪兔 + 微文案**：已实现（`issues/01-mascot.md`）。
+2. 贴纸/气泡：分类徽章变贴纸、空状态用对话气泡。
+3. 季节点缀色：按月份自动，只用于装饰。
+4. hero 动效：少量纯 CSS 樱瓣/星光，reduced-motion 全停。
+
 ## 决策记录
 
 - 2026-10-17：四类全要，按批推进；第一批选图片灯箱。极简线补上「作者工具」判据（见 `CONTEXT.md`）。
@@ -74,6 +83,8 @@ Type: map
 - 2026-10-17：第四批选**前台发说说**：说说归档顶部写作框，`publish_posts` 才能用；
   表单 POST + 重定向；失败保留正文。实现与验收已完成。
 - 2026-10-17：`v1.2.0` 发布，A–D 四批一起交付（864/864 回归，Theme Check 计数不变）。
+- 2026-10-17：二次元成分分四批；第一批**雪兔 + 微文案**完成（hero/404/空状态），
+  第二至四批（贴纸/气泡、季节色、hero 动效）待做。
 - 测试基建另有一张 `comment-submit-ajax/issues/04-browser-retry-flake.md`，不挡路线图。
 
 ## Fog

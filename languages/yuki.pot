@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Yuki 1.2.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-17T09:52:07+00:00\n"
+"POT-Creation-Date: 2026-10-17T10:45:19+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -173,7 +173,7 @@ msgstr ""
 msgid "回到站点首页"
 msgstr ""
 
-#: 404.php:17
+#: 404.php:18
 msgid "回到首页"
 msgstr ""
 
@@ -269,10 +269,6 @@ msgstr ""
 msgid "每周一封邮件，分享新文章与灵感碎片。随时取消。"
 msgstr ""
 
-#: search.php:45
-msgid "没有找到匹配的文章，换个关键词试试。"
-msgstr ""
-
 #: inc/comment-likes.php:247
 msgid "点得有点快，歇一下再试。"
 msgstr ""
@@ -358,10 +354,6 @@ msgstr ""
 msgid "路过人间，顺便看了看花开。"
 msgstr ""
 
-#: index.php:37
-msgid "还没有文章，去后台发布第一篇吧。"
-msgstr ""
-
 #: functions.php:727
 msgid "这一栏请保持空白"
 msgstr ""
@@ -370,15 +362,11 @@ msgstr ""
 msgid "这个分类里的文章不出现在首页与博客列表，只保留它自己的归档页。选「不使用」则整项功能不生效。"
 msgstr ""
 
-#: archive.php:60
-msgid "这个归档下还没有文章。"
-msgstr ""
-
 #: inc/comment-deletion.php:257
 msgid "这个链接已经无效了"
 msgstr ""
 
-#: 404.php:14
+#: 404.php:15
 msgid "这个页面走失了"
 msgstr ""
 
@@ -402,12 +390,24 @@ msgstr ""
 msgid "那条评论已经不在了。"
 msgstr ""
 
-#: 404.php:15
-msgid "链接可能已经失效，或者内容被移到了别处。试试搜索："
-msgstr ""
-
 #: functions.php:168
 msgid "镜像站点地址，例如 https://mirror.example.cn，会拼成 地址/avatar/哈希；直接粘贴含 /avatar/ 的完整前缀也可以。仅在上一项选「自定义镜像」时生效。"
+msgstr ""
+
+#: 404.php:16
+msgid "雪兔在雪地里找了半天，也没找到这一页。链接可能已经失效，或者内容被移到了别处。试试搜索："
+msgstr ""
+
+#: index.php:41
+msgid "雪兔把院子扫干净了——还没有文章，去后台发布第一篇吧。"
+msgstr ""
+
+#: search.php:46
+msgid "雪兔竖起耳朵听了半天，没有找到匹配的文章。换个关键词试试。"
+msgstr ""
+
+#: archive.php:61
+msgid "雪兔翻遍了这一栏，还没有文章。"
 msgstr ""
 
 #: functions.php:593

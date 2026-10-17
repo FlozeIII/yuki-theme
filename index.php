@@ -10,7 +10,10 @@ get_header();
 
 <section class="yuki-hero yuki-dot-pattern">
 	<div class="yuki-narrow">
-		<h1><?php bloginfo( 'name' ); ?></h1>
+		<div class="yuki-hero-title-row">
+			<h1><?php bloginfo( 'name' ); ?></h1>
+			<?php get_template_part( 'template-parts/mascot', null, array( 'size' => 'lg', 'class' => 'yuki-hero-mascot' ) ); ?>
+		</div>
 		<p><?php bloginfo( 'description' ); ?></p>
 	</div>
 </section>
@@ -33,8 +36,9 @@ get_header();
 			) ); ?>
 		</nav>
 	<?php else : ?>
-		<div class="yuki-narrow" style="padding:80px 0;text-align:center;color:var(--yuki-muted-foreground);">
-			<p><?php esc_html_e( '还没有文章，去后台发布第一篇吧。', 'yuki' ); ?></p>
+		<div class="yuki-narrow yuki-empty-state">
+			<?php get_template_part( 'template-parts/mascot', null, array( 'size' => 'sm' ) ); ?>
+			<p><?php esc_html_e( '雪兔把院子扫干净了——还没有文章，去后台发布第一篇吧。', 'yuki' ); ?></p>
 		</div>
 	<?php endif; ?>
 </main>

@@ -41,8 +41,9 @@ global $wp_query;
 			) ); ?>
 		</nav>
 	<?php else : ?>
-		<div class="yuki-narrow" style="padding:80px 0;text-align:center;color:var(--yuki-muted-foreground);">
-			<p style="margin-bottom:24px;"><?php esc_html_e( '没有找到匹配的文章，换个关键词试试。', 'yuki' ); ?></p>
+		<div class="yuki-narrow yuki-empty-state">
+			<?php get_template_part( 'template-parts/mascot', null, array( 'size' => 'sm' ) ); ?>
+			<p style="margin-bottom:24px;"><?php esc_html_e( '雪兔竖起耳朵听了半天，没有找到匹配的文章。换个关键词试试。', 'yuki' ); ?></p>
 			<?php get_search_form(); ?>
 		</div>
 	<?php endif; ?>
