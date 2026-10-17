@@ -371,6 +371,34 @@ img { max-width: 100%; height: auto; display: block; }
 .yuki-post-nav a:hover { border-color: var(--yuki-primary); }
 .yuki-post-nav .label { font-size: 12px; color: var(--yuki-muted-foreground); margin-bottom: 8px; }
 .yuki-post-nav .title { font-weight: 500; font-size: 15px; }
+
+/* 相关文章 */
+.yuki-related { margin-top: 40px; padding-top: 28px; border-top: 1px solid var(--yuki-border); }
+.yuki-related-title { margin: 0 0 16px; font-size: 18px; font-weight: 600; color: var(--yuki-foreground); }
+.yuki-related-list { list-style: none; margin: 0; padding: 0; }
+.yuki-related-item { border-bottom: 1px solid var(--yuki-border); }
+.yuki-related-item:last-child { border-bottom: none; }
+.yuki-related-item a {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 0;
+  font-size: 15px;
+  color: var(--yuki-ink-2);
+}
+.yuki-related-item-title { transition: color 180ms ease; }
+.yuki-related-item a:hover .yuki-related-item-title { color: var(--yuki-primary-700); }
+.dark .yuki-related-item a:hover .yuki-related-item-title { color: var(--yuki-primary); }
+.yuki-related-item time {
+  flex: none;
+  font-size: 12px;
+  color: var(--yuki-muted-foreground);
+  white-space: nowrap;
+}
+@media (max-width: 640px) {
+  .yuki-related-item a { gap: 10px; }
+}
 .yuki-post-nav .next { text-align: right; }
 
 /* ============================================

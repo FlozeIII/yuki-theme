@@ -74,6 +74,8 @@ get_header();
 						<?php endif; ?>
 					</nav>
 
+					<?php get_template_part( 'template-parts/related-posts' ); ?>
+
 					<?php comments_template(); ?>
 				</div>
 

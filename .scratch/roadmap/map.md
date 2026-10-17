@@ -46,6 +46,10 @@ Type: map
 `.scratch/image-lightbox/issues/01-image-lightbox.md`。**实现已完成（`a48c32d`），待随下一版发布。**
 纯前端、不引外部库、不进数据模型；验收走真浏览器。
 
+**第二批：B · 关联文章。** spec：`.scratch/related-posts/spec.md`；工单：
+`.scratch/related-posts/issues/01-related-posts.md`。**实现已完成，待随下一版发布。**
+同分类优先、同标签补足、最多三篇；无关联不占位，说说不显示。
+
 ## 决策记录
 
 - 2026-10-17：四类全要，按批推进；第一批选图片灯箱。极简线补上「作者工具」判据（见 `CONTEXT.md`）。
@@ -55,10 +59,11 @@ Type: map
 - 2026-10-17：触发范围只认 `.yuki-prose` 与 `.yuki-shuoshuo-body`；链接只接管图片文件与带 `rel=attachment` 的附件页，其余不劫持。
 - 2026-10-17：大图依次取链接 `href`（仅图片文件）→ `srcset` 最大候选 → `currentSrc` → `src`。
 - 2026-10-17：键盘入口沿用既有语义；只有裸图补 `tabindex`/`role`/`aria-label`。
+- 2026-10-17：第二批选**关联文章**：同分类优先、同标签补足、最多 3 篇；放在上下篇之后、评论之前；
+  无关联不占位；说说文章不显示。实现与验收已完成。
 - 测试基建另有一张 `comment-submit-ajax/issues/04-browser-retry-flake.md`，不挡路线图。
 
 ## Fog
 
 - 灯箱之后是否要同页多图的左右切换（B/C）。
-- 关联文章的「关联」规则未定（分类优先还是标签优先、几篇）。
 - 前台发说说的权限与端点形状未定。

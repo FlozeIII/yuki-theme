@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Yuki 1.1.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-17T08:27:54+00:00\n"
+"POT-Creation-Date: 2026-10-17T08:54:17+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -271,6 +271,10 @@ msgstr ""
 
 #: sidebar.php:26
 msgid "独立创作者"
+msgstr ""
+
+#: template-parts/related-posts.php:16 template-parts/related-posts.php:17
+msgid "相关文章"
 msgstr ""
 
 #: functions.php:463
