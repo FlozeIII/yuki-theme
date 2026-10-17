@@ -39,6 +39,12 @@ Tags: blog, minimal, two-columns, light, dark
   --yuki-radius-lg: 16px;
   --yuki-radius-pill: 999px;
 
+  --yuki-content-width: 768px;
+  --yuki-wide-width: 1120px;
+  --yuki-container-width: 1120px;
+  --yuki-sidebar-width: 300px;
+  --yuki-layout-gap: 48px;
+
   --yuki-shadow-1: 0 1px 2px rgba(45, 45, 53, 0.04), 0 1px 1px rgba(45, 45, 53, 0.02);
   --yuki-shadow-2: 0 8px 24px -8px rgba(45, 45, 53, 0.05);
 
@@ -82,8 +88,8 @@ body {
 }
 a { color: inherit; text-decoration: none; }
 img { max-width: 100%; height: auto; display: block; }
-.yuki-container { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
-.yuki-narrow { max-width: 768px; margin: 0 auto; padding: 0 24px; }
+.yuki-container { max-width: var(--yuki-container-width); margin: 0 auto; padding: 0 24px; }
+.yuki-narrow { max-width: var(--yuki-content-width); margin: 0 auto; padding: 0 24px; }
 
 /* 二次元点缀：柔和圆点纹理 */
 .yuki-dot-pattern {
@@ -177,7 +183,7 @@ img { max-width: 100%; height: auto; display: block; }
 /* ============================================
    文章列表 — 纵向单列
    ============================================ */
-.yuki-post-list { display: flex; flex-direction: column; max-width: 768px; margin: 0 auto; }
+.yuki-post-list { display: flex; flex-direction: column; max-width: var(--yuki-content-width); margin: 0 auto; }
 .yuki-post-item {
   display: flex;
   gap: 20px;
@@ -186,6 +192,18 @@ img { max-width: 100%; height: auto; display: block; }
   transition: background-color 180ms ease;
 }
 .yuki-post-item:last-child { border-bottom: none; }
+/* 置顶文章：一条主色竖线，不动布局，也不写字（不引入不可翻译的 content 文本） */
+.yuki-post-item.sticky { position: relative; padding-left: 20px; }
+.yuki-post-item.sticky::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 28px;
+  bottom: 28px;
+  width: 3px;
+  border-radius: var(--yuki-radius-pill);
+  background: var(--yuki-primary);
+}
 .yuki-post-item:hover .yuki-post-title { color: var(--yuki-primary-700); }
 .dark .yuki-post-item:hover .yuki-post-title { color: var(--yuki-primary); }
 .yuki-post-thumb {
@@ -230,15 +248,15 @@ img { max-width: 100%; height: auto; display: block; }
 /* ============================================
    文章详情页
    ============================================ */
-.yuki-article-header { max-width: 768px; margin: 0 auto 48px; }
+.yuki-article-header { max-width: var(--yuki-content-width); margin: 0 auto 48px; }
 .yuki-article-header h1 { margin: 16px 0; font-size: clamp(28px, 3.5vw, 40px); font-weight: 700; line-height: 1.25; }
 .yuki-article-featured { margin: 0 0 48px; padding: 8px; }
 .yuki-article-featured img { border-radius: calc(var(--yuki-radius-lg) - 4px); }
 
 .yuki-single-layout {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 300px;
-  gap: 48px;
+  grid-template-columns: minmax(0, 1fr) var(--yuki-sidebar-width);
+  gap: var(--yuki-layout-gap);
   align-items: start;
 }
 @media (max-width: 960px) {
@@ -283,6 +301,41 @@ img { max-width: 100%; height: auto; display: block; }
 .yuki-prose figure { margin: 2em 0; }
 .yuki-prose figcaption { text-align: center; font-size: 13px; color: var(--yuki-muted-foreground); margin-top: 0.7em; }
 .yuki-prose img { border-radius: var(--yuki-radius-lg); }
+
+/* 对齐、图注与宽块。宽度的名字在 :root；单篇里宽块受主列约束，不跨侧栏。 */
+/* 浮动图片可能在正文末尾还没收完；清在这里，别让它流进标签、上下篇与评论区。 */
+.yuki-prose::after { content: ""; display: table; clear: both; }
+.yuki-prose .alignleft { float: left; margin: 0.4em 1.2em 1em 0; }
+.yuki-prose .alignright { float: right; margin: 0.4em 0 1em 1.2em; }
+.yuki-prose .aligncenter { display: block; margin: 1.5em auto; }
+.yuki-prose .alignwide { width: 100%; max-width: var(--yuki-wide-width); }
+.yuki-prose .alignfull { width: 100%; max-width: 100%; }
+
+/* 无侧栏的窄栏模板（page.php）才真正放宽；单篇不套这条，宽块止于主列。 */
+.yuki-narrow .yuki-prose .alignwide,
+.yuki-narrow .yuki-prose .alignfull {
+  width: min(var(--yuki-wide-width), calc(100vw - 48px));
+  margin-left: calc((100% - min(var(--yuki-wide-width), calc(100vw - 48px))) / 2);
+  margin-right: 0;
+}
+
+.yuki-prose .wp-caption { max-width: 100%; margin: 1.6em 0; }
+.yuki-prose .wp-caption.alignleft { margin: 0.4em 1.2em 1em 0; }
+.yuki-prose .wp-caption.alignright { margin: 0.4em 0 1em 1.2em; }
+.yuki-prose .wp-caption img { margin: 0; }
+.yuki-prose .wp-caption-text,
+.yuki-prose .gallery-caption {
+  margin-top: 0.6em;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--yuki-muted-foreground);
+  text-align: center;
+}
+
+@media (max-width: 640px) {
+  .yuki-prose .alignleft,
+  .yuki-prose .alignright { float: none; margin-left: auto; margin-right: auto; }
+}
 
 /* 标签 & 上下篇 */
 .yuki-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 40px; padding-top: 28px; border-top: 1px solid var(--yuki-border); }
@@ -400,6 +453,10 @@ img { max-width: 100%; height: auto; display: block; }
   border-radius: var(--yuki-radius-lg);
   background: var(--yuki-card);
   font-size: 14px;
+}
+/* 作者本人的评论：左侧一道主色内阴影，与普通访客区分，不新添颜色 */
+.yuki-comment-list .bypostauthor > .comment-body {
+  box-shadow: inset 3px 0 0 var(--yuki-primary);
 }
 /* 元信息：头像 + 名字一行，日期与「回复 @谁」另起一行 */
 .yuki-comment-list .comment-author { display: flex; align-items: center; gap: 10px; }

@@ -13,7 +13,7 @@
 $yuki_show_cat = ! isset( $args['show_cat'] ) || $args['show_cat'];
 $yuki_cats     = $yuki_show_cat ? get_the_category() : array();
 ?>
-<article class="yuki-post-item">
+<article <?php post_class( 'yuki-post-item' ); ?>>
 	<?php if ( has_post_thumbnail() ) : ?>
 		<a class="yuki-post-thumb" href="<?php the_permalink(); ?>">
 			<?php the_post_thumbnail( 'yuki-thumb' ); ?>
