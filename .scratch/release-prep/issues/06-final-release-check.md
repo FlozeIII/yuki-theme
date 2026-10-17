@@ -174,3 +174,35 @@ Yuki 1.1.0
 **外向动作（已执行）：** `main` 推到 `2c71f3f`，标签 `v1.1.1` 已推送；
 GitHub release <https://github.com/FlozeIII/yuki-theme/releases/tag/v1.1.1>，附件
 `yuki-1.1.1.zip`（169,636 字节），非草稿、非预发布。
+
+### 九、v1.2.0：四类功能收口
+
+这一批把路线图四类各一件一起发：图片灯箱、关联文章、动效收敛、前台发说说。
+
+- 发布提交 `4a69b27`，标签 `v1.2.0`（本地已打，待推送）。
+- 包：`.scratch/release-prep/yuki-1.2.0.zip`，revision `4a69b27`，与标签一致。
+- `verify-package` **65/65**。
+- Theme Check（对产物）：**REQUIRED 1 · WARNING 1 · RECOMMENDED 7 · INFO 5**，与 1.1.1 相同。
+- `yuki.pot` 102 条，`Project-Id-Version: Yuki 1.2.0`（按 HEAD + 新 `style.css` 重建，
+  只改了版本与生成时间）。
+- 临时 WordPress 根已删，共享 core 与站点 200 复核正常。
+
+**全套回归（发布提交 `4a69b27`，19 个脚本）：**
+
+| 脚本 | 通过 | 脚本 | 通过 |
+| --- | --- | --- | --- |
+| verify-comment-deletion | 38/38 | verify-image-lightbox | 39/39 |
+| verify-comment-likes | 63/63 | verify-motion | 19/19 |
+| verify-comment-nesting | 53/53 | verify-package | 65/65 |
+| verify-comment-pending | 33/33 | verify-related-posts | 20/20 |
+| verify-comment-spam | 34/34 | verify-screenshot | 15/15 |
+| verify-comment-submit | 173/173 | verify-shuoshuo | 49/49 |
+| verify-editor-alignment | 58/58 | verify-shuoshuo-composer | 31/31 |
+| verify-editor-styles | 23/23 | verify-shuoshuo-density | 43/43 |
+| verify-harness | 29/29 | verify-theme-check-defects | 33/33 |
+| verify-hitokoto | 46/46 | **合计** | **864/864** |
+
+`verify-comment-submit` 这一趟 **173/173**，没有复现之前那个「太快 → 重试」的浏览器抖动；
+`comment-submit-ajax/issues/04-browser-retry-flake.md` 仍然留着，下一次再出现时按它诊断。
+
+**外向动作：** `main` 与 `v1.2.0` 标签尚未推送，GitHub release 未创建——等站主确认后执行。
