@@ -1710,7 +1710,7 @@ try {
 
     /*
      * 照做：过一会儿再点一次提交。窗口早过了，这一回该成功——
-     * 令牌只设下限、不设上界（见 functions.php 里那段说明），所以表单里那枚还能用。
+     * 令牌上界是一周（见 functions.php 里那段说明），刚取的那枚远没到。
      */
     await sleep(3400);
     await page.evaluate(`window.__yukiStillHere = 'yes';`);

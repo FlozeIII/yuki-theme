@@ -46,6 +46,9 @@
 - 顺手修了一处会让发版白做的缓存问题：`yuki_assets()` 原来把样式与脚本的版本写死成 `1.0.0`，
   访客的浏览器会继续用缓存里的旧 CSS。现在三者都读 `wp_get_theme()->get( 'Version' )`，
   发版只改 `style.css` 一处。实测首页输出 `style.css?ver=1.1.0`。
+- 发布后补丁把版本收口成 `yuki_asset_version()`，`inc/comment-likes.php` 与
+  `inc/comment-submit.php` 里原来写死的 `1.0.0` 也接上了——否则发版后主资源刷新了，
+  评论脚本仍然是旧的。
 - 发布提交 `7953be7`；标签 `v1.1.0` 指向它。
 
 ### 二、出包

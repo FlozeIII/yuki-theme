@@ -36,9 +36,22 @@ add_action( 'after_setup_theme', 'yuki_setup' );
 /* ---------------------------------------------
  * 资源加载
  * --------------------------------------------- */
+
+/**
+ * 静态资源的版本号。
+ *
+ * 跟着 style.css 的 Version 走：发版时只改一处。所有 enqueue —— 包括 inc/ 里的评论脚本 ——
+ * 都必须走这里。曾经有两处写死 '1.0.0'，发版后主资源刷新了、它们仍然是旧的，
+ * 老访客会拿旧 JS 打新端点。
+ *
+ * @return string
+ */
+function yuki_asset_version() {
+	return (string) wp_get_theme()->get( 'Version' );
+}
+
 function yuki_assets() {
-	// 资产版本跟着 style.css 的 Version 走：发版时只改一处，就不会有人拿到缓存里的旧样式。
-	$version = wp_get_theme()->get( 'Version' );
+	$version = yuki_asset_version();
 
 	wp_enqueue_style( 'yuki-style', get_stylesheet_uri(), array(), $version );
 
@@ -636,10 +649,11 @@ function yuki_comment_token_sign( $issued ) {
 /**
  * 签发令牌：提交时刻 + 签名。
  *
- * 只设下限不设上界：站点可能开着页面缓存，访客拿到的令牌是缓存那次渲染签的，
- * 签发时间早于他真正打开页面的时间，加上界会把缓存命中的访客全拦掉。
- * 代价是同一个令牌可以反复用——它挡的是「随手填一个值」和「页面刚出来就提交」，
- * 一个肯自己取页面、肯等三秒的脚本本来就挡不住，那种交给审核队列和黑名单。
+ * 下限 3 秒：挡「页面刚出来就提交」。
+ * 上界一周：站点可能开着页面缓存，访客拿到的令牌是缓存那次渲染签的，签发时间早于
+ * 他真正打开页面的时间——所以上界不能小，否则会把缓存命中的访客全拦掉。但也不能
+ * 没有：没有上界时，抓到一个令牌就能**永久**重放，只受核心 comment_flood 的 15 秒
+ * 间隔约束。一周对任何现实的缓存 TTL 都绰绰有余，又让被抓走的令牌会自己过期。
  *
  * @return string 形如 1750000000|a1b2… 的令牌。
  */
@@ -681,8 +695,16 @@ function yuki_comment_token_verdict( $token ) {
 		return 'missing';
 	}
 
+	// 签是真的，再看时间窗：太旧与太快都不是正常访客
+	$age = time() - (int) $parts[0];
+
+	// 太旧、或时间戳在未来（时钟回拨）：与「签名不对」同类，确定性的机器人信号
+	if ( $age < 0 || $age > WEEK_IN_SECONDS ) {
+		return 'missing';
+	}
+
 	// 页面渲染到提交短于 3 秒：签是真的，只是太快
-	return ( time() - (int) $parts[0] ) >= 3 ? 'ok' : 'too_fast';
+	return $age >= 3 ? 'ok' : 'too_fast';
 }
 
 /**
@@ -792,7 +814,15 @@ function yuki_comment_is_form_post() {
 		return true;
 	}
 
+	/*
+	 * 再要求 comment_post_ID：评论表单一定带它（核心的 wp-comments-post.php 就靠它找文章），
+	 * 而别的插件在 POST 里自己调 wp_new_comment() 时通常没有。少了这一条，那些调用会被
+	 * 当成「没带蜜罐与令牌」的机器人提交，静默吞掉。
+	 *
+	 * 只管这个兜底分支：端点那条路在上面 yuki_comment_form_post_flag() 就短路返回了。
+	 */
 	return 'POST' === ( $_SERVER['REQUEST_METHOD'] ?? '' )
+		&& isset( $_POST['comment_post_ID'] )
 		&& ! defined( 'XMLRPC_REQUEST' )
 		&& ! defined( 'REST_REQUEST' )
 		&& ! wp_doing_cron();

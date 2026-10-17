@@ -406,7 +406,7 @@ function yuki_comment_submit_script() {
 		'yuki-comment-submit',
 		get_template_directory_uri() . '/assets/js/comment-submit.js',
 		array( 'comment-reply' ),
-		'1.0.0',
+		yuki_asset_version(),
 		true
 	);
 

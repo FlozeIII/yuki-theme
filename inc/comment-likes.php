@@ -227,6 +227,30 @@ function yuki_comment_like_endpoint( WP_REST_Request $request ) {
 		);
 	}
 
+	/*
+	 * 限流：同一出口 IP 每分钟最多 60 次。
+	 *
+	 * 这不是 nonce（理由见上面的 docblock），而是把「一条 for 循环刷一千个赞」抬高成
+	 * 「一千个 IP」的门槛。60 对正常访客绰绰有余——同一条评论点赞再取消也就几次。
+	 *
+	 * 按 IP 分桶而不是按访客 cookie：cookie 是客户端自己发的，清掉就换一个新身份，
+	 * 挡不住刻意为之的请求；IP 才是不随客户端意愿改变的那一维。并发下读改写不原子，
+	 * 允许漏数——限流不需要精确。
+	 */
+	$ip  = isset( $_SERVER['REMOTE_ADDR'] ) ? (string) $_SERVER['REMOTE_ADDR'] : '';
+	$key = 'yuki_like_' . md5( $ip );
+	$hit = (int) get_transient( $key );
+
+	if ( $hit >= 60 ) {
+		return new WP_Error(
+			'yuki_comment_like_rate',
+			__( '点得有点快，歇一下再试。', 'yuki' ),
+			array( 'status' => 429 )
+		);
+	}
+
+	set_transient( $key, $hit + 1, MINUTE_IN_SECONDS );
+
 	// 这里的 liked 不必再转一道：参数声明成 boolean，核心已经校验过（'yes' 这种会在
 	// 进这个回调之前就 400），而 yuki_comment_set_like() 自己会落成真正的布尔
 	$result = yuki_comment_set_like(
@@ -281,7 +305,7 @@ function yuki_comment_like_script() {
 		'yuki-comment-likes',
 		get_template_directory_uri() . '/assets/js/comment-likes.js',
 		array(),
-		'1.0.0',
+		yuki_asset_version(),
 		true
 	);
 
