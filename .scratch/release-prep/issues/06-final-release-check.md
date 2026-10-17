@@ -208,3 +208,9 @@ GitHub release <https://github.com/FlozeIII/yuki-theme/releases/tag/v1.1.1>，�
 **外向动作（已执行）：** `main` 推到 `087a820`，标签 `v1.2.0` 已推送；
 GitHub release <https://github.com/FlozeIII/yuki-theme/releases/tag/v1.2.0>，附件
 `yuki-1.2.0.zip`（178,441 字节），非草稿、非预发布。
+
+### 十、发布后：自定义背景
+
+应站主要求，主题后来加上了 `custom-background` 与背景蒙层滑杆。04/06 原先「`custom-background`
+加了比不加差」的判断**就此作废**：现在它是站主明确要的视觉设置，主题用蒙层守住可读性。
+只设背景色时不挂蒙层；深色模式不被默认色覆盖。详见 `.scratch/appearance-settings/`。

@@ -50,6 +50,7 @@ Tags: blog, minimal, two-columns, light, dark
   --yuki-overlay-foreground: #F3F0EA;
 
   --yuki-season: #A5B4FC;
+  --yuki-bg-scrim: .8;
 
   --yuki-shadow-1: 0 1px 2px rgba(45, 45, 53, 0.04), 0 1px 1px rgba(45, 45, 53, 0.02);
   --yuki-shadow-2: 0 8px 24px -8px rgba(45, 45, 53, 0.05);
@@ -83,6 +84,17 @@ body.season-spring { --yuki-season: #F2A6C2; }
 body.season-summer { --yuki-season: #7CC7E8; }
 body.season-autumn { --yuki-season: #E8A33D; }
 body.season-winter { --yuki-season: #A5B4FC; }
+
+/* 背景图蒙层：只在设置了背景图时出现，跟随深浅色；强度由自定义器的滑杆决定 */
+body.yuki-has-background-image::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background: var(--yuki-background);
+  opacity: var(--yuki-bg-scrim);
+  pointer-events: none;
+}
 
 /* ============================================
    Base

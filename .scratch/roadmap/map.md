@@ -67,6 +67,15 @@ Type: map
 3. **季节点缀色**：已实现（`issues/03-season.md`）——按月份自动，只染雪兔与贴纸胶带。
 4. **hero 动效**：已实现（`issues/04-hero-motion.md`）——7 枚纯 CSS 花瓣，reduced-motion 全停。
 
+### 外观设置（跨类）
+
+见 `.scratch/appearance-settings/spec.md`，四批：
+
+1. **背景图 + 蒙层**：已实现（`issues/01-background.md`）。
+2. 页头图（`custom-header`）：待做。
+3. 强调色：待做。
+4. 字体切换：待做。
+
 ## 决策记录
 
 - 2026-10-17：四类全要，按批推进；第一批选图片灯箱。极简线补上「作者工具」判据（见 `CONTEXT.md`）。
@@ -85,6 +94,7 @@ Type: map
 - 2026-10-17：`v1.2.0` 发布，A–D 四批一起交付（864/864 回归，Theme Check 计数不变）。
 - 2026-10-17：二次元成分分四批；第一批**雪兔 + 微文案**完成（hero/404/空状态），
   第二批**贴纸/气泡**、第三批**季节点缀色**与第四批**hero 动效**都已完成。
+- 2026-10-17：外观设置分四批；第一批**背景图 + 蒙层**完成，页头图/强调色/字体待做。
 - 测试基建另有一张 `comment-submit-ajax/issues/04-browser-retry-flake.md`，不挡路线图。
 
 ## Fog

@@ -24,6 +24,8 @@ function yuki_setup() {
 	add_theme_support( 'editor-styles' );
 	add_editor_style( 'style.css' );
 	add_theme_support( 'custom-logo', array( 'height' => 48, 'width' => 160, 'flex-height' => true, 'flex-width' => true ) );
+	// 不设 default-color：设了之后核心会在没选背景时也输出浅色底，覆盖深色模式。
+	add_theme_support( 'custom-background' );
 
 	register_nav_menus( array(
 		'primary' => __( '主导航', 'yuki' ),
@@ -54,6 +56,9 @@ function yuki_assets() {
 	$version = yuki_asset_version();
 
 	wp_enqueue_style( 'yuki-style', get_stylesheet_uri(), array(), $version );
+
+	$scrim = yuki_sanitize_background_scrim( (int) get_theme_mod( 'yuki_background_scrim', 80 ) );
+	wp_add_inline_style( 'yuki-style', ':root{--yuki-bg-scrim:' . ( $scrim / 100 ) . ';}' );
 
 	wp_enqueue_script( 'yuki-theme-toggle', get_template_directory_uri() . '/assets/js/theme-toggle.js', array(), $version, true );
 	wp_enqueue_script( 'yuki-search-overlay', get_template_directory_uri() . '/assets/js/search-overlay.js', array(), $version, true );
@@ -122,6 +127,21 @@ function yuki_season_body_class( $classes ) {
 	return $classes;
 }
 add_filter( 'body_class', 'yuki_season_body_class' );
+
+/**
+ * 有背景图时给 body 加一个类，供蒙层使用。只设背景色时不加，避免把用户选的颜色冲淡。
+ *
+ * @param string[] $classes body 类名。
+ * @return string[]
+ */
+function yuki_background_body_class( $classes ) {
+	if ( get_background_image() ) {
+		$classes[] = 'yuki-has-background-image';
+	}
+
+	return $classes;
+}
+add_filter( 'body_class', 'yuki_background_body_class' );
 
 /* ---------------------------------------------
  * 侧边栏
@@ -227,6 +247,31 @@ function yuki_customize_register( $wp_customize ) {
 		'type'        => 'select',
 		'choices'     => yuki_shuoshuo_category_choices(),
 	) );
+
+	/* ---- 背景蒙层（挂在核心的「背景图像」一节里） ---- */
+
+	$wp_customize->add_setting( 'yuki_background_scrim', array(
+		'default'           => 80,
+		'sanitize_callback' => 'yuki_sanitize_background_scrim',
+	) );
+
+	$wp_customize->add_control( 'yuki_background_scrim', array(
+		'label'       => __( '背景蒙层强度', 'yuki' ),
+		'description' => __( '只在设置了背景图时生效；0 最清楚，100 最淡。', 'yuki' ),
+		'section'     => 'background_image',
+		'type'        => 'range',
+		'input_attrs' => array( 'min' => 0, 'max' => 100, 'step' => 5 ),
+	) );
+}
+
+/**
+ * 背景蒙层强度：整数，夹在 0–100。
+ *
+ * @param mixed $value 自定义器传上来的值。
+ * @return int
+ */
+function yuki_sanitize_background_scrim( $value ) {
+	return max( 0, min( 100, (int) $value ) );
 }
 
 /**
@@ -254,7 +299,7 @@ function yuki_shuoshuo_category_choices() {
 
 	return $choices;
 }
-add_action( 'customize_register', 'yuki_customize_register' );
+add_action( 'customize_register', 'yuki_customize_register', 20 );
 
 /* ---------------------------------------------
  * 头像源
