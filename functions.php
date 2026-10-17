@@ -83,6 +83,16 @@ function yuki_assets() {
 		);
 	}
 
+	$font_style  = (string) get_theme_mod( 'yuki_font_style', 'sans' );
+	$font_stacks = array(
+		'serif'   => '"Noto Serif SC", "Songti SC", "SimSun", Georgia, "Times New Roman", serif',
+		'rounded' => '"Yuanti SC", "YouYuan", "Microsoft YaHei", "PingFang SC", "Noto Sans SC", sans-serif',
+	);
+
+	if ( isset( $font_stacks[ $font_style ] ) ) {
+		wp_add_inline_style( 'yuki-style', ':root{--yuki-font-sans:' . $font_stacks[ $font_style ] . ';}' );
+	}
+
 	wp_enqueue_script( 'yuki-theme-toggle', get_template_directory_uri() . '/assets/js/theme-toggle.js', array(), $version, true );
 	wp_enqueue_script( 'yuki-search-overlay', get_template_directory_uri() . '/assets/js/search-overlay.js', array(), $version, true );
 	wp_enqueue_script( 'yuki-image-lightbox', get_template_directory_uri() . '/assets/js/image-lightbox.js', array(), $version, true );
@@ -298,6 +308,30 @@ function yuki_customize_register( $wp_customize ) {
 		'description' => __( '用于链接、按钮、主题开关与选中态；留空使用主题默认的堇紫。', 'yuki' ),
 		'section'     => 'colors',
 	) ) );
+
+	/* ---- 字体风格 ---- */
+
+	$wp_customize->add_section( 'yuki_typography', array(
+		'title'    => __( 'Yuki 字体设置', 'yuki' ),
+		'priority' => 154,
+	) );
+
+	$wp_customize->add_setting( 'yuki_font_style', array(
+		'default'           => 'sans',
+		'sanitize_callback' => 'yuki_sanitize_font_style',
+	) );
+
+	$wp_customize->add_control( 'yuki_font_style', array(
+		'label'       => __( '字体风格', 'yuki' ),
+		'description' => __( '正文与标题一起换；代码块仍用等宽字体。', 'yuki' ),
+		'section'     => 'yuki_typography',
+		'type'        => 'select',
+		'choices'     => array(
+			'sans'    => __( '无衬线（默认）', 'yuki' ),
+			'serif'   => __( '衬线（宋体 / Georgia）', 'yuki' ),
+			'rounded' => __( '圆体（幼圆 / 圆体）', 'yuki' ),
+		),
+	) );
 }
 
 /**
@@ -308,6 +342,16 @@ function yuki_customize_register( $wp_customize ) {
  */
 function yuki_sanitize_background_scrim( $value ) {
 	return max( 0, min( 100, (int) $value ) );
+}
+
+/**
+ * 字体风格只认三档；其余一律回到无衬线。
+ *
+ * @param mixed $value 自定义器传上来的值。
+ * @return string
+ */
+function yuki_sanitize_font_style( $value ) {
+	return in_array( $value, array( 'sans', 'serif', 'rounded' ), true ) ? $value : 'sans';
 }
 
 /**

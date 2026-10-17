@@ -73,3 +73,5 @@
 
 - 正文 15–16px / line-height 1.7；标题 clamp(28px, 3.5vw, 40px)。
 - 字体栈："Inter", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", system-ui。
+- 站主可在自定义器切换字体风格：无衬线（默认）/ 衬线 / 圆体。三套都是系统字体栈；
+  代码块仍用独立的等宽栈。
