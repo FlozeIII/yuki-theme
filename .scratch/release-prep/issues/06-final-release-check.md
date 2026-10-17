@@ -214,3 +214,37 @@ GitHub release <https://github.com/FlozeIII/yuki-theme/releases/tag/v1.2.0>，�
 应站主要求，主题后来加上了 `custom-background` 与背景蒙层滑杆。04/06 原先「`custom-background`
 加了比不加差」的判断**就此作废**：现在它是站主明确要的视觉设置，主题用蒙层守住可读性。
 只设背景色时不挂蒙层；深色模式不被默认色覆盖。详见 `.scratch/appearance-settings/`。
+
+### 十一、v1.3.0：二次元与外观设置收口
+
+`v1.2.0` 之后的八批一起发：雪兔、贴纸/气泡、季节点缀色、hero 花瓣，以及背景图+蒙层、
+页头图、强调色、字体切换。
+
+- 发布提交 `d330fc1`（`decd5e0` 升版本；`d330fc1` 修掉雪兔 class 的 Theme Check 误报），
+  标签 `v1.3.0` 指向它。
+- 包：`.scratch/release-prep/yuki-1.3.0.zip`，revision `d330fc1`，与标签一致。
+- `verify-package` **65/65**。
+- Theme Check（对产物）：**REQUIRED 1 · WARNING 1 · RECOMMENDED 5 · INFO 5**。
+  `custom-header` / `custom-background` 两条建议消失；雪兔那条 `esc_attr` 误报已修。
+  剩下的 5 条 RECOMMENDED：区块样板、区块样式、`wp-block-styles`、Theme URI、Author URI。
+- `yuki.pot` 112 条，`Project-Id-Version: Yuki 1.3.0`。
+- 临时 WordPress 根已删，共享 core 与站点 200 复核正常。
+
+**全套回归（发布提交 `d330fc1`，27 个脚本）：**
+
+| 脚本 | 通过 | 脚本 | 通过 | 脚本 | 通过 |
+| --- | --- | --- | --- | --- | --- |
+| comment-deletion | 38 | comment-likes | 63 | comment-nesting | 53 |
+| comment-pending | 33 | comment-spam | 34 | comment-submit | 173 |
+| editor-alignment | 58 | editor-styles | 23 | harness | 29 |
+| hitokoto | 46 | image-lightbox | 39 | motion | 19 |
+| package | 65 | related-posts | 20 | screenshot | 15 |
+| shuoshuo | 49 | shuoshuo-composer | 31 | shuoshuo-density | 43 |
+| theme-check-defects | 33 | mascot | 28 | stickers | 24 |
+| season | 23 | hero-motion | 17 | background | 25 |
+| header-image | 16 | accent | 24 | font | 18 |
+
+**合计 1039/1039。** `verify-comment-submit` 这一趟 173/173，没有复现之前那个
+「太快 → 重试」的浏览器抖动；`comment-submit-ajax/issues/04-browser-retry-flake.md` 仍留着。
+
+**外向动作：** `main` 与 `v1.3.0` 标签尚未推送，GitHub release 未创建——等站主确认后执行。
