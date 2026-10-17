@@ -2,9 +2,9 @@
 # This file is distributed under the GNU General Public License v2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Yuki 1.1.1\n"
+"Project-Id-Version: Yuki 1.2.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-17T09:40:29+00:00\n"
+"POT-Creation-Date: 2026-10-17T09:52:07+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -370,7 +370,7 @@ msgstr ""
 msgid "这个分类里的文章不出现在首页与博客列表，只保留它自己的归档页。选「不使用」则整项功能不生效。"
 msgstr ""
 
-#: archive.php:56
+#: archive.php:60
 msgid "这个归档下还没有文章。"
 msgstr ""
 
