@@ -64,6 +64,12 @@ Type: map
 剪贴板优先 `writeText`，失败回退 `execCommand`；不新增 token。验收 51/51，全套 28 个验收
 脚本与 `verify-package` 65/65 通过。
 
+**第六批：C · 整站设定资料集 UI。** spec：`.scratch/ui-redesign/spec.md`；工单：
+`.scratch/ui-redesign/issues/01-ui-redesign.md`。**实现与验收已完成，未发版。**
+把整站改成「不存在的动画的制作资料集」：生产信息栏、FILE 01 封面、CHARACTER SHEET、
+EPISODE INDEX、单篇 filebar/KEY VISUAL、归档/搜索/404/侧栏/footer 同一套档案语言。
+纯 PHP 模板 + CSS，无构建、无外部字体；保留全部功能、宽度契约与测试钩子。
+
 ### 二次元成分（跨类）
 
 见 `.scratch/anime-flavor/spec.md`，四批推进：
@@ -106,6 +112,14 @@ Type: map
   非空 `pre`；按钮与容器由 JS 创建，禁用 JS 时原样；对齐类转移到容器；剪贴板优先
   `writeText`、失败回退 `execCommand`；反馈走按钮文字 + `role="status"`；不新增 token。
   验收 `verify-code-copy` 51/51，全套 28 个脚本与 `verify-package` 65/65 通过。
+- 2026-10-20：第六批选 **C · 整站设定资料集 UI**。用户在 A–L 中选定 J：二次元放在
+  世界观与界面语言里，而不是继续贴雪兔/贴纸。纸面 + 工程网格、蓝图蓝 + 信号橙、
+  FILE/SCENE/CHARACTER SHEET/EPISODE INDEX 的档案语法；正文仍 724px，长文优先。
+  为让评论区、说说、页脚与封面共用一张纸，刻意把既有 `--yuki-background` 从
+  `#FDFBF7/#18181F` 改为 `#EDE8DC/#0F1720`，相关断言同步更新并在 spec 写明理由。
+  页面标题继续跟随自定义器字体，只有资料集小标签用窄体；截图 `screenshot.png`
+  同步重拍为 1200×900。验收 `verify-ui-redesign` 50/50，既有 28 个脚本全绿，
+  `verify-package` 65/65 通过。
 - 测试基建另有一张 `comment-submit-ajax/issues/04-browser-retry-flake.md`，不挡路线图。
 
 ## Fog

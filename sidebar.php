@@ -11,6 +11,10 @@
 $author_name = get_the_author();
 ?>
 <aside class="yuki-sidebar">
+	<div class="yuki-sidebar-head" aria-hidden="true">
+		<span><?php esc_html_e( 'PRODUCTION NOTES', 'yuki' ); ?></span>
+		<span><?php esc_html_e( 'SIDE A', 'yuki' ); ?></span>
+	</div>
 <?php if ( is_active_sidebar( 'sidebar-single' ) ) : ?>
 
 	<?php dynamic_sidebar( 'sidebar-single' ); ?>

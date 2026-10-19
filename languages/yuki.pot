@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Yuki 1.3.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-19T15:11:50+00:00\n"
+"POT-Creation-Date: 2026-10-19T16:54:22+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -26,8 +26,52 @@ msgstr ""
 msgid "%s 条评论"
 msgstr ""
 
+#: archive.php:30
+msgid "ARCHIVE INDEX"
+msgstr ""
+
+#: index.php:54
+msgid "CATEGORIES"
+msgstr ""
+
+#: header.php:26 index.php:40
+msgid "CHARACTER & EPISODE NOTES"
+msgstr ""
+
+#: index.php:66
+msgid "CHARACTER SHEET"
+msgstr ""
+
 #: functions.php:254
 msgid "Cravatar（境内镜像）"
+msgstr ""
+
+#: index.php:100
+msgid "EPISODE INDEX"
+msgstr ""
+
+#: index.php:50
+msgid "EPISODES"
+msgstr ""
+
+#: index.php:67
+msgid "FIG. 01"
+msgstr ""
+
+#: page.php:22 single.php:20
+msgid "FILE"
+msgstr ""
+
+#: index.php:33
+msgid "FILE 01 / PRODUCTION BIBLE"
+msgstr ""
+
+#: archive.php:41
+msgid "FILED UNDER"
+msgstr ""
+
+#: page.php:39 single.php:46
+msgid "FRAME 01"
 msgstr ""
 
 #: functions.php:249
@@ -38,12 +82,100 @@ msgstr ""
 msgid "Gravatar（默认，境内不可用）"
 msgstr ""
 
+#: index.php:82
+msgid "HEIGHT"
+msgstr ""
+
 #: functions.php:217
 msgid "ICP 备案号"
 msgstr ""
 
+#: page.php:38 single.php:45
+msgid "KEY VISUAL"
+msgstr ""
+
+#: search.php:32
+msgid "MATCHING FILES"
+msgstr ""
+
+#: index.php:86
+msgid "MEDIUM"
+msgstr ""
+
+#: 404.php:13
+msgid "MISSING FRAME"
+msgstr ""
+
+#: index.php:74
+msgid "NAME"
+msgstr ""
+
+#: index.php:109
+msgid "NEWEST FIRST"
+msgstr ""
+
+#: template-parts/post-item.php:23
+msgid "NO KEY FRAME"
+msgstr ""
+
+#: footer.php:15 sidebar.php:15
+msgid "PRODUCTION NOTES"
+msgstr ""
+
+#: archive.php:34
+msgid "PRODUCTION NOTES / BACK MATTER"
+msgstr ""
+
+#: search.php:22
+msgid "PRODUCTION NOTES / SEARCH"
+msgstr ""
+
 #: template-parts/comment.php:48
 msgid "Pingback："
+msgstr ""
+
+#: search.php:19
+msgid "QUERY"
+msgstr ""
+
+#: header.php:27
+msgid "REV."
+msgstr ""
+
+#: index.php:78
+msgid "ROLE"
+msgstr ""
+
+#: single.php:21
+msgid "SCENE"
+msgstr ""
+
+#: page.php:23
+msgid "SCENE / STATIC PAGE"
+msgstr ""
+
+#: search.php:18
+msgid "SEARCH INDEX"
+msgstr ""
+
+#: sidebar.php:16
+msgid "SIDE A"
+msgstr ""
+
+#: index.php:35
+msgid "STATUS / ACTIVE"
+msgstr ""
+
+#: single.php:22
+msgid "STATUS / PUBLISHED"
+msgstr ""
+
+#: archive.php:31 index.php:34 index.php:58
+msgid "UPDATED"
+msgstr ""
+
+#: header.php:25
+msgid "YUKI PRODUCTION ARCHIVE"
 msgstr ""
 
 #: functions.php:238
@@ -67,15 +199,15 @@ msgstr ""
 msgid "[%s] 需要的话，你可以删掉自己那条评论"
 msgstr ""
 
-#: sidebar.php:35
+#: sidebar.php:39
 msgid "一言"
 msgstr ""
 
-#: single.php:65
+#: single.php:75
 msgid "上一篇"
 msgstr ""
 
-#: single.php:71
+#: single.php:81
 msgid "下一篇"
 msgstr ""
 
@@ -87,15 +219,15 @@ msgstr ""
 msgid "世界很大，今天先走到这里。"
 msgstr ""
 
-#: functions.php:38
+#: functions.php:38 header.php:40
 msgid "主导航"
 msgstr ""
 
-#: sidebar.php:26
+#: sidebar.php:30
 msgid "作者"
 msgstr ""
 
-#: sidebar.php:21
+#: sidebar.php:25
 msgid "作者简介"
 msgstr ""
 
@@ -113,7 +245,7 @@ msgstr ""
 msgid "你没有发布说说的权限。"
 msgstr ""
 
-#: footer.php:18
+#: footer.php:21
 msgid "你的邮箱地址"
 msgstr ""
 
@@ -129,11 +261,15 @@ msgstr ""
 msgid "公安备案号"
 msgstr ""
 
-#: search.php:21
+#: index.php:106
+msgid "共 %d 话"
+msgstr ""
+
+#: search.php:29
 msgid "共找到 %d 篇文章"
 msgstr ""
 
-#: footer.php:53 functions.php:102
+#: footer.php:56 functions.php:102
 msgid "关闭"
 msgstr ""
 
@@ -141,11 +277,11 @@ msgstr ""
 msgid "写下你的想法…"
 msgstr ""
 
-#: sidebar.php:50
+#: sidebar.php:54
 msgid "分类"
 msgstr ""
 
-#: header.php:54
+#: header.php:61
 msgid "切换主题"
 msgstr ""
 
@@ -181,7 +317,7 @@ msgstr ""
 msgid "回到站点首页"
 msgstr ""
 
-#: 404.php:18
+#: 404.php:19
 msgid "回到首页"
 msgstr ""
 
@@ -249,11 +385,11 @@ msgstr ""
 msgid "提交评论"
 msgstr ""
 
-#: footer.php:52 header.php:50 searchform.php:13
+#: footer.php:55 header.php:57 searchform.php:13
 msgid "搜索"
 msgstr ""
 
-#: search.php:17
+#: search.php:25
 msgid "搜索「%s」"
 msgstr ""
 
@@ -273,7 +409,7 @@ msgstr ""
 msgid "无衬线（默认）"
 msgstr ""
 
-#: sidebar.php:96
+#: sidebar.php:100
 msgid "暂无数据"
 msgstr ""
 
@@ -285,8 +421,12 @@ msgstr ""
 msgid "月光落在窗台上，像一句没写完的诗。"
 msgstr ""
 
+#: index.php:79
+msgid "本站看板角色"
+msgstr ""
+
 #. Description of the theme
-msgid "极简 × 二次元风格 WordPress 博客主题。暖白底色 + 柔和堇紫主色，内置浅色/深色模式滑动开关，纵向文章列表，文章页带侧边栏与备案号占位。"
+msgid "极简 × 二次元风格 WordPress 博客主题。设定资料集式版面，暖纸底色、蓝图线条与信号橙点缀，内置浅色/深色模式、图片灯箱、代码块复制与评论增强。"
 msgstr ""
 
 #: functions.php:105
@@ -297,7 +437,7 @@ msgstr ""
 msgid "查看大图：%s"
 msgstr ""
 
-#: sidebar.php:65
+#: sidebar.php:69
 msgid "标签云"
 msgstr ""
 
@@ -305,7 +445,7 @@ msgstr ""
 msgid "正文与标题一起换；代码块仍用等宽字体。"
 msgstr ""
 
-#: footer.php:15
+#: footer.php:17
 msgid "每周一封邮件，分享新文章与灵感碎片。随时取消。"
 msgstr ""
 
@@ -317,11 +457,11 @@ msgstr ""
 msgid "点赞"
 msgstr ""
 
-#: sidebar.php:77
+#: sidebar.php:81
 msgid "热门文章"
 msgstr ""
 
-#: sidebar.php:26
+#: sidebar.php:30
 msgid "独立创作者"
 msgstr ""
 
@@ -361,11 +501,11 @@ msgstr ""
 msgid "衬线（宋体 / Georgia）"
 msgstr ""
 
-#: footer.php:19 footer.php:30
+#: footer.php:22 footer.php:33 header.php:51
 msgid "订阅"
 msgstr ""
 
-#: footer.php:14
+#: footer.php:16
 msgid "订阅更新"
 msgstr ""
 
@@ -376,6 +516,10 @@ msgstr ""
 #. translators: %s: comment count
 #: functions.php:1353
 msgid "评论（%s）"
+msgstr ""
+
+#: index.php:101
+msgid "话数索引"
 msgstr ""
 
 #: template-parts/shuoshuo-item.php:46
@@ -446,19 +590,27 @@ msgstr ""
 msgid "镜像站点地址，例如 https://mirror.example.cn，会拼成 地址/avatar/哈希；直接粘贴含 /avatar/ 的完整前缀也可以。仅在上一项选「自定义镜像」时生效。"
 msgstr ""
 
+#: index.php:87
+msgid "雪 / 线稿"
+msgstr ""
+
+#: index.php:75
+msgid "雪兔"
+msgstr ""
+
 #: 404.php:16
 msgid "雪兔在雪地里找了半天，也没找到这一页。链接可能已经失效，或者内容被移到了别处。试试搜索："
 msgstr ""
 
-#: index.php:50
+#: index.php:132
 msgid "雪兔把院子扫干净了——还没有文章，去后台发布第一篇吧。"
 msgstr ""
 
-#: search.php:46
+#: search.php:59
 msgid "雪兔竖起耳朵听了半天，没有找到匹配的文章。换个关键词试试。"
 msgstr ""
 
-#: archive.php:61
+#: archive.php:77
 msgid "雪兔翻遍了这一栏，还没有文章。"
 msgstr ""
 
@@ -470,7 +622,7 @@ msgstr ""
 msgid "页面过期了，刷新后再试。"
 msgstr ""
 
-#: footer.php:29
+#: footer.php:32 header.php:50
 msgid "首页"
 msgstr ""
 

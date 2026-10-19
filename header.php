@@ -21,8 +21,15 @@
 	</div>
 <?php endif; ?>
 
+<div class="yuki-production-strip" aria-hidden="true">
+	<span><?php esc_html_e( 'YUKI PRODUCTION ARCHIVE', 'yuki' ); ?></span>
+	<span><?php esc_html_e( 'CHARACTER & EPISODE NOTES', 'yuki' ); ?></span>
+	<span><?php esc_html_e( 'REV.', 'yuki' ); ?> <?php echo esc_html( wp_get_theme()->get( 'Version' ) ); ?> / <?php echo esc_html( wp_date( 'Y.m.d' ) ); ?></span>
+</div>
+
 <header class="yuki-nav">
 	<div class="brand">
+		<span class="yuki-brand-mark" aria-hidden="true">Y</span>
 		<?php if ( has_custom_logo() ) : ?>
 			<?php the_custom_logo(); ?>
 		<?php else : ?>
@@ -30,7 +37,7 @@
 		<?php endif; ?>
 	</div>
 
-	<nav class="menu">
+	<nav class="menu" aria-label="<?php esc_attr_e( '主导航', 'yuki' ); ?>">
 		<?php
 		if ( has_nav_menu( 'primary' ) ) {
 			wp_nav_menu( array(
@@ -40,8 +47,8 @@
 				'depth'          => 1,
 			) );
 		} else {
-			echo '<a href="' . esc_url( home_url( '/' ) ) . '">首页</a>';
-			echo '<a href="#newsletter">订阅</a>';
+			echo '<a href="' . esc_url( home_url( '/' ) ) . '">' . esc_html__( '首页', 'yuki' ) . '</a>';
+			echo '<a href="#newsletter">' . esc_html__( '订阅', 'yuki' ) . '</a>';
 		}
 		?>
 	</nav>

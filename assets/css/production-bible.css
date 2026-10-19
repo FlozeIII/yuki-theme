@@ -1,0 +1,1341 @@
+/* ============================================
+   Yuki · Production Bible
+   --------------------------------------------
+   整站视觉层：纸面、工程网格、生产信息栏、角色设定与话数索引。
+   在 style.css 之后加载，旧文件继续提供宽度、颜色与可访问性的稳定契约。
+   ============================================ */
+
+:root {
+  --yuki-paper: #EDE8DC;
+  --yuki-paper-deep: #E3DCCB;
+  --yuki-plate: #F7F3EA;
+  --yuki-blueprint: #1F3A5F;
+  --yuki-blueprint-soft: #4F6579;
+  --yuki-signal: #D96C3B;
+  --yuki-signal-ink: #A94A25;
+  --yuki-ice: #9FB8C8;
+  --yuki-grid-line: rgba(31, 58, 95, 0.075);
+  --yuki-rule: color-mix(in srgb, var(--yuki-blueprint) 22%, transparent);
+  --yuki-display: "Oswald", "Archivo Narrow", "Arial Narrow", "Roboto Condensed", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+  --yuki-label: 10px;
+}
+
+.dark {
+  --yuki-paper: #0F1720;
+  --yuki-paper-deep: #0A1118;
+  --yuki-plate: #15212B;
+  --yuki-blueprint: #9FB8C8;
+  --yuki-blueprint-soft: #8FA6B5;
+  --yuki-signal: #E08A5B;
+  --yuki-signal-ink: #E08A5B;
+  --yuki-ice: #B9CEDB;
+  --yuki-grid-line: rgba(159, 184, 200, 0.075);
+  --yuki-rule: color-mix(in srgb, var(--yuki-blueprint) 24%, transparent);
+}
+
+/* 纸面：极淡的工程网格。自定义背景图存在时，内联背景图优先，网格自然让位。 */
+body.yuki-production-bible {
+  background-color: var(--yuki-paper);
+  background-image:
+    linear-gradient(to right, var(--yuki-grid-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--yuki-grid-line) 1px, transparent 1px);
+  background-size: 32px 32px;
+  font-size: 16px;
+  line-height: 1.75;
+}
+
+.yuki-production-bible ::selection {
+  background: var(--yuki-signal);
+  color: var(--yuki-paper);
+}
+
+.yuki-production-bible .yuki-container,
+.yuki-production-bible .yuki-narrow {
+  position: relative;
+}
+
+/* ============================================
+   生产信息栏 / 导航
+   ============================================ */
+.yuki-production-strip {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 6px 24px;
+  border-bottom: 1px solid var(--yuki-blueprint);
+  background: var(--yuki-blueprint);
+  color: var(--yuki-paper);
+  font-family: var(--yuki-font-mono);
+  font-size: 10px;
+  letter-spacing: 0.13em;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+.yuki-production-strip span:nth-child(2) {
+  margin-left: auto;
+  color: color-mix(in srgb, var(--yuki-paper) 78%, var(--yuki-blueprint));
+}
+.yuki-production-strip span:last-child {
+  white-space: nowrap;
+}
+.dark .yuki-production-strip {
+  border-bottom-color: var(--yuki-blueprint-soft);
+  background: #081018;
+  color: var(--yuki-ice);
+}
+
+.yuki-production-bible .yuki-nav {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--yuki-blueprint);
+  background: color-mix(in srgb, var(--yuki-paper) 93%, transparent);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+}
+.yuki-production-bible .yuki-nav .brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--yuki-display);
+  font-size: 21px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  line-height: 1;
+}
+.yuki-production-bible .yuki-nav .brand a {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+.yuki-brand-mark {
+  display: inline-grid;
+  place-items: center;
+  width: 27px;
+  height: 27px;
+  border: 1px solid var(--yuki-blueprint);
+  background: var(--yuki-blueprint);
+  color: var(--yuki-paper);
+  font-family: var(--yuki-font-mono);
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1;
+}
+.dark .yuki-brand-mark {
+  background: var(--yuki-ice);
+  color: #0F1720;
+}
+
+.yuki-production-bible .yuki-nav .menu {
+  gap: 22px;
+  font-family: var(--yuki-font-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.yuki-production-bible .yuki-nav .menu a {
+  padding: 4px 0;
+  border-bottom: 1px solid transparent;
+  color: var(--yuki-blueprint-soft);
+}
+.yuki-production-bible .yuki-nav .menu a:hover {
+  border-bottom-color: var(--yuki-signal-ink);
+  color: var(--yuki-blueprint);
+}
+.dark .yuki-production-bible .yuki-nav .menu a:hover {
+  color: var(--yuki-ice);
+}
+
+.yuki-production-bible .yuki-nav-actions {
+  gap: 8px;
+}
+.yuki-production-bible .yuki-search-btn {
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--yuki-blueprint-soft);
+  border-radius: 2px;
+  background: transparent;
+  color: var(--yuki-blueprint);
+}
+.yuki-production-bible .yuki-search-btn:hover {
+  border-color: var(--yuki-signal-ink);
+  color: var(--yuki-signal-ink);
+}
+.yuki-production-bible .theme-switch {
+  width: 58px;
+  height: 28px;
+  border-radius: 2px;
+  border-color: var(--yuki-blueprint-soft);
+  background: var(--yuki-plate);
+}
+.yuki-production-bible .theme-switch-knob {
+  top: 2px;
+  left: 2px;
+  width: 22px;
+  height: 22px;
+  border-radius: 1px;
+}
+.dark .yuki-production-bible .theme-switch-knob {
+  transform: translateX(30px);
+}
+
+/* ============================================
+   首页封面：FILE 01 / CHARACTER SHEET
+   ============================================ */
+.yuki-production-bible .yuki-hero {
+  padding: 30px 0 44px;
+  border-bottom: 1px solid var(--yuki-blueprint);
+  text-align: left;
+}
+.yuki-production-bible .yuki-hero.yuki-dot-pattern {
+  background-image: none;
+}
+.yuki-production-bible .yuki-hero p {
+  margin-left: 0;
+  margin-right: 0;
+  max-width: 60ch;
+  text-align: left;
+}
+.yuki-production-bible .yuki-hero .yuki-container {
+  position: relative;
+  z-index: 1;
+}
+
+.yuki-cover-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 22px;
+  align-items: center;
+  padding: 8px 0;
+  border-top: 1px solid var(--yuki-rule);
+  border-bottom: 1px solid var(--yuki-rule);
+  color: var(--yuki-blueprint-soft);
+  font-family: var(--yuki-font-mono);
+  font-size: var(--yuki-label);
+  letter-spacing: 0.1em;
+  line-height: 1.5;
+  text-transform: uppercase;
+}
+.yuki-cover-meta span:last-child {
+  margin-left: auto;
+  color: var(--yuki-signal-ink);
+}
+.yuki-cover-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(300px, 5fr);
+  gap: 48px;
+  align-items: stretch;
+  padding-top: 36px;
+}
+.yuki-cover-copy {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  min-width: 0;
+}
+.yuki-kicker {
+  margin: 0 0 14px;
+  color: var(--yuki-signal-ink);
+  font-family: var(--yuki-font-mono);
+  font-size: var(--yuki-label);
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  line-height: 1.5;
+  text-transform: uppercase;
+}
+.yuki-production-bible .yuki-hero-title-row {
+  display: block;
+  margin: 0;
+}
+.yuki-production-bible .yuki-hero h1 {
+  margin: 0;
+  max-width: 9em;
+  color: var(--yuki-blueprint);
+  font-family: var(--yuki-font-sans);
+  font-size: clamp(46px, 7vw, 84px);
+  font-weight: 700;
+  letter-spacing: -0.045em;
+  line-height: 0.96;
+  text-wrap: balance;
+}
+.dark .yuki-production-bible .yuki-hero h1 {
+  color: var(--yuki-ice);
+}
+.yuki-cover-desc {
+  max-width: 48ch;
+  margin: 22px 0 0;
+  color: var(--yuki-ink-2);
+  font-size: 17px;
+  line-height: 1.8;
+}
+.yuki-cover-specs {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0;
+  width: 100%;
+  max-width: 480px;
+  margin: 34px 0 0;
+  padding: 0;
+  border-top: 1px solid var(--yuki-blueprint);
+}
+.yuki-cover-specs div {
+  min-width: 0;
+  padding: 10px 12px 0 0;
+  border-right: 1px solid var(--yuki-rule);
+}
+.yuki-cover-specs div + div {
+  padding-left: 12px;
+}
+.yuki-cover-specs div:last-child {
+  border-right: 0;
+  padding-right: 0;
+}
+.yuki-cover-specs dt,
+.yuki-sheet-meta dt {
+  margin: 0 0 3px;
+  color: var(--yuki-blueprint-soft);
+  font-family: var(--yuki-font-mono);
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  line-height: 1.5;
+  text-transform: uppercase;
+}
+.yuki-cover-specs dd,
+.yuki-sheet-meta dd {
+  margin: 0;
+  color: var(--yuki-blueprint);
+  font-family: var(--yuki-display);
+  font-size: 23px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  line-height: 1.2;
+}
+.dark .yuki-cover-specs dd,
+.dark .yuki-sheet-meta dd {
+  color: var(--yuki-ice);
+}
+
+.yuki-character-sheet {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  border: 1px solid var(--yuki-blueprint);
+  background: var(--yuki-plate);
+  box-shadow: 7px 7px 0 color-mix(in srgb, var(--yuki-blueprint) 13%, transparent);
+}
+.yuki-character-sheet::before {
+  content: "";
+  position: absolute;
+  inset: 5px;
+  z-index: 0;
+  border: 1px dashed color-mix(in srgb, var(--yuki-blueprint) 32%, transparent);
+  pointer-events: none;
+}
+.yuki-sheet-head {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 12px;
+  background: var(--yuki-blueprint);
+  color: var(--yuki-paper);
+  font-family: var(--yuki-font-mono);
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+.dark .yuki-sheet-head {
+  background: var(--yuki-ice);
+  color: #0F1720;
+}
+.yuki-sheet-figure {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  flex: 1 1 auto;
+  min-height: 245px;
+  padding: 22px;
+  overflow: hidden;
+  background-image:
+    linear-gradient(to right, var(--yuki-grid-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--yuki-grid-line) 1px, transparent 1px);
+  background-size: 16px 16px;
+}
+.yuki-sheet-figure::before,
+.yuki-sheet-figure::after {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  background: color-mix(in srgb, var(--yuki-signal) 60%, transparent);
+  pointer-events: none;
+}
+.yuki-sheet-figure::before {
+  top: 50%;
+  left: 8%;
+  right: 8%;
+  height: 1px;
+}
+.yuki-sheet-figure::after {
+  top: 9%;
+  bottom: 9%;
+  left: 50%;
+  width: 1px;
+}
+.yuki-sheet-figure .yuki-mascot {
+  position: relative;
+  z-index: 1;
+  width: 176px;
+  height: 176px;
+  --yuki-border: var(--yuki-blueprint-soft);
+}
+.yuki-sheet-meta {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin: 0;
+  border-top: 1px solid var(--yuki-blueprint);
+}
+.yuki-sheet-meta div {
+  min-width: 0;
+  padding: 8px 12px;
+  border-right: 1px solid var(--yuki-rule);
+  border-bottom: 1px solid var(--yuki-rule);
+}
+.yuki-sheet-meta div:nth-child(2n) {
+  border-right: 0;
+}
+.yuki-sheet-meta div:nth-last-child(-n + 2) {
+  border-bottom: 0;
+}
+.yuki-sheet-meta dd {
+  font-family: var(--yuki-font-sans);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* 花瓣改为纸屑：保留 7 枚与既有动画，只收敛形状。 */
+.yuki-production-bible .yuki-hero-petals span {
+  width: 5px;
+  height: 5px;
+  border-radius: 0;
+  opacity: 0;
+}
+
+/* ============================================
+   首页：EPISODE INDEX
+   ============================================ */
+.yuki-index {
+  padding-bottom: 52px;
+}
+.yuki-index-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  max-width: var(--yuki-wide-width);
+  margin: 38px auto 0;
+  padding: 0 0 12px;
+  border-bottom: 2px solid var(--yuki-blueprint);
+}
+.yuki-index-head .yuki-kicker {
+  margin-bottom: 4px;
+}
+.yuki-index-head h2 {
+  margin: 0;
+  color: var(--yuki-blueprint);
+  font-family: var(--yuki-font-sans);
+  font-size: 27px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+.dark .yuki-index-head h2 {
+  color: var(--yuki-ice);
+}
+.yuki-index-meta {
+  margin: 0 0 2px;
+  color: var(--yuki-blueprint-soft);
+  font-family: var(--yuki-font-mono);
+  font-size: 9px;
+  letter-spacing: 0.06em;
+  line-height: 1.7;
+  text-align: right;
+  text-transform: uppercase;
+}
+.yuki-production-bible .yuki-post-list {
+  max-width: var(--yuki-wide-width);
+  counter-reset: yuki-episode;
+}
+.yuki-production-bible .yuki-post-item {
+  display: grid;
+  grid-template-columns: 42px 144px minmax(0, 1fr) 170px;
+  gap: 18px;
+  align-items: start;
+  padding: 20px 0;
+  border-bottom: 1px solid var(--yuki-rule);
+  counter-increment: yuki-episode;
+}
+.yuki-production-bible .yuki-post-item::before {
+  content: counter(yuki-episode, decimal-leading-zero);
+  padding-top: 4px;
+  color: var(--yuki-signal-ink);
+  font-family: var(--yuki-font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  line-height: 1.4;
+}
+.yuki-production-bible .yuki-post-item:hover {
+  background: var(--yuki-muted);
+}
+.yuki-production-bible .yuki-post-item.sticky {
+  padding-left: 0;
+  box-shadow: inset 2px 0 0 var(--yuki-signal);
+}
+/* 旧版置顶竖线是绝对定位伪元素；这里把它恢复成话数编号，否则会顶掉网格第一列。 */
+.yuki-production-bible .yuki-post-item.sticky::before {
+  content: counter(yuki-episode, decimal-leading-zero);
+  position: static;
+  top: auto;
+  right: auto;
+  bottom: auto;
+  left: auto;
+  width: auto;
+  height: auto;
+  border-radius: 0;
+  background: none;
+}
+.yuki-production-bible .yuki-post-thumb {
+  width: 144px;
+  height: 108px;
+  padding: 4px;
+  border: 1px solid var(--yuki-blueprint-soft);
+  border-radius: 0;
+  background: var(--yuki-plate);
+  box-shadow: 3px 3px 0 color-mix(in srgb, var(--yuki-blueprint) 12%, transparent);
+}
+.yuki-production-bible .yuki-post-thumb img {
+  border: 1px solid var(--yuki-rule);
+  border-radius: 0;
+  filter: saturate(0.82) contrast(1.02);
+}
+.yuki-production-bible .yuki-post-thumb--blank {
+  display: grid;
+  place-items: center;
+  border-style: dashed;
+  background:
+    linear-gradient(to right, var(--yuki-grid-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--yuki-grid-line) 1px, transparent 1px);
+  background-size: 12px 12px;
+}
+.yuki-post-thumb-mark {
+  color: var(--yuki-blueprint-soft);
+  font-family: var(--yuki-font-mono);
+  font-size: 7px;
+  letter-spacing: 0.08em;
+  line-height: 1.4;
+  text-align: center;
+  text-transform: uppercase;
+}
+.yuki-production-bible .yuki-post-body {
+  min-width: 0;
+}
+.yuki-production-bible .yuki-post-item > .yuki-post-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 9px;
+  grid-column: 4;
+  margin: 0;
+  padding: 4px 0 0 14px;
+  border-left: 1px solid var(--yuki-rule);
+  color: var(--yuki-blueprint-soft);
+  font-family: var(--yuki-font-mono);
+  font-size: 9px;
+  letter-spacing: 0.04em;
+  line-height: 1.5;
+  text-align: right;
+  text-transform: uppercase;
+}
+.yuki-production-bible .yuki-cat-badge {
+  padding: 3px 8px;
+  border: 1px dashed var(--yuki-blueprint-soft);
+  border-radius: 0;
+  background: var(--yuki-plate);
+  color: var(--yuki-blueprint);
+  font-family: var(--yuki-font-mono);
+  font-size: 9px;
+  letter-spacing: 0.06em;
+  line-height: 1.5;
+  text-transform: uppercase;
+  transform: rotate(-2deg);
+}
+.yuki-production-bible .yuki-cat-badge::before {
+  top: -5px;
+  width: 20px;
+  height: 7px;
+  border-radius: 0;
+  background: var(--yuki-season);
+  opacity: 0.3;
+}
+.yuki-production-bible .yuki-cat-badge:hover {
+  transform: rotate(0);
+}
+.yuki-production-bible .yuki-post-title {
+  margin: 0 0 5px;
+  font-size: 23px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.3;
+}
+.yuki-production-bible .yuki-post-title a:hover {
+  color: var(--yuki-signal-ink);
+}
+.yuki-production-bible .yuki-post-excerpt {
+  max-width: 58ch;
+  color: var(--yuki-ink-2);
+  font-size: 13.5px;
+  line-height: 1.7;
+}
+.yuki-production-bible .yuki-pagination {
+  padding-top: 30px;
+}
+.yuki-production-bible .yuki-pagination .page-numbers {
+  border-radius: 2px;
+  border-color: var(--yuki-blueprint-soft);
+  font-family: var(--yuki-font-mono);
+  font-size: 12px;
+}
+
+/* ============================================
+   单篇 / 页面：FILE / SCENE
+   ============================================ */
+.yuki-filebar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 18px;
+  align-items: center;
+  max-width: var(--yuki-content-width);
+  margin: 0 auto;
+  padding: 0 0 7px;
+  border-bottom: 1px solid var(--yuki-blueprint-soft);
+  color: var(--yuki-blueprint-soft);
+  font-family: var(--yuki-font-mono);
+  font-size: 9px;
+  letter-spacing: 0.07em;
+  line-height: 1.5;
+  text-transform: uppercase;
+}
+.yuki-filebar span:last-child {
+  margin-left: auto;
+}
+.yuki-filebar span:last-child::before {
+  content: "";
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  margin-right: 6px;
+  background: var(--yuki-signal);
+  vertical-align: 1px;
+}
+/* 单篇的头图、标题与正文列对齐，而不是在整行里居中；侧栏仍占自己的 300px。 */
+body.single .yuki-filebar,
+body.single .yuki-article-header {
+  max-width: calc(var(--yuki-content-width) + 4px);
+  margin-left: 0;
+  margin-right: auto;
+}
+.yuki-production-bible .yuki-article-header {
+  padding-top: 14px;
+  border-top: 2px solid var(--yuki-blueprint);
+}
+.yuki-production-bible .yuki-article-header h1 {
+  margin: 12px 0 16px;
+  color: var(--yuki-blueprint);
+  font-family: var(--yuki-font-sans);
+  font-size: clamp(34px, 4.6vw, 54px);
+  font-weight: 700;
+  letter-spacing: -0.035em;
+  line-height: 1.15;
+}
+.dark .yuki-production-bible .yuki-article-header h1 {
+  color: var(--yuki-ice);
+}
+.yuki-production-bible .yuki-article-header .yuki-post-meta {
+  padding-left: 10px;
+  border-left: 2px solid var(--yuki-signal);
+  color: var(--yuki-blueprint-soft);
+  font-family: var(--yuki-font-mono);
+  font-size: 9px;
+  letter-spacing: 0.05em;
+  line-height: 1.5;
+  text-transform: uppercase;
+}
+.yuki-production-bible .yuki-article-header > p {
+  color: var(--yuki-ink-2);
+  font-size: 17px;
+  line-height: 1.8;
+}
+.yuki-production-bible .yuki-article-featured {
+  position: relative;
+  padding: 10px;
+  border: 1px solid var(--yuki-blueprint);
+  border-radius: 0;
+  background: var(--yuki-plate);
+  box-shadow: 5px 5px 0 color-mix(in srgb, var(--yuki-blueprint) 11%, transparent);
+}
+.yuki-production-bible .yuki-article-featured img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 0;
+}
+.yuki-frame-label {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 8px 0 0;
+  padding-top: 6px;
+  border-top: 1px dashed var(--yuki-rule);
+  color: var(--yuki-blueprint-soft);
+  font-family: var(--yuki-font-mono);
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  line-height: 1.5;
+  text-align: left;
+  text-transform: uppercase;
+}
+.yuki-frame-label span:last-child {
+  color: var(--yuki-signal-ink);
+}
+
+.yuki-production-bible :is(.yuki-prose, .editor-styles-wrapper) {
+  color: var(--yuki-ink-2);
+  font-size: 16px;
+  line-height: 1.85;
+}
+.yuki-production-bible :is(.yuki-prose, .editor-styles-wrapper) h2 {
+  margin: 2.4em 0 0.8em;
+  padding-top: 0.65em;
+  border-top: 1px solid var(--yuki-rule);
+  color: var(--yuki-blueprint);
+  font-size: 28px;
+  letter-spacing: -0.02em;
+}
+.dark .yuki-production-bible :is(.yuki-prose, .editor-styles-wrapper) h2 {
+  color: var(--yuki-ice);
+}
+.yuki-production-bible :is(.yuki-prose, .editor-styles-wrapper) h3 {
+  color: var(--yuki-blueprint);
+}
+.dark .yuki-production-bible :is(.yuki-prose, .editor-styles-wrapper) h3 {
+  color: var(--yuki-ice);
+}
+.yuki-production-bible :is(.yuki-prose, .editor-styles-wrapper) blockquote {
+  border-left-color: var(--yuki-signal-ink);
+  border-radius: 0;
+  background: var(--yuki-plate);
+  color: var(--yuki-ink-2);
+}
+.yuki-production-bible :is(.yuki-prose, .editor-styles-wrapper) code {
+  border: 1px solid var(--yuki-rule);
+  border-radius: 0;
+  background: var(--yuki-plate);
+  color: var(--yuki-blueprint);
+}
+.dark .yuki-production-bible :is(.yuki-prose, .editor-styles-wrapper) code {
+  color: var(--yuki-ice);
+}
+.yuki-production-bible :is(.yuki-prose, .editor-styles-wrapper) pre {
+  border: 1px solid var(--yuki-blueprint-soft);
+  border-radius: 0;
+  background: var(--yuki-plate);
+}
+.yuki-production-bible :is(.yuki-prose, .editor-styles-wrapper) pre code {
+  border: 0;
+  background: transparent;
+  color: var(--yuki-ink);
+}
+.yuki-production-bible :is(.yuki-prose, .editor-styles-wrapper) img {
+  border-radius: 0;
+}
+.yuki-production-bible :is(.yuki-prose, .editor-styles-wrapper) figcaption {
+  color: var(--yuki-blueprint-soft);
+  font-family: var(--yuki-font-mono);
+  font-size: 11px;
+  letter-spacing: 0.03em;
+}
+.yuki-production-bible :is(.yuki-prose, .editor-styles-wrapper) a {
+  color: var(--yuki-primary-700);
+  text-decoration-color: color-mix(in srgb, var(--yuki-primary-700) 45%, transparent);
+}
+.dark .yuki-production-bible :is(.yuki-prose, .editor-styles-wrapper) a {
+  color: var(--yuki-primary);
+}
+
+.yuki-production-bible .yuki-tags {
+  border-top-color: var(--yuki-blueprint-soft);
+}
+.yuki-production-bible .yuki-tag,
+.yuki-production-bible .yuki-tags a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 26px;
+  padding: 3px 9px;
+  border: 1px solid var(--yuki-blueprint-soft);
+  border-radius: 0;
+  background: var(--yuki-plate);
+  color: var(--yuki-blueprint-soft);
+  font-family: var(--yuki-font-mono);
+  font-size: 10px;
+  letter-spacing: 0.03em;
+  line-height: 1.4;
+  text-decoration: none;
+}
+.yuki-production-bible .yuki-tag:hover,
+.yuki-production-bible .yuki-tag:focus-visible,
+.yuki-production-bible .yuki-tags a:hover,
+.yuki-production-bible .yuki-tags a:focus-visible {
+  border-color: var(--yuki-signal-ink);
+  color: var(--yuki-signal-ink);
+}
+.yuki-production-bible .yuki-post-nav a {
+  border-radius: 0;
+  border-color: var(--yuki-blueprint-soft);
+  background: var(--yuki-plate);
+  box-shadow: 4px 4px 0 color-mix(in srgb, var(--yuki-blueprint) 10%, transparent);
+}
+.yuki-production-bible .yuki-post-nav a:hover {
+  border-color: var(--yuki-signal-ink);
+  transform: translateY(-1px);
+}
+.yuki-production-bible .yuki-post-nav .label {
+  color: var(--yuki-blueprint-soft);
+  font-family: var(--yuki-font-mono);
+  font-size: 9px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.yuki-production-bible .yuki-post-nav .title {
+  color: var(--yuki-blueprint);
+  font-weight: 600;
+}
+.dark .yuki-production-bible .yuki-post-nav .title {
+  color: var(--yuki-ice);
+}
+.yuki-production-bible .yuki-related {
+  border-top-color: var(--yuki-blueprint-soft);
+}
+.yuki-production-bible .yuki-related-title {
+  color: var(--yuki-blueprint);
+  font-family: var(--yuki-font-sans);
+  font-size: 21px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+.dark .yuki-production-bible .yuki-related-title {
+  color: var(--yuki-ice);
+}
+.yuki-production-bible .yuki-related-item {
+  border-bottom-color: var(--yuki-rule);
+}
+.yuki-production-bible .yuki-related-item a {
+  color: var(--yuki-ink-2);
+}
+
+/* 侧栏：production notes */
+.yuki-production-bible .yuki-sidebar {
+  gap: 18px;
+  counter-reset: yuki-note;
+}
+.yuki-sidebar-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 0 0 7px;
+  border-bottom: 1px solid var(--yuki-blueprint);
+  color: var(--yuki-blueprint-soft);
+  font-family: var(--yuki-font-mono);
+  font-size: 9px;
+  letter-spacing: 0.09em;
+  line-height: 1.5;
+  text-transform: uppercase;
+}
+.yuki-sidebar-head span:last-child {
+  color: var(--yuki-signal-ink);
+}
+.yuki-production-bible .yuki-widget {
+  padding: 16px;
+  border: 1px solid var(--yuki-blueprint-soft);
+  border-radius: 0;
+  background: var(--yuki-plate);
+  counter-increment: yuki-note;
+}
+.yuki-production-bible .yuki-widget h3 {
+  display: flex;
+  align-items: baseline;
+  gap: 7px;
+  margin: 0 0 12px;
+  padding-bottom: 7px;
+  border-bottom: 1px dashed var(--yuki-rule);
+  color: var(--yuki-blueprint);
+  font-family: var(--yuki-font-mono);
+  font-size: 9px;
+  letter-spacing: 0.08em;
+}
+.yuki-production-bible .yuki-widget h3::before {
+  content: "NOTE " counter(yuki-note, decimal-leading-zero);
+  color: var(--yuki-signal-ink);
+  font-weight: 600;
+}
+.dark .yuki-production-bible .yuki-widget h3 {
+  color: var(--yuki-ice);
+}
+.yuki-production-bible .yuki-widget ul {
+  gap: 7px;
+  font-size: 13px;
+}
+.yuki-production-bible .yuki-widget .count {
+  border-radius: 0;
+  background: color-mix(in srgb, var(--yuki-blueprint) 8%, transparent);
+  color: var(--yuki-blueprint-soft);
+  font-family: var(--yuki-font-mono);
+  font-size: 9px;
+}
+.yuki-production-bible .yuki-author-card img {
+  border-radius: 2px;
+  border: 1px solid var(--yuki-blueprint-soft);
+}
+.yuki-production-bible .yuki-author-card .name {
+  color: var(--yuki-blueprint);
+}
+.dark .yuki-production-bible .yuki-author-card .name {
+  color: var(--yuki-ice);
+}
+.yuki-production-bible .yuki-author-card .role {
+  font-family: var(--yuki-font-mono);
+  font-size: 9px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.yuki-production-bible .yuki-hitokoto {
+  border-left-color: var(--yuki-signal-ink);
+}
+.yuki-production-bible .yuki-hitokoto p {
+  color: var(--yuki-ink-2);
+}
+.yuki-production-bible .yuki-widget .tagcloud a {
+  border-radius: 0;
+  border-color: var(--yuki-blueprint-soft);
+  background: transparent;
+  font-family: var(--yuki-font-mono);
+  font-size: 9px !important;
+  letter-spacing: 0.03em;
+}
+.yuki-production-bible .yuki-widget .tagcloud a:hover {
+  border-color: var(--yuki-signal-ink);
+  color: var(--yuki-signal-ink);
+}
+
+/* 评论与表单：细线、直角、资料注记 */
+.yuki-production-bible .yuki-comments {
+  border-top-color: var(--yuki-blueprint);
+}
+.yuki-production-bible .yuki-comments h2,
+.yuki-production-bible .yuki-comments h3 {
+  color: var(--yuki-blueprint);
+  font-family: var(--yuki-font-sans);
+  letter-spacing: -0.01em;
+}
+.dark .yuki-production-bible .yuki-comments h2,
+.dark .yuki-production-bible .yuki-comments h3 {
+  color: var(--yuki-ice);
+}
+.yuki-production-bible .yuki-comment-list .comment-body {
+  border-radius: 0;
+  border-color: var(--yuki-blueprint-soft);
+  background: var(--yuki-card);
+}
+.yuki-production-bible .yuki-comment-list .children > li > .comment-body {
+  border-left-color: var(--yuki-signal-ink);
+}
+.yuki-production-bible .yuki-comment-list .comment-author .avatar {
+  border-radius: 2px;
+}
+.yuki-production-bible .yuki-comment-list .comment-reply-link,
+.yuki-production-bible .yuki-comment-list .comment-metadata a:hover {
+  color: var(--yuki-primary-700);
+}
+.yuki-production-bible .yuki-comment-form input[type="text"],
+.yuki-production-bible .yuki-comment-form input[type="email"],
+.yuki-production-bible .yuki-comment-form input[type="url"],
+.yuki-production-bible .yuki-comment-form textarea {
+  border-radius: 2px;
+  border-color: var(--yuki-blueprint-soft);
+  background: var(--yuki-plate);
+}
+.yuki-production-bible .yuki-btn {
+  border-radius: 2px;
+  letter-spacing: 0.04em;
+}
+.yuki-production-bible .yuki-like {
+  border-radius: 2px;
+  border-color: var(--yuki-blueprint-soft);
+}
+
+/* ============================================
+   Newsletter / Footer
+   ============================================ */
+.yuki-production-bible .yuki-newsletter {
+  position: relative;
+  padding: 52px 0;
+  border-top: 2px solid var(--yuki-blueprint);
+  background: var(--yuki-paper-deep);
+  text-align: left;
+}
+.yuki-production-bible .yuki-newsletter .yuki-narrow {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 440px);
+  gap: 32px;
+  align-items: end;
+}
+.yuki-newsletter-copy .yuki-kicker {
+  margin-bottom: 6px;
+}
+.yuki-newsletter-copy h2 {
+  margin: 0 0 6px;
+  color: var(--yuki-blueprint);
+  font-family: var(--yuki-font-sans);
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 1.2;
+}
+.dark .yuki-newsletter-copy h2 {
+  color: var(--yuki-ice);
+}
+.yuki-newsletter-copy p {
+  margin: 0;
+  color: var(--yuki-ink-2);
+  font-size: 14px;
+}
+.yuki-production-bible .yuki-newsletter form {
+  margin: 0;
+}
+.yuki-production-bible .yuki-newsletter input {
+  border-radius: 2px;
+  border-color: var(--yuki-blueprint-soft);
+  background: var(--yuki-paper);
+}
+.yuki-production-bible .yuki-footer {
+  border-top: 1px solid var(--yuki-blueprint);
+  background: var(--yuki-paper);
+}
+.yuki-production-bible .yuki-footer-top {
+  color: var(--yuki-blueprint-soft);
+  font-family: var(--yuki-font-mono);
+  font-size: 9px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.yuki-production-bible .yuki-footer-top .links a:hover,
+.yuki-production-bible .yuki-icp a:hover {
+  color: var(--yuki-signal-ink);
+}
+.yuki-production-bible .yuki-icp {
+  border-top-color: var(--yuki-rule);
+  font-family: var(--yuki-font-mono);
+  font-size: 9px;
+}
+
+/* ============================================
+   归档 / 搜索 / 404
+   ============================================ */
+.yuki-production-bible .yuki-hero.yuki-archive-hero {
+  padding: 26px 0 34px;
+}
+.yuki-archive-hero .yuki-hero-kicker {
+  margin-bottom: 8px;
+}
+.yuki-production-bible .yuki-archive-hero h1 {
+  margin: 0;
+  max-width: 15em;
+  color: var(--yuki-blueprint);
+  font-family: var(--yuki-font-sans);
+  font-size: clamp(34px, 5vw, 58px);
+  font-weight: 700;
+  letter-spacing: -0.035em;
+  line-height: 1.08;
+}
+.dark .yuki-production-bible .yuki-archive-hero h1 {
+  color: var(--yuki-ice);
+}
+.yuki-production-bible .yuki-archive-hero p:not(.yuki-hero-kicker) {
+  max-width: 60ch;
+  margin-top: 14px;
+  color: var(--yuki-ink-2);
+  font-size: 15px;
+}
+.yuki-hero-rule {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 18px;
+  align-items: center;
+  margin-top: 20px;
+  padding-top: 8px;
+  border-top: 1px solid var(--yuki-rule);
+  color: var(--yuki-blueprint-soft);
+  font-family: var(--yuki-font-mono);
+  font-size: 9px;
+  letter-spacing: 0.06em;
+  line-height: 1.5;
+  text-transform: uppercase;
+}
+.yuki-hero-rule span:last-child {
+  margin-left: auto;
+  color: var(--yuki-signal-ink);
+}
+.yuki-production-bible .yuki-404 {
+  padding: 60px 0 90px;
+  border-top: 2px solid var(--yuki-blueprint);
+  text-align: left;
+}
+.yuki-production-bible .yuki-404 .yuki-kicker {
+  margin-bottom: 20px;
+}
+.yuki-production-bible .yuki-404 .code {
+  color: var(--yuki-signal-ink);
+  font-family: var(--yuki-display);
+  font-size: clamp(76px, 12vw, 128px);
+  font-weight: 600;
+  letter-spacing: -0.04em;
+  line-height: 0.9;
+}
+.yuki-production-bible .yuki-404 h1 {
+  margin: 14px 0 8px;
+  color: var(--yuki-blueprint);
+  font-family: var(--yuki-font-sans);
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+.dark .yuki-production-bible .yuki-404 h1 {
+  color: var(--yuki-ice);
+}
+.yuki-production-bible .yuki-404 p:not(.code) {
+  max-width: 56ch;
+  color: var(--yuki-ink-2);
+  font-size: 15px;
+}
+.yuki-production-bible .yuki-404 .yuki-search-form {
+  max-width: 480px;
+  margin: 22px 0 16px;
+}
+.yuki-production-bible .yuki-404 .yuki-mascot {
+  width: 96px;
+  height: 96px;
+  margin: 0 0 18px;
+}
+
+/* 搜索浮层与灯箱保留结构，只收敛表面 */
+.yuki-production-bible .yuki-search-dialog {
+  border-radius: 2px;
+  border-color: var(--yuki-blueprint);
+  background: var(--yuki-paper);
+}
+.yuki-production-bible .yuki-search-field {
+  border-radius: 2px;
+  border-color: var(--yuki-blueprint-soft);
+  background: var(--yuki-plate);
+}
+.yuki-production-bible .yuki-search-close {
+  border-radius: 2px;
+  border-color: var(--yuki-blueprint-soft);
+  background: var(--yuki-paper);
+}
+.yuki-production-bible .yuki-search-close:hover {
+  border-color: var(--yuki-signal-ink);
+  color: var(--yuki-signal-ink);
+}
+.yuki-production-bible .yuki-empty-state p {
+  /* 旧验收要求 16px 圆角与白色底面；这里只把字距换成资料注记。 */
+  letter-spacing: 0.01em;
+}
+
+/* ============================================
+   响应式
+   ============================================ */
+@media (max-width: 960px) {
+  body.single .yuki-filebar,
+  body.single .yuki-article-header {
+    max-width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .yuki-cover-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 28px;
+  }
+  .yuki-cover-copy {
+    justify-content: flex-start;
+  }
+  .yuki-character-sheet {
+    max-width: 480px;
+  }
+  .yuki-production-bible .yuki-newsletter .yuki-narrow {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 20px;
+  }
+}
+
+@media (max-width: 640px) {
+  .yuki-production-strip {
+    padding: 5px 16px;
+    gap: 8px;
+    font-size: 8px;
+  }
+  .yuki-production-strip span:nth-child(2) {
+    display: none;
+  }
+  .yuki-production-bible .yuki-nav {
+    padding: 12px 16px;
+  }
+  .yuki-production-bible .yuki-nav .brand {
+    font-size: 18px;
+  }
+  .yuki-brand-mark {
+    width: 23px;
+    height: 23px;
+    font-size: 12px;
+  }
+  .yuki-production-bible .yuki-nav .menu {
+    gap: 14px;
+    font-size: 9px;
+  }
+  .yuki-production-bible .yuki-hero {
+    padding: 18px 0 30px;
+  }
+  .yuki-cover-meta {
+    gap: 4px 12px;
+    font-size: 8px;
+  }
+  .yuki-cover-grid {
+    padding-top: 24px;
+    gap: 24px;
+  }
+  .yuki-production-bible .yuki-hero h1 {
+    font-size: clamp(42px, 15vw, 64px);
+  }
+  .yuki-cover-desc {
+    margin-top: 16px;
+    font-size: 15px;
+  }
+  .yuki-cover-specs {
+    margin-top: 24px;
+  }
+  .yuki-cover-specs dd {
+    font-size: 19px;
+  }
+  .yuki-character-sheet {
+    max-width: none;
+    box-shadow: 4px 4px 0 color-mix(in srgb, var(--yuki-blueprint) 13%, transparent);
+  }
+  .yuki-sheet-figure {
+    min-height: 210px;
+  }
+  .yuki-sheet-figure .yuki-mascot {
+    width: 144px;
+    height: 144px;
+  }
+  .yuki-index-head {
+    display: block;
+    margin-top: 26px;
+  }
+  .yuki-index-meta {
+    margin-top: 8px;
+    text-align: left;
+  }
+  .yuki-production-bible .yuki-post-item {
+    grid-template-columns: 30px 104px minmax(0, 1fr);
+    gap: 4px 10px;
+    padding: 16px 0;
+  }
+  .yuki-production-bible .yuki-post-item > .yuki-post-meta {
+    grid-column: 3;
+    grid-row: 2;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 0;
+    border-left: 0;
+    text-align: left;
+  }
+  .yuki-production-bible .yuki-post-item::before {
+    font-size: 9px;
+  }
+  .yuki-production-bible .yuki-post-thumb {
+    width: 104px;
+    height: 78px;
+    padding: 3px;
+    box-shadow: none;
+  }
+  .yuki-production-bible .yuki-post-title {
+    font-size: 17px;
+  }
+  .yuki-production-bible .yuki-post-excerpt {
+    font-size: 12px;
+  }
+  .yuki-production-bible .yuki-post-meta {
+    gap: 4px 8px;
+    font-size: 8px;
+  }
+  .yuki-production-bible .yuki-cat-badge {
+    font-size: 8px;
+  }
+  .yuki-filebar {
+    font-size: 8px;
+    gap: 4px 10px;
+  }
+  .yuki-production-bible .yuki-article-header h1 {
+    font-size: clamp(30px, 9vw, 40px);
+  }
+  .yuki-production-bible .yuki-article-header > p {
+    font-size: 15px;
+  }
+  .yuki-production-bible .yuki-article-featured {
+    padding: 6px;
+    box-shadow: none;
+  }
+  .yuki-production-bible .yuki-404 {
+    padding: 38px 0 60px;
+  }
+  .yuki-production-bible .yuki-404 .code {
+    font-size: clamp(64px, 22vw, 96px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* 新层不引入新动画；旧层的收敛规则继续由 style.css 提供。 */
+  .yuki-production-bible .yuki-post-thumb {
+    transition: none;
+  }
+  .yuki-production-bible .yuki-post-item:hover .yuki-post-thumb {
+    transform: none;
+  }
+  .yuki-production-bible .yuki-cat-badge:hover,
+  .yuki-production-bible .yuki-cat-badge:focus-visible {
+    transform: rotate(-2deg);
+  }
+  .yuki-production-bible .yuki-post-nav a:hover {
+    transform: none;
+  }
+}

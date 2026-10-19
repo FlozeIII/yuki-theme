@@ -50,6 +50,20 @@ foreach ( get_posts( array(
 	wp_delete_post( $old->ID, true );
 }
 
+/*
+ * 这个分类是本案专用的。其他验收（灯箱、关联文章）会把说说挂到当前 theme mod
+ * 指向的分类里；上一次全量跑完留下的条目会污染这里的「紧凑」测量。只清这个
+ * 专用分类，不碰别处。
+ */
+foreach ( get_posts( array(
+	'post_type'    => 'post',
+	'numberposts'  => -1,
+	'post_status'  => 'any',
+	'category__in' => array( $term_id ),
+) ) as $old ) {
+	wp_delete_post( $old->ID, true );
+}
+
 /* ---------- 4. 一张缩略图，挂到每条说说和那篇正式文章上 ---------- */
 $uploads  = wp_upload_dir();
 $img_path = trailingslashit( $uploads['path'] ) . 'yuki-density-thumb.png';

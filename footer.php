@@ -11,8 +11,11 @@ $gongan = get_theme_mod( 'yuki_gongan_number', '' );
 
 <section id="newsletter" class="yuki-newsletter">
 	<div class="yuki-narrow">
-		<h2 style="margin:0 0 8px;font-size:26px;font-weight:700;"><?php esc_html_e( '订阅更新', 'yuki' ); ?></h2>
-		<p style="margin:0;color:var(--yuki-muted-foreground);"><?php esc_html_e( '每周一封邮件，分享新文章与灵感碎片。随时取消。', 'yuki' ); ?></p>
+		<div class="yuki-newsletter-copy">
+			<p class="yuki-kicker"><?php esc_html_e( 'PRODUCTION NOTES', 'yuki' ); ?></p>
+			<h2><?php esc_html_e( '订阅更新', 'yuki' ); ?></h2>
+			<p><?php esc_html_e( '每周一封邮件，分享新文章与灵感碎片。随时取消。', 'yuki' ); ?></p>
+		</div>
 		<!-- 可替换为任意订阅服务（Mailchimp / Follow.it 等）的嵌入表单 -->
 		<form onsubmit="return false;">
 			<input type="email" placeholder="<?php esc_attr_e( '你的邮箱地址', 'yuki' ); ?>">
