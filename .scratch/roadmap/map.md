@@ -16,8 +16,8 @@ Type: map
 
 ### A. 阅读体验
 
-- **[当前] 图片灯箱**：正文与说说里的图片可点开看大图。
-- 代码块复制按钮。
+- **图片灯箱**：正文与说说里的图片可点开看大图。已完成，已随 v1.2.0 发布；同页多图切换仍在 Fog。
+- **[当前] 代码块复制按钮**：正文与说说里的非空代码块一键复制；已实现，待随下一版发布。
 - 长文目录（只从标题生成，不做后台配置）。
 - 阅读进度。
 
@@ -58,6 +58,12 @@ Type: map
 `.scratch/shuoshuo-composer/issues/01-shuoshuo-composer.md`。**实现已完成，已随 v1.2.0 发布。**
 说说归档顶部写作框；`publish_posts` 才能用；表单 POST + 重定向；失败保留正文。
 
+**第五批：A · 代码块复制。** spec：`.scratch/code-copy/spec.md`；工单：
+`.scratch/code-copy/issues/01-code-copy.md`。**实现与验收已完成，待随下一版发布。**
+只处理页面已有的非空代码块；容器与按钮由 JS 创建，服务端保持原样；对齐类转移到容器；
+剪贴板优先 `writeText`，失败回退 `execCommand`；不新增 token。验收 51/51，全套 28 个验收
+脚本与 `verify-package` 65/65 通过。
+
 ### 二次元成分（跨类）
 
 见 `.scratch/anime-flavor/spec.md`，四批推进：
@@ -96,6 +102,10 @@ Type: map
   第二批**贴纸/气泡**、第三批**季节点缀色**与第四批**hero 动效**都已完成。
 - 2026-10-17：外观设置四批全部完成：**背景图 + 蒙层**、**页头图**、**强调色**、**字体切换**。
 - 2026-10-17：`v1.3.0` 发布，二次元四批与外观设置四批一起交付（1039/1039 回归）。
+- 2026-10-19：第五批选 **A · 代码块复制**：只认 `.yuki-prose` 与 `.yuki-shuoshuo-body` 的
+  非空 `pre`；按钮与容器由 JS 创建，禁用 JS 时原样；对齐类转移到容器；剪贴板优先
+  `writeText`、失败回退 `execCommand`；反馈走按钮文字 + `role="status"`；不新增 token。
+  验收 `verify-code-copy` 51/51，全套 28 个脚本与 `verify-package` 65/65 通过。
 - 测试基建另有一张 `comment-submit-ajax/issues/04-browser-retry-flake.md`，不挡路线图。
 
 ## Fog

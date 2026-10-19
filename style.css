@@ -456,6 +456,38 @@ img { max-width: 100%; height: auto; display: block; }
   overflow-x: auto;
 }
 :is(.yuki-prose, .editor-styles-wrapper) pre code { background: transparent; padding: 0; }
+
+/* 代码块复制：JS 给 pre 外面套一层定位容器；禁用 JS 时这层与按钮都不存在。
+   对齐类会被挪到容器上，pre 只负责滚动，按钮不跟着横向滚走。 */
+:is(.yuki-prose, .yuki-shuoshuo-body) .yuki-code-block { position: relative; margin: 1em 0; }
+:is(.yuki-prose, .yuki-shuoshuo-body) .yuki-code-block > pre { margin: 0; }
+.yuki-code-copy {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 1;
+  min-width: 64px;
+  padding: 4px 10px;
+  border: 1px solid var(--yuki-border);
+  border-radius: var(--yuki-radius-pill);
+  background: var(--yuki-card);
+  color: var(--yuki-ink-2);
+  font-family: var(--yuki-font-sans);
+  font-size: 12px;
+  line-height: 1.5;
+  white-space: nowrap;
+  text-align: center;
+  cursor: pointer;
+  box-shadow: var(--yuki-shadow-1);
+  transition: color 160ms ease, border-color 160ms ease;
+}
+.yuki-code-copy:hover,
+.yuki-code-copy.is-copied { color: var(--yuki-primary-700); border-color: var(--yuki-primary); }
+.dark .yuki-code-copy:hover,
+.dark .yuki-code-copy.is-copied { color: var(--yuki-primary); }
+.yuki-code-copy.is-failed { border-color: var(--yuki-ink-3); }
+.yuki-code-copy:focus-visible { outline: 2px solid var(--yuki-ring); outline-offset: 2px; }
+
 :is(.yuki-prose, .editor-styles-wrapper) figure { margin: 2em 0; }
 :is(.yuki-prose, .editor-styles-wrapper) figcaption { text-align: center; font-size: 13px; color: var(--yuki-muted-foreground); margin-top: 0.7em; }
 :is(.yuki-prose, .editor-styles-wrapper) img { border-radius: var(--yuki-radius-lg); }
