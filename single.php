@@ -16,28 +16,29 @@ get_header();
 		?>
 		<article <?php post_class(); ?>>
 
-			<div class="yuki-filebar" aria-hidden="true">
-				<span><?php esc_html_e( 'DOCUMENT', 'yuki' ); ?> / <?php echo esc_html( sprintf( '%04d', get_the_ID() ) ); ?></span>
-				<span><?php esc_html_e( 'SECTOR', 'yuki' ); ?> / <?php echo esc_html( $cats ? $cats[0]->name : '—' ); ?></span>
-				<span><?php esc_html_e( 'STATUS / RELEASED', 'yuki' ); ?></span>
-			</div>
-
-			<header class="yuki-article-header">
-				<div class="yuki-post-meta">
-					<?php if ( $cats ) : ?>
-						<a class="yuki-cat-badge" href="<?php echo esc_url( get_category_link( $cats[0] ) ); ?>"><?php echo esc_html( $cats[0]->name ); ?></a>
-					<?php endif; ?>
-					<time datetime="<?php echo esc_attr( get_the_date( 'c' ) ); ?>"><?php echo esc_html( get_the_date() ); ?></time>
-					<span><?php echo esc_html( yuki_reading_time() ); ?></span>
-				</div>
-				<h1><?php the_title(); ?></h1>
-				<?php if ( has_excerpt() ) : ?>
-					<p><?php echo esc_html( get_the_excerpt() ); ?></p>
-				<?php endif; ?>
-			</header>
-
 			<div class="yuki-single-layout">
 				<div class="yuki-article-main">
+
+					<div class="yuki-filebar" aria-hidden="true">
+						<span><?php esc_html_e( 'DOCUMENT', 'yuki' ); ?> / <?php echo esc_html( sprintf( '%04d', get_the_ID() ) ); ?></span>
+						<span><?php esc_html_e( 'SECTOR', 'yuki' ); ?> / <?php echo esc_html( $cats ? $cats[0]->name : '—' ); ?></span>
+						<span><?php esc_html_e( 'STATUS / RELEASED', 'yuki' ); ?></span>
+					</div>
+
+					<header class="yuki-article-header">
+						<div class="yuki-post-meta">
+							<?php if ( $cats ) : ?>
+								<a class="yuki-cat-badge" href="<?php echo esc_url( get_category_link( $cats[0] ) ); ?>"><?php echo esc_html( $cats[0]->name ); ?></a>
+							<?php endif; ?>
+							<time datetime="<?php echo esc_attr( get_the_date( 'c' ) ); ?>"><?php echo esc_html( get_the_date() ); ?></time>
+							<span><?php echo esc_html( yuki_reading_time() ); ?></span>
+						</div>
+						<h1><?php the_title(); ?></h1>
+						<?php if ( has_excerpt() ) : ?>
+							<p><?php echo esc_html( get_the_excerpt() ); ?></p>
+						<?php endif; ?>
+					</header>
+
 					<?php if ( has_post_thumbnail() ) : ?>
 						<figure class="yuki-article-featured yuki-soft-frame">
 							<?php the_post_thumbnail( 'large' ); ?>

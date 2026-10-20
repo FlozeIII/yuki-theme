@@ -109,3 +109,9 @@ ARCHIVE UPLINK 全部落到真实模板与真实站点数据上。
 - 2026-10-20 用户反馈浅色主题下顶部外壳不随主题变化；比较 A/B/C 后选 B。
   工单 `.scratch/ui-redesign/issues/02-shell-follows.md` 把状态栏、导航、首页/归档 hero
   在浅色下改为跟随页面；本工单的深色外壳描述以该工单为准。
+- 2026-10-20 浅色单篇侧栏起点修复：`.yuki-filebar` 与 `.yuki-article-header` 原先在
+  `.yuki-single-layout` 外，侧栏从两栏 grid 顶部才开始，标题右侧留下空列。已把两者移入
+  `.yuki-article-main`，让侧栏与文章头部/正文同顶；`verify-editor-alignment` 58/58、
+  `verify-ui-redesign` 58/58、`verify-image-lightbox` 39/39、`verify-reading` 39/39、
+  `verify-site-modules` 34/34、`verify-comment-nesting` 53/53。
+
