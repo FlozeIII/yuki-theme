@@ -683,6 +683,131 @@ body.yuki-production-bible {
   color: #D8E2E6;
 }
 
+/* ============================================
+   浅色主题：外壳跟随页面（2026-10-20）
+   --------------------------------------------
+   用户选择 B 方案：顶部状态栏、导航、首页/归档 hero 跟随主题变浅，
+   文档面板与深色模式下的控制台外壳保持不变。
+   ============================================ */
+html:not(.dark) .yuki-production-bible .yuki-production-strip {
+  border-bottom-color: #C7D2D7;
+  background: #E7EDEF;
+  color: #52666F;
+}
+html:not(.dark) .yuki-production-bible .yuki-production-strip span:first-child {
+  color: #1C6B7A;
+}
+html:not(.dark) .yuki-production-bible .yuki-production-strip span:nth-child(2) {
+  color: #52666F;
+}
+html:not(.dark) .yuki-production-bible .yuki-production-strip span:last-child {
+  color: #A94A25;
+}
+
+html:not(.dark) .yuki-production-bible .yuki-nav {
+  border-bottom-color: #BBC9CF;
+  background: rgba(241, 245, 246, 0.96);
+  color: #162126;
+}
+html:not(.dark) .yuki-production-bible .yuki-nav .brand {
+  color: #162126;
+}
+html:not(.dark) .yuki-production-bible .yuki-nav .menu a {
+  color: #3F525B;
+}
+html:not(.dark) .yuki-production-bible .yuki-nav .menu a:hover,
+html:not(.dark) .yuki-production-bible .yuki-nav .menu a:focus-visible {
+  color: #1C6B7A;
+}
+html:not(.dark) .yuki-production-bible .yuki-brand-mark {
+  border-color: #C04A42;
+  color: #1C6B7A;
+}
+html:not(.dark) .yuki-production-bible .yuki-search-btn {
+  border-color: #C7D2D7;
+  background: #F7FAFA;
+  color: #3F525B;
+}
+html:not(.dark) .yuki-production-bible .yuki-search-btn:hover {
+  border-color: #1C6B7A;
+  color: #1C6B7A;
+}
+html:not(.dark) .yuki-production-bible .theme-switch {
+  border-color: #C7D2D7;
+  background: #E7EDEF;
+}
+html:not(.dark) .yuki-production-bible .theme-switch-knob {
+  background: #FFFFFF;
+}
+
+html:not(.dark) .yuki-production-bible .yuki-hero {
+  border-bottom-color: #BBC9CF;
+  background: #DCE3E6;
+  color: #162126;
+}
+html:not(.dark) .yuki-production-bible .yuki-hero::before {
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent 3px,
+    rgba(7, 11, 15, 0.02) 3px,
+    rgba(7, 11, 15, 0.02) 4px
+  );
+}
+html:not(.dark) .yuki-production-bible .yuki-hero h1 {
+  color: #162126;
+}
+html:not(.dark) .yuki-production-bible .yuki-kicker,
+html:not(.dark) .yuki-production-bible .yuki-index-head .yuki-kicker {
+  color: #1C6B7A;
+}
+html:not(.dark) .yuki-production-bible .yuki-cover-meta {
+  border-color: #BBC9CF;
+  color: #52666F;
+}
+html:not(.dark) .yuki-production-bible .yuki-cover-meta span:last-child {
+  color: #A94A25;
+}
+html:not(.dark) .yuki-production-bible .yuki-cover-desc {
+  color: #4B5F68;
+}
+html:not(.dark) .yuki-production-bible .yuki-cover-specs {
+  border-top-color: #BBC9CF;
+}
+html:not(.dark) .yuki-production-bible .yuki-cover-specs div {
+  border-right-color: #C7D2D7;
+}
+html:not(.dark) .yuki-production-bible .yuki-cover-specs dt {
+  color: #52666F;
+}
+html:not(.dark) .yuki-production-bible .yuki-cover-specs dd {
+  color: #162126;
+}
+html:not(.dark) .yuki-production-bible .yuki-character-sheet {
+  border-color: #8FA1A9;
+  box-shadow: 0 0 0 1px #9FB0B8, 8px 8px 0 rgba(7, 11, 15, 0.12);
+}
+
+html:not(.dark) .yuki-production-bible .yuki-archive-hero {
+  background: #DCE3E6;
+}
+html:not(.dark) .yuki-production-bible .yuki-archive-hero .yuki-hero-kicker {
+  color: #1C6B7A;
+}
+html:not(.dark) .yuki-production-bible .yuki-archive-hero h1 {
+  color: #162126;
+}
+html:not(.dark) .yuki-production-bible .yuki-archive-hero p:not(.yuki-hero-kicker) {
+  color: #4B5F68;
+}
+html:not(.dark) .yuki-production-bible .yuki-hero-rule {
+  border-color: #BBC9CF;
+  color: #52666F;
+}
+html:not(.dark) .yuki-production-bible .yuki-hero-rule span:last-child {
+  color: #A94A25;
+}
+
 @media (max-width: 960px) {
   .yuki-production-bible.single main.yuki-container,
   .yuki-production-bible.page main.yuki-narrow {

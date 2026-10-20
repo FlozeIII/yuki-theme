@@ -179,8 +179,8 @@ if (!read) {
   check('不是一块纯色', read.colors >= MIN_COLORS, `${read.colors} 种颜色`);
   check('有文字（暗像素够多）', read.ink >= MIN_INK, `采样 ${read.samples} 点，暗的 ${read.ink} 点`);
   check('有缩略图那类彩色块', read.colored >= MIN_COLORED, `彩色 ${read.colored} 点`);
-  check('画面有深色控制台外壳',
-    read.top.some((c) => c.rgb === 'rgb(10, 17, 22)' || c.rgb === 'rgb(11, 18, 23)'),
+  check('画面有系统外壳',
+    read.top.some((c) => ['rgb(10, 17, 22)', 'rgb(11, 18, 23)', 'rgb(231, 237, 239)', 'rgb(241, 245, 246)'].includes(c.rgb)),
     read.top.map((c) => c.rgb).join(' / '));
   check('画面有浅色文档面',
     read.top.some((c) => c.rgb === lightBg || c.rgb === 'rgb(241, 245, 246)'),

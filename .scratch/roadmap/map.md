@@ -65,11 +65,13 @@ Type: map
 脚本与 `verify-package` 65/65 通过。
 
 **第六批：C · 整站数字档案 UI。** spec：`.scratch/ui-redesign/spec.md`；工单：
-`.scratch/ui-redesign/issues/01-ui-redesign.md`。**实现已完成，验收进行中，未发版。**
-把整站从纸面资料集改成「深色系统外壳 + 浅色文档面板」：系统状态栏、CASE FILE、
-SUBJECT PROFILE、DOCUMENT INDEX、单篇 DOCUMENT/SECTOR/STATUS + EVIDENCE、归档/搜索/
-404/侧栏/footer 同一套数字档案语言。纯 PHP 模板 + CSS，无构建、无外部字体；
-保留全部功能、宽度契约与测试钩子。纸面版 `14964e4` 保留在历史里，但不再代表当前方向。
+`.scratch/ui-redesign/issues/01-ui-redesign.md`、
+`.scratch/ui-redesign/issues/02-shell-follows.md`。**实现与验收已完成，未发版。**
+把整站从纸面资料集改成数字档案：浅色主题下状态栏/导航/hero 跟随冷灰页面，深色主题下
+保留深色控制台外壳；CASE FILE、SUBJECT PROFILE、DOCUMENT INDEX、单篇 DOCUMENT/
+SECTOR/STATUS + EVIDENCE、归档/搜索/404/侧栏/footer 同一套档案语言。纯 PHP 模板 + CSS，
+无构建、无外部字体；保留全部功能、宽度契约与测试钩子。纸面版 `14964e4` 保留在历史里，
+但不再代表当前方向。
 
 ### 二次元成分（跨类）
 
@@ -126,7 +128,11 @@ SUBJECT PROFILE、DOCUMENT INDEX、单篇 DOCUMENT/SECTOR/STATUS + EVIDENCE、�
   做数字表面；`--yuki-background` 从纸面 `#EDE8DC/#0F1720` 改为冷灰/黑
   `#DCE3E6/#070C10`，默认 primary 不动；分类徽章继续用季节胶带，不覆盖
   `var(--yuki-season)`。不复制 SCP 标识/原文/等级名称。`verify-ui-redesign` 已改写为
-  数字档案并 55/55；全套 28 个脚本与 `verify-package` 待最终重跑。
+  数字档案；提交 `2387a62` 后全量 29 个脚本与 `verify-package` 均通过。
+- 2026-10-20：用户发现浅色主题下顶部外壳不随主题变，比较 A/B/C 后选 **B · 外壳跟随**。
+  浅色状态栏/导航/首页与归档 hero 改冷灰，深色模式保留控制台外壳；侧栏与页脚仍是深色块。
+  `archive-console.css` 新增 `html:not(.dark)` 覆盖，`verify-ui-redesign` 扩到 58/58；
+  同时修了无头 Edge 关闭时临时 profile 的 EPERM 清理，29 个脚本与 package 65/65 全绿。
 - 测试基建另有一张 `comment-submit-ajax/issues/04-browser-retry-flake.md`，不挡路线图。
 
 ## Fog

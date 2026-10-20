@@ -62,8 +62,20 @@ export async function launch() {
     port,
     async close() {
       child.kill();
-      await sleep(200);
-      fs.rmSync(profile, { recursive: true, force: true });
+      // Edge 在 Windows 上退出得比 200ms 慢是常事；profile 被占用时
+      // rmSync 会抛 EPERM，不要让清理失败伪装成断言失败。
+      for (let i = 0; i < 20 && child.exitCode === null; i++) {
+        await sleep(100);
+      }
+      for (let i = 0; i < 5; i++) {
+        try {
+          fs.rmSync(profile, { recursive: true, force: true });
+          return;
+        } catch (error) {
+          if (error.code !== 'EPERM' && error.code !== 'EBUSY' && error.code !== 'ENOTEMPTY') throw error;
+          await sleep(200);
+        }
+      }
     },
   };
 }

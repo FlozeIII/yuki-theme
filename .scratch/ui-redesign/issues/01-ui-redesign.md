@@ -65,6 +65,7 @@ ARCHIVE UPLINK 全部落到真实模板与真实站点数据上。
   `--da-*`；深色覆盖在 `.dark body.yuki-production-bible`。
 - **表面分工**：状态栏/导航/首页 hero/归档搜索 hero/404/侧栏/页脚是深色系统外壳；
   单篇与静态页 main 是浅色文档面板；首页索引留在冷灰页面。正文 722px、侧栏 300px。
+  后续由工单 02 改为 B：浅色主题下状态栏/导航/hero 跟随页面，深色模式仍保留深色外壳。
 - **模板**：`header.php` 系统状态栏；`index.php` CASE FILE + SUBJECT PROFILE + DOCUMENT INDEX；
   `single.php`/`page.php` DOCUMENT/SECTOR/STATUS + EVIDENCE/PLATE 01；`archive.php`/
   `search.php` 用 `RECORDS / BACK MATTER` 与 `RECORDS / SEARCH`；`404.php` 用
@@ -73,7 +74,7 @@ ARCHIVE UPLINK 全部落到真实模板与真实站点数据上。
   `#070C10`，让评论区、说说、页脚、截图和数字档案共用一套表面。
 - **测试同步**：`verify-ui-redesign` 改写为数字档案；`verify-background` 改
   `rgb(220,227,230)` / `rgb(7,12,16)`；`verify-motion` 的 muted 改 `rgb(231,237,239)`；
-  `verify-screenshot` 允许深色控制台外壳 + 浅色文档面同时存在，不再要求浅色底占最大比例。
+  `verify-screenshot` 允许深色或浅色系统外壳与浅色文档面同时存在，不再要求浅色底占最大比例。
 - **POT**：按 HEAD + 自己改的文件重建，155 条 / 169 个引用，`check-pot` 全绿。
 - **截图**：`screenshot.png` 重拍为 1200×900、约 105 KB，深色 hero + 浅色档案索引。
 
@@ -102,3 +103,9 @@ ARCHIVE UPLINK 全部落到真实模板与真实站点数据上。
   布局规则迁进 `archive-console.css`。
 - 纸面版提交 `14964e4` 的截图、文案和 token 已被本工单覆盖；历史保留，不回滚。
 - `ui-redesign/` 是本地截图/调试目录，不进入提交；临时探针脚本在收尾时删除。
+
+### 后续
+
+- 2026-10-20 用户反馈浅色主题下顶部外壳不随主题变化；比较 A/B/C 后选 B。
+  工单 `.scratch/ui-redesign/issues/02-shell-follows.md` 把状态栏、导航、首页/归档 hero
+  在浅色下改为跟随页面；本工单的深色外壳描述以该工单为准。

@@ -158,6 +158,9 @@ try {
         bodyFont: getComputedStyle(document.body).fontFamily,
         overflow: document.documentElement.scrollWidth > document.documentElement.clientWidth,
         title: h1.textContent.trim(),
+        stripBg: getComputedStyle(q('.yuki-production-strip')).backgroundColor,
+        navBg: getComputedStyle(q('.yuki-nav')).backgroundColor,
+        heroBg: getComputedStyle(q('.yuki-hero')).backgroundColor,
       };
     })()`);
     await p.close();
@@ -241,6 +244,9 @@ if (measured) {
     `${measured.home.listWidth}px`);
   check('首页 H1 跟随字体设置', measured.home.h1Font === measured.home.bodyFont, measured.home.h1Font);
   check('1440 首页无横向滚动', !measured.home.overflow);
+  check('浅色状态条跟随页面', measured.home.stripBg === 'rgb(231, 237, 239)', measured.home.stripBg);
+  check('浅色导航跟随页面', measured.home.navBg === 'rgba(241, 245, 246, 0.96)', measured.home.navBg);
+  check('浅色 hero 跟随页面', measured.home.heroBg === 'rgb(220, 227, 230)', measured.home.heroBg);
   check('640 封面收成单栏', measured.narrow.columns === 1, `${measured.narrow.columns} 栏`);
   check('640 角色设定不溢出', measured.narrow.sheetWidth <= 640 && !measured.narrow.overflow,
     `${measured.narrow.sheetWidth}px / overflow=${measured.narrow.overflow}`);

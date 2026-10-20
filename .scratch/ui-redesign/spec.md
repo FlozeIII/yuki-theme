@@ -18,8 +18,9 @@ Yuki 自己的个人档案系统：有站点状态、案件文件、角色档案
 
 把整站改成 **数字档案 / Archive Console**：
 
-- 深色系统外壳承载状态栏、导航、首页 hero、归档/搜索 hero、404 与页脚；浅色文档面板
-  承载单篇与静态页的阅读区。首页索引留在冷灰页面上，形成「系统 → 档案 → 文档」的层次。
+- 浅色主题下外壳跟随冷灰页面：状态栏、导航、首页/归档 hero 变浅；深色主题下保留
+  深色控制台外壳。浅色文档面板承载单篇与静态页的阅读区，侧栏/页脚仍保持深色块。
+  首页索引留在冷灰页面上，形成「系统 → 档案 → 文档」的层次。
 - 生产信息栏改成系统状态栏：`YUKI ARCHIVE // SITE-01`、`PERSONAL RECORDS / CLEARANCE 02`、
   `BUILD 1.3.0 / 日期`；品牌仍是 Yuki 验证站与雪兔。
 - 首页第一屏是 **CASE FILE 01**：左侧是站名、简介和真实统计（RECORDS / SECTORS / UPDATED），
@@ -86,6 +87,16 @@ Yuki 自己的个人档案系统：有站点状态、案件文件、角色档案
 - 侧栏加 `.yuki-sidebar-head`，小工具改成 system notes 的版式；不改变小工具注册和回退逻辑。
 - 归档/搜索 hero 加 `.yuki-hero-kicker` 与 `.yuki-hero-rule`；404 加 `FILE NOT FOUND` 标签。
 - 页脚/订阅区使用同一套编号与细线，不加新功能。
+
+### 外壳主题策略（B）
+
+- 2026-10-20 用 A/B/C 对比确认：A 固定深色外壳会让用户觉得「切了主题但第一屏没变」，
+  C 的浅色导航 + 深色 hero 断开，最终选 B。
+- 浅色主题把 `.yuki-production-strip`、`.yuki-nav`、`.yuki-hero`、`.yuki-archive-hero`
+  改为冷灰/浅色；状态文字用 `#1C6B7A` / `#A94A25`，正文用 `#162126` / `#4B5F68`。
+- 深色主题保留 `#030608` 状态条、`rgba(9,15,19,.96)` 导航、`#0A1116` hero。
+- 侧栏、页脚、filebar、sheet header 的深色块保持不变；不要把所有 `--da-*` 都翻成浅色。
+- 覆盖只写进 `archive-console.css` 的 `html:not(.dark)` 规则；`style.css` 全局 token 不再改。
 
 ### 颜色与 token
 
