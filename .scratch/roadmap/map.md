@@ -64,11 +64,12 @@ Type: map
 剪贴板优先 `writeText`，失败回退 `execCommand`；不新增 token。验收 51/51，全套 28 个验收
 脚本与 `verify-package` 65/65 通过。
 
-**第六批：C · 整站设定资料集 UI。** spec：`.scratch/ui-redesign/spec.md`；工单：
-`.scratch/ui-redesign/issues/01-ui-redesign.md`。**实现与验收已完成，未发版。**
-把整站改成「不存在的动画的制作资料集」：生产信息栏、FILE 01 封面、CHARACTER SHEET、
-EPISODE INDEX、单篇 filebar/KEY VISUAL、归档/搜索/404/侧栏/footer 同一套档案语言。
-纯 PHP 模板 + CSS，无构建、无外部字体；保留全部功能、宽度契约与测试钩子。
+**第六批：C · 整站数字档案 UI。** spec：`.scratch/ui-redesign/spec.md`；工单：
+`.scratch/ui-redesign/issues/01-ui-redesign.md`。**实现已完成，验收进行中，未发版。**
+把整站从纸面资料集改成「深色系统外壳 + 浅色文档面板」：系统状态栏、CASE FILE、
+SUBJECT PROFILE、DOCUMENT INDEX、单篇 DOCUMENT/SECTOR/STATUS + EVIDENCE、归档/搜索/
+404/侧栏/footer 同一套数字档案语言。纯 PHP 模板 + CSS，无构建、无外部字体；
+保留全部功能、宽度契约与测试钩子。纸面版 `14964e4` 保留在历史里，但不再代表当前方向。
 
 ### 二次元成分（跨类）
 
@@ -120,6 +121,12 @@ EPISODE INDEX、单篇 filebar/KEY VISUAL、归档/搜索/404/侧栏/footer 同�
   页面标题继续跟随自定义器字体，只有资料集小标签用窄体；截图 `screenshot.png`
   同步重拍为 1200×900。验收 `verify-ui-redesign` 50/50，既有 28 个脚本全绿，
   `verify-package` 65/65 通过。
+- 2026-10-20：用户否决纸面 J，要求「电脑上档案那种，参考 scp」；选定**深色控制台 +
+  浅色文档面板**。保留 `production-bible.css` 作布局底座，新增 `archive-console.css`
+  做数字表面；`--yuki-background` 从纸面 `#EDE8DC/#0F1720` 改为冷灰/黑
+  `#DCE3E6/#070C10`，默认 primary 不动；分类徽章继续用季节胶带，不覆盖
+  `var(--yuki-season)`。不复制 SCP 标识/原文/等级名称。`verify-ui-redesign` 已改写为
+  数字档案并 55/55；全套 28 个脚本与 `verify-package` 待最终重跑。
 - 测试基建另有一张 `comment-submit-ajax/issues/04-browser-retry-flake.md`，不挡路线图。
 
 ## Fog

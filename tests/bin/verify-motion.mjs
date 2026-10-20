@@ -63,7 +63,7 @@ if (fixtures.status !== 0) {
 }
 
 const facts = JSON.parse(/YUKI-JSON: (\{.*\})/.exec(fixtures.stdout)[1]);
-const muted = 'rgb(243, 240, 234)';
+const muted = 'rgb(231, 237, 239)';
 
 /* ---------------- 真浏览器 ---------------- */
 

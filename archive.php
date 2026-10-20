@@ -31,7 +31,7 @@ $yuki_is_shuoshuo = $yuki_shuoshuo_id && is_category() && (int) get_queried_obje
 			<span><?php esc_html_e( 'UPDATED', 'yuki' ); ?> <?php echo esc_html( $yuki_updated_label ); ?></span>
 			<span><?php echo esc_html( sprintf( '%02d ENTRIES', $yuki_count ) ); ?></span>
 		</div>
-		<p class="yuki-kicker yuki-hero-kicker"><?php esc_html_e( 'PRODUCTION NOTES / BACK MATTER', 'yuki' ); ?></p>
+		<p class="yuki-kicker yuki-hero-kicker"><?php esc_html_e( 'RECORDS / BACK MATTER', 'yuki' ); ?></p>
 		<h1><?php echo wp_kses_post( get_the_archive_title() ); ?></h1>
 		<?php $yuki_desc = get_the_archive_description(); ?>
 		<?php if ( $yuki_desc ) : ?>

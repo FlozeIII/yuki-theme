@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Yuki 1.3.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-19T16:54:22+00:00\n"
+"POT-Creation-Date: 2026-10-20T05:02:24+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -26,52 +26,64 @@ msgstr ""
 msgid "%s 条评论"
 msgstr ""
 
+#: sidebar.php:16
+msgid "ACCESS LOG"
+msgstr ""
+
 #: archive.php:30
 msgid "ARCHIVE INDEX"
 msgstr ""
 
-#: index.php:54
-msgid "CATEGORIES"
+#: index.php:40
+msgid "ARCHIVE SYSTEM / PERSONAL RECORDS"
 msgstr ""
 
-#: header.php:26 index.php:40
-msgid "CHARACTER & EPISODE NOTES"
+#: footer.php:15
+msgid "ARCHIVE UPLINK"
 msgstr ""
 
-#: index.php:66
-msgid "CHARACTER SHEET"
+#: header.php:27
+msgid "BUILD"
+msgstr ""
+
+#: index.php:33
+msgid "CASE FILE 01 / PERSONAL ARCHIVE"
+msgstr ""
+
+#: index.php:78
+msgid "CLASS"
 msgstr ""
 
 #: functions.php:254
 msgid "Cravatar（境内镜像）"
 msgstr ""
 
-#: index.php:100
-msgid "EPISODE INDEX"
+#: index.php:74
+msgid "DESIGNATION"
 msgstr ""
 
-#: index.php:50
-msgid "EPISODES"
+#: page.php:22 single.php:20
+msgid "DOCUMENT"
+msgstr ""
+
+#: index.php:100
+msgid "DOCUMENT INDEX"
+msgstr ""
+
+#: page.php:38 single.php:45
+msgid "EVIDENCE"
 msgstr ""
 
 #: index.php:67
 msgid "FIG. 01"
 msgstr ""
 
-#: page.php:22 single.php:20
-msgid "FILE"
-msgstr ""
-
-#: index.php:33
-msgid "FILE 01 / PRODUCTION BIBLE"
+#: 404.php:13
+msgid "FILE NOT FOUND"
 msgstr ""
 
 #: archive.php:41
 msgid "FILED UNDER"
-msgstr ""
-
-#: page.php:39 single.php:46
-msgid "FRAME 01"
 msgstr ""
 
 #: functions.php:249
@@ -90,44 +102,24 @@ msgstr ""
 msgid "ICP 备案号"
 msgstr ""
 
-#: page.php:38 single.php:45
-msgid "KEY VISUAL"
-msgstr ""
-
 #: search.php:32
 msgid "MATCHING FILES"
-msgstr ""
-
-#: index.php:86
-msgid "MEDIUM"
-msgstr ""
-
-#: 404.php:13
-msgid "MISSING FRAME"
-msgstr ""
-
-#: index.php:74
-msgid "NAME"
-msgstr ""
-
-#: index.php:109
-msgid "NEWEST FIRST"
 msgstr ""
 
 #: template-parts/post-item.php:23
 msgid "NO KEY FRAME"
 msgstr ""
 
-#: footer.php:15 sidebar.php:15
-msgid "PRODUCTION NOTES"
+#: index.php:86
+msgid "ORIGIN"
 msgstr ""
 
-#: archive.php:34
-msgid "PRODUCTION NOTES / BACK MATTER"
+#: header.php:26
+msgid "PERSONAL RECORDS / CLEARANCE 02"
 msgstr ""
 
-#: search.php:22
-msgid "PRODUCTION NOTES / SEARCH"
+#: page.php:39 single.php:46
+msgid "PLATE 01"
 msgstr ""
 
 #: template-parts/comment.php:48
@@ -138,28 +130,36 @@ msgstr ""
 msgid "QUERY"
 msgstr ""
 
-#: header.php:27
-msgid "REV."
+#: index.php:50
+msgid "RECORDS"
 msgstr ""
 
-#: index.php:78
-msgid "ROLE"
+#: archive.php:34
+msgid "RECORDS / BACK MATTER"
 msgstr ""
 
-#: single.php:21
-msgid "SCENE"
-msgstr ""
-
-#: page.php:23
-msgid "SCENE / STATIC PAGE"
+#: search.php:22
+msgid "RECORDS / SEARCH"
 msgstr ""
 
 #: search.php:18
 msgid "SEARCH INDEX"
 msgstr ""
 
-#: sidebar.php:16
-msgid "SIDE A"
+#: single.php:21
+msgid "SECTOR"
+msgstr ""
+
+#: page.php:23
+msgid "SECTOR / STATIC RECORD"
+msgstr ""
+
+#: index.php:54
+msgid "SECTORS"
+msgstr ""
+
+#: index.php:109
+msgid "SORT / NEWEST"
 msgstr ""
 
 #: index.php:35
@@ -167,7 +167,15 @@ msgid "STATUS / ACTIVE"
 msgstr ""
 
 #: single.php:22
-msgid "STATUS / PUBLISHED"
+msgid "STATUS / RELEASED"
+msgstr ""
+
+#: index.php:66
+msgid "SUBJECT PROFILE"
+msgstr ""
+
+#: sidebar.php:15
+msgid "SYSTEM NOTES"
 msgstr ""
 
 #: archive.php:31 index.php:34 index.php:58
@@ -175,7 +183,7 @@ msgid "UPDATED"
 msgstr ""
 
 #: header.php:25
-msgid "YUKI PRODUCTION ARCHIVE"
+msgid "YUKI ARCHIVE // SITE-01"
 msgstr ""
 
 #: functions.php:238
@@ -262,7 +270,7 @@ msgid "公安备案号"
 msgstr ""
 
 #: index.php:106
-msgid "共 %d 话"
+msgid "共 %d 份记录"
 msgstr ""
 
 #: search.php:29
@@ -426,7 +434,7 @@ msgid "本站看板角色"
 msgstr ""
 
 #. Description of the theme
-msgid "极简 × 二次元风格 WordPress 博客主题。设定资料集式版面，暖纸底色、蓝图线条与信号橙点缀，内置浅色/深色模式、图片灯箱、代码块复制与评论增强。"
+msgid "极简 × 二次元风格 WordPress 博客主题。数字档案式版面，深色系统外壳与浅色文档面板，内置浅色/深色模式、图片灯箱、代码块复制与评论增强。"
 msgstr ""
 
 #: functions.php:105
@@ -439,6 +447,10 @@ msgstr ""
 
 #: sidebar.php:69
 msgid "标签云"
+msgstr ""
+
+#: index.php:101
+msgid "档案索引"
 msgstr ""
 
 #: functions.php:333
@@ -509,6 +521,10 @@ msgstr ""
 msgid "订阅更新"
 msgstr ""
 
+#: 404.php:15
+msgid "记录不存在"
+msgstr ""
+
 #: inc/comment-deletion.php:256
 msgid "评论已删除"
 msgstr ""
@@ -516,10 +532,6 @@ msgstr ""
 #. translators: %s: comment count
 #: functions.php:1353
 msgid "评论（%s）"
-msgstr ""
-
-#: index.php:101
-msgid "话数索引"
 msgstr ""
 
 #: template-parts/shuoshuo-item.php:46
@@ -562,10 +574,6 @@ msgstr ""
 msgid "这个链接已经无效了"
 msgstr ""
 
-#: 404.php:15
-msgid "这个页面走失了"
-msgstr ""
-
 #: inc/comment-deletion.php:176
 msgid "这封邮件是因为有人在站点评论时填了这个邮箱。不是你，忽略即可。"
 msgstr ""
@@ -599,7 +607,7 @@ msgid "雪兔"
 msgstr ""
 
 #: 404.php:16
-msgid "雪兔在雪地里找了半天，也没找到这一页。链接可能已经失效，或者内容被移到了别处。试试搜索："
+msgid "雪兔在雪地里找了半天，也没有找到这一页。链接可能已经失效，或者内容被移到了别的扇区。试试搜索："
 msgstr ""
 
 #: index.php:132

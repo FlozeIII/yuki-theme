@@ -1,0 +1,714 @@
+/* ============================================
+   Yuki · Archive Console
+   --------------------------------------------
+   数字档案外观：深色系统外壳 + 冷色文档面板。
+   参考档案系统的信息语法（编号、权限、状态、等宽元数据），
+   不复制任何具体作品的标识与文案。
+   在 production-bible.css 之后加载，继续保留旧宽度与测试契约。
+   ============================================ */
+
+body.yuki-production-bible {
+  --da-void: #070B0F;
+  --da-shell: #0B1217;
+  --da-shell-2: #111B21;
+  --da-shell-line: #263740;
+  --da-shell-text: #D8E2E6;
+  --da-shell-muted: #8FA1A9;
+  --da-cyan: #67C3D2;
+  --da-cyan-deep: #1C6B7A;
+  --da-red: #C04A42;
+  --da-red-soft: #E4776A;
+  --da-doc: #F1F5F6;
+  --da-doc-2: #E4EBEE;
+  --da-doc-ink: #162126;
+  --da-doc-muted: #4B5F68;
+  --da-doc-line: #BBC9CF;
+  --da-doc-faint: #D7E1E5;
+  --da-mark: rgba(192, 74, 66, 0.72);
+
+  background-color: #DCE3E6;
+  background-image:
+    linear-gradient(to right, rgba(22, 33, 38, 0.055) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(22, 33, 38, 0.055) 1px, transparent 1px);
+  background-size: 40px 40px;
+  color: var(--yuki-foreground);
+}
+
+.dark body.yuki-production-bible {
+  --da-doc: #0D161C;
+  --da-doc-2: #111D24;
+  --da-doc-ink: #D8E2E6;
+  --da-doc-muted: #93A5AD;
+  --da-doc-line: #273740;
+  --da-doc-faint: #1B2A32;
+  --da-mark: rgba(228, 119, 106, 0.74);
+
+  background-color: #070C10;
+  background-image:
+    linear-gradient(to right, rgba(103, 195, 210, 0.045) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(103, 195, 210, 0.045) 1px, transparent 1px);
+}
+
+.yuki-production-bible ::selection {
+  background: var(--da-red);
+  color: #FFF6F4;
+}
+
+/* 系统状态栏 */
+.yuki-production-bible .yuki-production-strip {
+  border-bottom: 1px solid var(--da-shell-line);
+  background: #05090C;
+  color: var(--da-shell-muted);
+  letter-spacing: 0.14em;
+}
+.yuki-production-bible .yuki-production-strip span:first-child {
+  color: var(--da-cyan);
+}
+.yuki-production-bible .yuki-production-strip span:nth-child(2) {
+  color: var(--da-shell-muted);
+}
+.yuki-production-bible .yuki-production-strip span:last-child {
+  color: var(--da-red-soft);
+}
+.dark .yuki-production-bible .yuki-production-strip {
+  border-bottom-color: var(--da-shell-line);
+  background: #030608;
+  color: #7F939C;
+}
+
+/* 顶部导航：终端外壳 */
+.yuki-production-bible .yuki-nav {
+  border-bottom: 1px solid var(--da-shell-line);
+  background: rgba(9, 15, 19, 0.96);
+  color: var(--da-shell-text);
+}
+.yuki-production-bible .yuki-nav .brand {
+  color: #F0F5F6;
+}
+.yuki-production-bible .yuki-nav .menu a {
+  color: #A8B8BF;
+}
+.yuki-production-bible .yuki-nav .menu a:hover,
+.yuki-production-bible .yuki-nav .menu a:focus-visible {
+  color: var(--da-cyan);
+}
+.yuki-production-bible .yuki-brand-mark {
+  border-color: var(--da-red);
+  background: transparent;
+  color: var(--da-cyan);
+}
+.yuki-production-bible .yuki-search-btn {
+  border-color: var(--da-shell-line);
+  background: #0B1217;
+  color: #A8B8BF;
+}
+.yuki-production-bible .yuki-search-btn:hover {
+  border-color: var(--da-cyan-deep);
+  color: var(--da-cyan);
+}
+.yuki-production-bible .theme-switch {
+  border-color: var(--da-shell-line);
+  background: #111B21;
+}
+.yuki-production-bible .theme-switch-knob {
+  background: #DCE5E8;
+}
+
+/* 首页封面：深色系统面板 */
+.yuki-production-bible .yuki-hero {
+  overflow: hidden;
+  border-bottom: 1px solid var(--da-shell-line);
+  background: #0A1116;
+  color: var(--da-shell-text);
+}
+.yuki-production-bible .yuki-hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent 3px,
+    rgba(255, 255, 255, 0.018) 3px,
+    rgba(255, 255, 255, 0.018) 4px
+  );
+  pointer-events: none;
+}
+.yuki-production-bible .yuki-hero .yuki-container {
+  z-index: 1;
+}
+.yuki-production-bible .yuki-hero h1 {
+  color: #F1F6F7;
+  letter-spacing: -0.055em;
+}
+.dark .yuki-production-bible .yuki-hero h1 {
+  color: #F1F6F7;
+}
+.yuki-production-bible .yuki-kicker,
+.yuki-production-bible .yuki-index-head .yuki-kicker {
+  color: var(--da-cyan);
+}
+.yuki-production-bible .yuki-cover-meta {
+  border-color: var(--da-shell-line);
+  color: #7F939C;
+}
+.yuki-production-bible .yuki-cover-meta span:last-child {
+  color: var(--da-red-soft);
+}
+.yuki-production-bible .yuki-cover-desc {
+  color: #ABBBC2;
+}
+.yuki-production-bible .yuki-cover-specs {
+  border-top-color: #2A3B44;
+}
+.yuki-production-bible .yuki-cover-specs div {
+  border-right-color: #24343D;
+}
+.yuki-production-bible .yuki-cover-specs dt {
+  color: #7F939C;
+}
+.yuki-production-bible .yuki-cover-specs dd {
+  color: #E5EDF0;
+  font-family: var(--yuki-font-mono);
+  font-size: 20px;
+  font-weight: 500;
+}
+.yuki-production-bible .yuki-character-sheet {
+  border-color: #3D525C;
+  background: var(--da-doc);
+  box-shadow: 0 0 0 1px #05090C, 8px 8px 0 rgba(0, 0, 0, 0.28);
+}
+.yuki-production-bible .yuki-character-sheet::before {
+  border-color: rgba(103, 195, 210, 0.25);
+}
+.yuki-production-bible .yuki-sheet-head {
+  border-bottom: 1px solid #3D525C;
+  background: #101A20;
+  color: #9DDDE8;
+}
+.dark .yuki-production-bible .yuki-sheet-head {
+  background: #101A20;
+  color: #9DDDE8;
+}
+.yuki-production-bible .yuki-sheet-figure {
+  background-color: var(--da-doc);
+  background-image:
+    linear-gradient(to right, rgba(28, 107, 122, 0.08) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(28, 107, 122, 0.08) 1px, transparent 1px);
+}
+.yuki-production-bible .yuki-sheet-figure::before,
+.yuki-production-bible .yuki-sheet-figure::after {
+  background: var(--da-mark);
+}
+.yuki-production-bible .yuki-sheet-meta {
+  border-top-color: #A9BCC3;
+  background: #F7FAFA;
+}
+.dark .yuki-production-bible .yuki-sheet-meta {
+  background: #0B1318;
+}
+.yuki-production-bible .yuki-sheet-meta div {
+  border-right-color: #CCD8DC;
+  border-bottom-color: #CCD8DC;
+}
+.dark .yuki-production-bible .yuki-sheet-meta div {
+  border-color: #23343D;
+}
+.yuki-production-bible .yuki-sheet-meta dt {
+  color: #5B7079;
+}
+.yuki-production-bible .yuki-sheet-meta dd {
+  color: #162126;
+}
+.dark .yuki-production-bible .yuki-sheet-meta dd {
+  color: #D8E2E6;
+}
+.yuki-production-bible .yuki-hero-petals span {
+  width: 3px;
+  height: 3px;
+  background: var(--yuki-season);
+  opacity: 0.5;
+}
+
+/* 文档索引 */
+.yuki-production-bible .yuki-index {
+  background: transparent;
+}
+.yuki-production-bible .yuki-index-head {
+  border-bottom-color: #162126;
+}
+.dark .yuki-production-bible .yuki-index-head {
+  border-bottom-color: #8FA1A9;
+}
+.yuki-production-bible .yuki-index-head h2 {
+  color: #162126;
+}
+.dark .yuki-production-bible .yuki-index-head h2 {
+  color: #E5EDF0;
+}
+.yuki-production-bible .yuki-index-meta {
+  color: #52666F;
+}
+.dark .yuki-production-bible .yuki-index-meta {
+  color: #8FA1A9;
+}
+.yuki-production-bible .yuki-post-list {
+  max-width: var(--yuki-wide-width);
+}
+.yuki-production-bible .yuki-post-item {
+  border-bottom: 1px solid #BBC9CF;
+}
+.dark .yuki-production-bible .yuki-post-item {
+  border-bottom-color: #22323A;
+}
+.yuki-production-bible .yuki-post-item::before {
+  color: var(--da-red);
+}
+.yuki-production-bible .yuki-post-item:hover {
+  background: var(--yuki-muted);
+}
+.yuki-production-bible .yuki-post-item.sticky {
+  box-shadow: inset 2px 0 0 var(--da-red);
+}
+.yuki-production-bible .yuki-post-thumb {
+  border-color: #52666F;
+  background: #0B1217;
+  box-shadow: 4px 4px 0 rgba(10, 17, 22, 0.14);
+}
+.yuki-production-bible .yuki-post-thumb img {
+  border-color: #2E4049;
+  filter: grayscale(0.32) contrast(1.04);
+  opacity: 0.94;
+}
+.yuki-production-bible .yuki-post-title,
+.yuki-production-bible .yuki-post-title a {
+  color: #162126;
+}
+.dark .yuki-production-bible .yuki-post-title,
+.dark .yuki-production-bible .yuki-post-title a {
+  color: #E5EDF0;
+}
+.yuki-production-bible .yuki-post-excerpt {
+  color: #4B5F68;
+}
+.dark .yuki-production-bible .yuki-post-excerpt {
+  color: #93A5AD;
+}
+.yuki-production-bible .yuki-post-item > .yuki-post-meta {
+  border-left-color: #BBC9CF;
+  color: #52666F;
+}
+.dark .yuki-production-bible .yuki-post-item > .yuki-post-meta {
+  border-left-color: #22323A;
+  color: #8FA1A9;
+}
+.yuki-production-bible .yuki-cat-badge {
+  border-color: #6F858E;
+  background: #F2F6F7;
+  color: #24333A;
+}
+.dark .yuki-production-bible .yuki-cat-badge {
+  border-color: #5C727C;
+  background: #132027;
+  color: #D8E2E6;
+}
+.yuki-production-bible .yuki-post-item .yuki-cat-badge {
+  border-color: #6F858E;
+  background: #F2F6F7;
+  color: #24333A;
+}
+.dark .yuki-production-bible .yuki-post-item .yuki-cat-badge {
+  border-color: #5C727C;
+  background: #132027;
+  color: #D8E2E6;
+}
+.yuki-production-bible .yuki-post-thumb--blank {
+  background-color: #0B1217;
+  background-image:
+    linear-gradient(to right, rgba(103, 195, 210, 0.09) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(103, 195, 210, 0.09) 1px, transparent 1px);
+}
+.yuki-production-bible .yuki-post-thumb-mark {
+  color: #7F939C;
+}
+
+/* ============================================
+   文档面板：单篇与静态页
+   ============================================ */
+.yuki-production-bible.single main.yuki-container,
+.yuki-production-bible.page main.yuki-narrow {
+  border: 1px solid var(--da-doc-line);
+  background: var(--da-doc);
+  box-shadow: 0 0 0 1px rgba(7, 11, 15, 0.35), 0 22px 60px rgba(7, 11, 15, 0.1);
+  padding: 24px;
+}
+.dark .yuki-production-bible.single main.yuki-container,
+.dark .yuki-production-bible.page main.yuki-narrow {
+  box-shadow: 0 0 0 1px #1B2A32, 0 22px 60px rgba(0, 0, 0, 0.32);
+}
+.yuki-production-bible .yuki-article-header {
+  color: var(--da-doc-ink);
+}
+.yuki-production-bible .yuki-article-header h1 {
+  color: #162126;
+}
+.dark .yuki-production-bible .yuki-article-header h1 {
+  color: #E8EFF2;
+}
+.yuki-production-bible .yuki-article-header > p {
+  color: var(--da-doc-muted);
+}
+.yuki-production-bible .yuki-article-header .yuki-post-meta {
+  color: #52666F;
+}
+.dark .yuki-production-bible .yuki-article-header .yuki-post-meta {
+  color: #8FA1A9;
+}
+.yuki-production-bible .yuki-filebar {
+  border-top: 1px solid #2A3B44;
+  border-bottom: 1px solid #2A3B44;
+  background: #0B141A;
+  color: #8FA1A9;
+}
+.yuki-production-bible .yuki-filebar span:last-child {
+  color: var(--da-red-soft);
+}
+.yuki-production-bible .yuki-frame-label {
+  background: #0B141A;
+  color: #8FA1A9;
+}
+.yuki-production-bible .yuki-frame-label span:last-child {
+  color: var(--da-red-soft);
+}
+.yuki-production-bible .yuki-article-featured {
+  border: 1px solid #52666F;
+  background: #0B1217;
+}
+.yuki-production-bible .yuki-prose {
+  color: var(--da-doc-ink);
+}
+.yuki-production-bible .yuki-prose h2,
+.yuki-production-bible .yuki-prose h3,
+.yuki-production-bible .yuki-prose h4 {
+  color: #162126;
+  border-top-color: var(--da-red);
+}
+.dark .yuki-production-bible .yuki-prose h2,
+.dark .yuki-production-bible .yuki-prose h3,
+.dark .yuki-production-bible .yuki-prose h4 {
+  color: #E8EFF2;
+}
+.yuki-production-bible .yuki-prose a {
+  color: var(--da-cyan-deep);
+}
+.dark .yuki-production-bible .yuki-prose a {
+  color: var(--da-cyan);
+}
+.yuki-production-bible .yuki-prose blockquote {
+  border-left-color: var(--da-red);
+  background: var(--da-doc-2);
+  color: var(--da-doc-muted);
+}
+.yuki-production-bible .yuki-prose code {
+  background: #DCE6EA;
+  color: #162126;
+}
+.dark .yuki-production-bible .yuki-prose code {
+  background: #18262E;
+  color: #D8E2E6;
+}
+.yuki-production-bible .yuki-prose pre {
+  border-color: #2A3B44;
+  background: #0B141A;
+  color: #D8E2E6;
+}
+.yuki-production-bible .yuki-prose pre code {
+  background: transparent;
+  color: inherit;
+}
+.yuki-production-bible .yuki-tags a,
+.yuki-production-bible .yuki-tag {
+  border-color: #8FA1A9;
+  background: transparent;
+  color: #3F555F;
+}
+.dark .yuki-production-bible .yuki-tags a,
+.dark .yuki-production-bible .yuki-tag {
+  border-color: #3D525C;
+  color: #B7C6CC;
+}
+.yuki-production-bible .yuki-post-nav a {
+  border-color: #BBC9CF;
+  background: var(--da-doc-2);
+}
+.yuki-production-bible .yuki-post-nav .label {
+  color: var(--da-red);
+}
+.yuki-production-bible .yuki-post-nav .title {
+  color: #162126;
+}
+.dark .yuki-production-bible .yuki-post-nav .title {
+  color: #E5EDF0;
+}
+
+/* 侧栏：文档边上的系统笔记 */
+.yuki-production-bible .yuki-sidebar {
+  color: #B7C6CC;
+}
+.yuki-production-bible .yuki-sidebar-head {
+  border-bottom-color: #3D525C;
+  color: #8FA1A9;
+}
+.yuki-production-bible .yuki-sidebar-head span:last-child {
+  color: var(--da-red-soft);
+}
+.yuki-production-bible .yuki-widget {
+  border: 1px solid #2A3B44;
+  background: #0B141A;
+  color: #B7C6CC;
+}
+.yuki-production-bible .yuki-widget h2,
+.yuki-production-bible .yuki-widget h3,
+.yuki-production-bible .yuki-widget .widget-title {
+  border-bottom-color: #2A3B44;
+  color: #9DDDE8;
+}
+.yuki-production-bible .yuki-widget a {
+  color: #D8E2E6;
+}
+.yuki-production-bible .yuki-widget a:hover {
+  color: var(--da-cyan);
+}
+.yuki-production-bible .yuki-widget,
+.yuki-production-bible .yuki-widget p,
+.yuki-production-bible .yuki-widget li,
+.yuki-production-bible .yuki-widget .textwidget {
+  color: #B7C6CC;
+}
+.yuki-production-bible .yuki-author-card .name {
+  color: #E8EFF2;
+}
+.yuki-production-bible .yuki-author-card .role {
+  color: #8FA1A9;
+}
+.yuki-production-bible .yuki-author-card p {
+  color: #A9B8BF;
+}
+.yuki-production-bible .yuki-hitokoto p {
+  color: #C5D1D6;
+}
+.yuki-production-bible .yuki-widget .count {
+  border: 1px solid #2A3B44;
+  background: transparent;
+  color: #8FA1A9;
+}
+.yuki-production-bible .yuki-widget .tagcloud a {
+  border-color: #3D525C;
+  color: #B7C6CC;
+}
+.yuki-production-bible .yuki-widget .tagcloud a:hover {
+  border-color: var(--da-cyan);
+  color: var(--da-cyan);
+}
+
+/* 评论区与表单 */
+.yuki-production-bible .yuki-comment-form .comment-notes,
+.yuki-production-bible .yuki-comment-form .logged-in-as,
+.yuki-production-bible .yuki-comment-form .comment-form-cookies-consent,
+.yuki-production-bible .yuki-comment-form label {
+  color: var(--da-doc-muted);
+}
+.yuki-production-bible .yuki-comment-form input[type="text"],
+.yuki-production-bible .yuki-comment-form input[type="email"],
+.yuki-production-bible .yuki-comment-form input[type="url"],
+.yuki-production-bible .yuki-comment-form textarea {
+  border-radius: 0;
+  border-color: #9FB0B8;
+  background: #FBFCFC;
+  color: #162126;
+}
+.dark .yuki-production-bible .yuki-comment-form input[type="text"],
+.dark .yuki-production-bible .yuki-comment-form input[type="email"],
+.dark .yuki-production-bible .yuki-comment-form input[type="url"],
+.dark .yuki-production-bible .yuki-comment-form textarea {
+  border-color: #3D525C;
+  background: #0B141A;
+  color: #D8E2E6;
+}
+.yuki-production-bible .yuki-comment-form input:focus,
+.yuki-production-bible .yuki-comment-form textarea:focus {
+  outline-color: var(--da-cyan);
+}
+.yuki-production-bible .yuki-comment-list .comment-body {
+  border: 1px solid #CDD8DC;
+  background: var(--yuki-card);
+}
+.dark .yuki-production-bible .yuki-comment-list .comment-body {
+  border-color: #263740;
+}
+.yuki-production-bible .yuki-comment-list .comment-metadata,
+.yuki-production-bible .yuki-comment-list .comment-metadata a {
+  color: #52666F;
+}
+.dark .yuki-production-bible .yuki-comment-list .comment-metadata,
+.dark .yuki-production-bible .yuki-comment-list .comment-metadata a {
+  color: #8FA1A9;
+}
+.yuki-production-bible .yuki-comments h2,
+.yuki-production-bible .yuki-comments h3 {
+  color: #162126;
+}
+.dark .yuki-production-bible .yuki-comments h2,
+.dark .yuki-production-bible .yuki-comments h3 {
+  color: #E8EFF2;
+}
+.yuki-production-bible .yuki-related-title {
+  color: #162126;
+}
+.dark .yuki-production-bible .yuki-related-title {
+  color: #E8EFF2;
+}
+.yuki-production-bible .yuki-related-item a {
+  color: #3F525B;
+}
+.dark .yuki-production-bible .yuki-related-item a {
+  color: #B2C0C7;
+}
+
+/* 页脚与订阅 */
+.yuki-production-bible .yuki-newsletter {
+  border-top: 1px solid var(--da-shell-line);
+  border-bottom: 1px solid var(--da-shell-line);
+  background: #081016;
+}
+.yuki-production-bible .yuki-newsletter-copy h2 {
+  color: #E8EFF2;
+}
+.yuki-production-bible .yuki-newsletter-copy p {
+  color: #93A5AD;
+}
+.yuki-production-bible .yuki-newsletter input {
+  border-color: #2A3B44;
+  background: #0B141A;
+  color: #D8E2E6;
+}
+.yuki-production-bible .yuki-footer {
+  border-top-color: var(--da-shell-line);
+  background: #05090C;
+  color: #8FA1A9;
+}
+.yuki-production-bible .yuki-footer .yuki-footer-top {
+  color: #8FA1A9;
+}
+.yuki-production-bible .yuki-footer .yuki-icp {
+  color: #6F838C;
+}
+.yuki-production-bible .yuki-footer .yuki-icp a {
+  color: #8FA1A9;
+}
+.yuki-production-bible .yuki-footer-top .links a {
+  color: #B7C6CC;
+}
+.yuki-production-bible .yuki-footer-top .links a:hover {
+  color: var(--da-cyan);
+}
+.yuki-production-bible .yuki-footer-bottom {
+  border-top-color: #1E2B32;
+  color: #6F838C;
+}
+
+/* 归档 / 搜索：同一套索引语法 */
+.yuki-production-bible .yuki-archive-hero {
+  background: #0A1116;
+}
+.yuki-production-bible .yuki-archive-hero .yuki-hero-kicker {
+  color: var(--da-cyan);
+}
+.yuki-production-bible .yuki-archive-hero h1 {
+  color: #F1F6F7;
+}
+.yuki-production-bible .yuki-archive-hero p:not(.yuki-hero-kicker) {
+  color: #ABBBC2;
+}
+.yuki-production-bible .yuki-hero-rule {
+  border-color: #2A3B44;
+  color: #7F939C;
+}
+.yuki-production-bible .yuki-hero-rule span:last-child {
+  color: var(--da-red-soft);
+}
+.yuki-production-bible .yuki-empty-state p {
+  border-color: #52666F;
+  background: var(--yuki-card);
+  color: var(--da-doc-muted);
+}
+
+/* 404：错误记录 */
+.yuki-production-bible .yuki-404 {
+  color: var(--da-doc-ink);
+}
+.yuki-production-bible .yuki-404 .code {
+  color: var(--da-red);
+  text-shadow: 3px 3px 0 rgba(192, 74, 66, 0.14);
+}
+.yuki-production-bible .yuki-404 h1 {
+  color: #162126;
+}
+.yuki-production-bible .yuki-404 p {
+  color: var(--da-doc-muted);
+}
+.dark .yuki-production-bible .yuki-404 h1 {
+  color: #E8EFF2;
+}
+.dark .yuki-production-bible .yuki-404 .code {
+  color: var(--da-red-soft);
+}
+.yuki-production-bible .yuki-404 .yuki-kicker {
+  color: var(--da-red);
+}
+
+/* 搜索结果和普通索引保持冷白底 */
+.yuki-production-bible .yuki-search-form input,
+.yuki-production-bible .yuki-404 input[type="search"] {
+  border-color: #8FA1A9;
+  background: #F7FAFA;
+  color: #162126;
+}
+.dark .yuki-production-bible .yuki-search-form input,
+.dark .yuki-production-bible .yuki-404 input[type="search"],
+.dark .yuki-production-bible .yuki-search-field {
+  border-color: #3D525C;
+  background: #0B141A;
+  color: #D8E2E6;
+}
+
+@media (max-width: 960px) {
+  .yuki-production-bible.single main.yuki-container,
+  .yuki-production-bible.page main.yuki-narrow {
+    padding: 18px;
+  }
+  .yuki-production-bible .yuki-single-layout {
+    gap: 32px;
+  }
+}
+
+@media (max-width: 640px) {
+  .yuki-production-bible.single main.yuki-container,
+  .yuki-production-bible.page main.yuki-narrow {
+    margin-left: 12px !important;
+    margin-right: 12px !important;
+    padding: 14px;
+  }
+  .yuki-production-bible .yuki-hero {
+    padding-top: 22px;
+  }
+  .yuki-production-bible .yuki-production-strip {
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+  .yuki-production-bible .yuki-index-head {
+    margin-left: 14px;
+    margin-right: 14px;
+  }
+}

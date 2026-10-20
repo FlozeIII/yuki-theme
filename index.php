@@ -30,14 +30,14 @@ $yuki_stats = function_exists( 'yuki_production_stats' )
 
 	<div class="yuki-container">
 		<div class="yuki-cover-meta">
-			<span><?php esc_html_e( 'FILE 01 / PRODUCTION BIBLE', 'yuki' ); ?></span>
+			<span><?php esc_html_e( 'CASE FILE 01 / PERSONAL ARCHIVE', 'yuki' ); ?></span>
 			<span><?php esc_html_e( 'UPDATED', 'yuki' ); ?> <?php echo esc_html( $yuki_stats['updated'] ); ?></span>
 			<span><?php esc_html_e( 'STATUS / ACTIVE', 'yuki' ); ?></span>
 		</div>
 
 		<div class="yuki-cover-grid">
 			<div class="yuki-cover-copy">
-				<p class="yuki-kicker"><?php esc_html_e( 'CHARACTER & EPISODE NOTES', 'yuki' ); ?></p>
+				<p class="yuki-kicker"><?php esc_html_e( 'ARCHIVE SYSTEM / PERSONAL RECORDS', 'yuki' ); ?></p>
 				<div class="yuki-hero-title-row">
 					<h1><?php bloginfo( 'name' ); ?></h1>
 				</div>
@@ -47,11 +47,11 @@ $yuki_stats = function_exists( 'yuki_production_stats' )
 
 				<dl class="yuki-cover-specs">
 					<div>
-						<dt><?php esc_html_e( 'EPISODES', 'yuki' ); ?></dt>
+						<dt><?php esc_html_e( 'RECORDS', 'yuki' ); ?></dt>
 						<dd><?php echo esc_html( sprintf( '%02d', (int) $yuki_stats['episodes'] ) ); ?></dd>
 					</div>
 					<div>
-						<dt><?php esc_html_e( 'CATEGORIES', 'yuki' ); ?></dt>
+						<dt><?php esc_html_e( 'SECTORS', 'yuki' ); ?></dt>
 						<dd><?php echo esc_html( sprintf( '%02d', (int) $yuki_stats['categories'] ) ); ?></dd>
 					</div>
 					<div>
@@ -63,7 +63,7 @@ $yuki_stats = function_exists( 'yuki_production_stats' )
 
 			<div class="yuki-character-sheet">
 				<div class="yuki-sheet-head">
-					<span><?php esc_html_e( 'CHARACTER SHEET', 'yuki' ); ?></span>
+					<span><?php esc_html_e( 'SUBJECT PROFILE', 'yuki' ); ?></span>
 					<span><?php esc_html_e( 'FIG. 01', 'yuki' ); ?></span>
 				</div>
 				<div class="yuki-sheet-figure">
@@ -71,11 +71,11 @@ $yuki_stats = function_exists( 'yuki_production_stats' )
 				</div>
 				<dl class="yuki-sheet-meta">
 					<div>
-						<dt><?php esc_html_e( 'NAME', 'yuki' ); ?></dt>
+						<dt><?php esc_html_e( 'DESIGNATION', 'yuki' ); ?></dt>
 						<dd><?php esc_html_e( '雪兔', 'yuki' ); ?></dd>
 					</div>
 					<div>
-						<dt><?php esc_html_e( 'ROLE', 'yuki' ); ?></dt>
+						<dt><?php esc_html_e( 'CLASS', 'yuki' ); ?></dt>
 						<dd><?php esc_html_e( '本站看板角色', 'yuki' ); ?></dd>
 					</div>
 					<div>
@@ -83,7 +83,7 @@ $yuki_stats = function_exists( 'yuki_production_stats' )
 						<dd>120 px</dd>
 					</div>
 					<div>
-						<dt><?php esc_html_e( 'MEDIUM', 'yuki' ); ?></dt>
+						<dt><?php esc_html_e( 'ORIGIN', 'yuki' ); ?></dt>
 						<dd><?php esc_html_e( '雪 / 线稿', 'yuki' ); ?></dd>
 					</div>
 				</dl>
@@ -97,16 +97,16 @@ $yuki_stats = function_exists( 'yuki_production_stats' )
 		<section class="yuki-index" aria-labelledby="yuki-index-title">
 			<header class="yuki-index-head">
 				<div>
-					<p class="yuki-kicker"><?php esc_html_e( 'EPISODE INDEX', 'yuki' ); ?></p>
-					<h2 id="yuki-index-title"><?php esc_html_e( '话数索引', 'yuki' ); ?></h2>
+					<p class="yuki-kicker"><?php esc_html_e( 'DOCUMENT INDEX', 'yuki' ); ?></p>
+					<h2 id="yuki-index-title"><?php esc_html_e( '档案索引', 'yuki' ); ?></h2>
 				</div>
 				<p class="yuki-index-meta">
 					<?php
 					/* translators: %d: 已发布文章数量 */
-					echo esc_html( sprintf( __( '共 %d 话', 'yuki' ), (int) $yuki_stats['episodes'] ) );
+					echo esc_html( sprintf( __( '共 %d 份记录', 'yuki' ), (int) $yuki_stats['episodes'] ) );
 					?>
 					<br>
-					<?php esc_html_e( 'NEWEST FIRST', 'yuki' ); ?>
+					<?php esc_html_e( 'SORT / NEWEST', 'yuki' ); ?>
 				</p>
 			</header>
 

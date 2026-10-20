@@ -8,7 +8,7 @@
 get_header();
 ?>
 
-<main class="yuki-container" style="padding-top:56px;padding-bottom:72px;">
+<main class="yuki-container">
 	<?php
 	while ( have_posts() ) :
 		the_post();
@@ -17,9 +17,9 @@ get_header();
 		<article <?php post_class(); ?>>
 
 			<div class="yuki-filebar" aria-hidden="true">
-				<span><?php esc_html_e( 'FILE', 'yuki' ); ?> / <?php echo esc_html( sprintf( '%04d', get_the_ID() ) ); ?></span>
-				<span><?php esc_html_e( 'SCENE', 'yuki' ); ?> / <?php echo esc_html( $cats ? $cats[0]->name : '—' ); ?></span>
-				<span><?php esc_html_e( 'STATUS / PUBLISHED', 'yuki' ); ?></span>
+				<span><?php esc_html_e( 'DOCUMENT', 'yuki' ); ?> / <?php echo esc_html( sprintf( '%04d', get_the_ID() ) ); ?></span>
+				<span><?php esc_html_e( 'SECTOR', 'yuki' ); ?> / <?php echo esc_html( $cats ? $cats[0]->name : '—' ); ?></span>
+				<span><?php esc_html_e( 'STATUS / RELEASED', 'yuki' ); ?></span>
 			</div>
 
 			<header class="yuki-article-header">
@@ -42,8 +42,8 @@ get_header();
 						<figure class="yuki-article-featured yuki-soft-frame">
 							<?php the_post_thumbnail( 'large' ); ?>
 							<figcaption class="yuki-frame-label">
-								<span><?php esc_html_e( 'KEY VISUAL', 'yuki' ); ?></span>
-								<span><?php esc_html_e( 'FRAME 01', 'yuki' ); ?></span>
+								<span><?php esc_html_e( 'EVIDENCE', 'yuki' ); ?></span>
+								<span><?php esc_html_e( 'PLATE 01', 'yuki' ); ?></span>
 							</figcaption>
 						</figure>
 					<?php endif; ?>

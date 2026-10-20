@@ -125,12 +125,12 @@ if (measured) {
   check('背景图真的在 body 上', measured.light.bodyImage.includes(imageName), measured.light.bodyImage);
   check('蒙层存在', measured.light.content !== 'none', measured.light.content);
   check('蒙层强度是滑杆的 60%', measured.light.opacity === '0.6', measured.light.opacity);
-  check('浅色蒙层是纸面', measured.light.background === 'rgb(237, 232, 220)', measured.light.background);
+  check('浅色蒙层是冷灰', measured.light.background === 'rgb(220, 227, 230)', measured.light.background);
   check('蒙层固定铺满、不挡点击',
     measured.light.position === 'fixed' && measured.light.pointerEvents === 'none',
     `${measured.light.position} / ${measured.light.pointerEvents}`);
   check('蒙层在内容之下', measured.light.zIndex === '-1', measured.light.zIndex);
-  check('深色蒙层是档案蓝黑', measured.dark === 'rgb(15, 23, 32)', measured.dark);
+  check('深色蒙层是档案黑', measured.dark === 'rgb(7, 12, 16)', measured.dark);
 } else {
   check('无头浏览器跑到底', false, browserError);
 }

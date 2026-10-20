@@ -12,8 +12,8 @@ $author_name = get_the_author();
 ?>
 <aside class="yuki-sidebar">
 	<div class="yuki-sidebar-head" aria-hidden="true">
-		<span><?php esc_html_e( 'PRODUCTION NOTES', 'yuki' ); ?></span>
-		<span><?php esc_html_e( 'SIDE A', 'yuki' ); ?></span>
+		<span><?php esc_html_e( 'SYSTEM NOTES', 'yuki' ); ?></span>
+		<span><?php esc_html_e( 'ACCESS LOG', 'yuki' ); ?></span>
 	</div>
 <?php if ( is_active_sidebar( 'sidebar-single' ) ) : ?>
 
@@ -30,7 +30,7 @@ $author_name = get_the_author();
 				<div class="role"><?php echo esc_html( get_the_author_meta( 'description' ) ? __( '作者', 'yuki' ) : __( '独立创作者', 'yuki' ) ); ?></div>
 			</div>
 		</div>
-		<p style="margin:0;font-size:14px;color:var(--yuki-muted-foreground);">
+		<p style="margin:0;font-size:14px;">
 			<?php echo esc_html( wp_trim_words( get_the_author_meta( 'description' ), 40, '…' ) ); ?>
 		</p>
 	</div>

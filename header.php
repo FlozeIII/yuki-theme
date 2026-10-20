@@ -22,9 +22,9 @@
 <?php endif; ?>
 
 <div class="yuki-production-strip" aria-hidden="true">
-	<span><?php esc_html_e( 'YUKI PRODUCTION ARCHIVE', 'yuki' ); ?></span>
-	<span><?php esc_html_e( 'CHARACTER & EPISODE NOTES', 'yuki' ); ?></span>
-	<span><?php esc_html_e( 'REV.', 'yuki' ); ?> <?php echo esc_html( wp_get_theme()->get( 'Version' ) ); ?> / <?php echo esc_html( wp_date( 'Y.m.d' ) ); ?></span>
+	<span><?php esc_html_e( 'YUKI ARCHIVE // SITE-01', 'yuki' ); ?></span>
+	<span><?php esc_html_e( 'PERSONAL RECORDS / CLEARANCE 02', 'yuki' ); ?></span>
+	<span><?php esc_html_e( 'BUILD', 'yuki' ); ?> <?php echo esc_html( wp_get_theme()->get( 'Version' ) ); ?> / <?php echo esc_html( wp_date( 'Y.m.d' ) ); ?></span>
 </div>
 
 <header class="yuki-nav">

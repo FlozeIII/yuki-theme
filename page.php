@@ -11,7 +11,7 @@
 get_header();
 ?>
 
-<main class="yuki-narrow" style="padding-top:56px;padding-bottom:72px;">
+<main class="yuki-narrow">
 	<?php
 	while ( have_posts() ) :
 		the_post();
@@ -19,8 +19,8 @@ get_header();
 		<article <?php post_class(); ?>>
 
 			<div class="yuki-filebar" aria-hidden="true">
-				<span><?php esc_html_e( 'FILE', 'yuki' ); ?> / P<?php echo esc_html( sprintf( '%04d', get_the_ID() ) ); ?></span>
-				<span><?php esc_html_e( 'SCENE / STATIC PAGE', 'yuki' ); ?></span>
+				<span><?php esc_html_e( 'DOCUMENT', 'yuki' ); ?> / P<?php echo esc_html( sprintf( '%04d', get_the_ID() ) ); ?></span>
+				<span><?php esc_html_e( 'SECTOR / STATIC RECORD', 'yuki' ); ?></span>
 				<span><?php echo esc_html( get_the_date( 'Y.m.d' ) ); ?></span>
 			</div>
 
@@ -35,8 +35,8 @@ get_header();
 				<figure class="yuki-article-featured yuki-soft-frame">
 					<?php the_post_thumbnail( 'large' ); ?>
 					<figcaption class="yuki-frame-label">
-						<span><?php esc_html_e( 'KEY VISUAL', 'yuki' ); ?></span>
-						<span><?php esc_html_e( 'FRAME 01', 'yuki' ); ?></span>
+						<span><?php esc_html_e( 'EVIDENCE', 'yuki' ); ?></span>
+						<span><?php esc_html_e( 'PLATE 01', 'yuki' ); ?></span>
 					</figcaption>
 				</figure>
 			<?php endif; ?>

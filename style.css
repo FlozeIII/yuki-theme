@@ -1,7 +1,7 @@
 /*
 Theme Name: Yuki
 Author: FlozeIII
-Description: 极简 × 二次元风格 WordPress 博客主题。设定资料集式版面，暖纸底色、蓝图线条与信号橙点缀，内置浅色/深色模式、图片灯箱、代码块复制与评论增强。
+Description: 极简 × 二次元风格 WordPress 博客主题。数字档案式版面，深色系统外壳与浅色文档面板，内置浅色/深色模式、图片灯箱、代码块复制与评论增强。
 Version: 1.3.0
 Requires at least: 6.0
 Tested up to: 7.1
@@ -21,18 +21,18 @@ Tags: blog, minimal, two-columns, light, dark
   --yuki-primary-700: #6366F1;
   --yuki-primary-foreground: #1E1B4B;
 
-  --yuki-background: #EDE8DC;
-  --yuki-foreground: #2D2D35;
+  --yuki-background: #DCE3E6;
+  --yuki-foreground: #182126;
   --yuki-card: #FFFFFF;
-  --yuki-muted: #F3F0EA;
-  --yuki-muted-foreground: #7C7C8A;
-  --yuki-border: #E8E5DF;
-  --yuki-input: #E8E5DF;
+  --yuki-muted: #E7EDEF;
+  --yuki-muted-foreground: #52666F;
+  --yuki-border: #C7D2D7;
+  --yuki-input: #C7D2D7;
   --yuki-ring: #A5B4FC;
 
-  --yuki-ink: #2D2D35;
-  --yuki-ink-2: #5C5C6D;
-  --yuki-ink-3: #8A8A9A;
+  --yuki-ink: #182126;
+  --yuki-ink-2: #3F525B;
+  --yuki-ink-3: #6A7C85;
 
   --yuki-radius-sm: 4px;
   --yuki-radius-md: 8px;
@@ -65,18 +65,18 @@ Tags: blog, minimal, two-columns, light, dark
   --yuki-primary-700: #6366F1;
   --yuki-primary-foreground: #0F0F14;
 
-  --yuki-background: #0F1720;
-  --yuki-foreground: #F3F0EA;
-  --yuki-card: #22222B;
-  --yuki-muted: #2A2A35;
-  --yuki-muted-foreground: #9CA3AF;
-  --yuki-border: #3A3A47;
-  --yuki-input: #3A3A47;
+  --yuki-background: #070C10;
+  --yuki-foreground: #D7E0E4;
+  --yuki-card: #111A20;
+  --yuki-muted: #18242B;
+  --yuki-muted-foreground: #93A5AD;
+  --yuki-border: #293841;
+  --yuki-input: #293841;
   --yuki-ring: #A5B4FC;
 
-  --yuki-ink: #F3F0EA;
-  --yuki-ink-2: #C8C8D0;
-  --yuki-ink-3: #9CA3AF;
+  --yuki-ink: #D7E0E4;
+  --yuki-ink-2: #B2C0C7;
+  --yuki-ink-3: #7F929B;
 }
 
 /* 季节点缀：只染雪兔与贴纸胶带，不改主色/正文/按钮 */

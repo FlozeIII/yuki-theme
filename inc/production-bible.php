@@ -23,6 +23,13 @@ function yuki_production_assets() {
 		array( 'yuki-style' ),
 		yuki_asset_version()
 	);
+
+	wp_enqueue_style(
+		'yuki-archive-console',
+		get_template_directory_uri() . '/assets/css/archive-console.css',
+		array( 'yuki-production-bible' ),
+		yuki_asset_version()
+	);
 }
 add_action( 'wp_enqueue_scripts', 'yuki_production_assets', 20 );
 

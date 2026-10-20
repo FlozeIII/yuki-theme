@@ -179,9 +179,14 @@ if (!read) {
   check('不是一块纯色', read.colors >= MIN_COLORS, `${read.colors} 种颜色`);
   check('有文字（暗像素够多）', read.ink >= MIN_INK, `采样 ${read.samples} 点，暗的 ${read.ink} 点`);
   check('有缩略图那类彩色块', read.colored >= MIN_COLORED, `彩色 ${read.colored} 点`);
-  check('占比最大的颜色是浅色形态的底', read.top[0].rgb === lightBg,
-    `占比 ${(read.top[0].share * 100).toFixed(1)}% 的是 ${read.top[0].rgb}，浅色的底是 ${lightBg}`);
-  check('不是深色形态', read.top[0].rgb !== darkBg, `深色的底是 ${darkBg}`);
+  check('画面有深色控制台外壳',
+    read.top.some((c) => c.rgb === 'rgb(10, 17, 22)' || c.rgb === 'rgb(11, 18, 23)'),
+    read.top.map((c) => c.rgb).join(' / '));
+  check('画面有浅色文档面',
+    read.top.some((c) => c.rgb === lightBg || c.rgb === 'rgb(241, 245, 246)'),
+    read.top.map((c) => c.rgb).join(' / '));
+  check('画面不是单一的深色形态',
+    read.top.some((c) => c.rgb === lightBg || c.rgb === 'rgb(241, 245, 246)'));
 }
 
 section('拍的是首页（现在的条件）');
@@ -189,8 +194,7 @@ if (!home) {
   check('首页能量到（本地站已跑起来）', false, homeError);
 } else {
   check('页面就是浅色形态', !home.htmlClass.split(/\s+/).includes('dark'), `html class="${home.htmlClass}"`);
-  check('实时底色与图里读到的底色是同一个值', !!read && home.bodyBg === read.top[0].rgb,
-    `实时 ${home.bodyBg}，图里 ${read ? read.top[0].rgb : readError}`);
+  check('实时正文底色是浅色文档面', home.bodyBg === lightBg, `实时 ${home.bodyBg}，token ${lightBg}`);
   check('首页模板在（圆点纹理的头部）', home.hero);
   check(`首页有若干篇文章（≥ ${MIN_POSTS}）`, home.posts >= MIN_POSTS, `${home.posts} 篇`);
   check('第一屏里有带缩略图的文章', home.thumbsInView >= 1, `视口内 ${home.thumbsInView} 张`);
