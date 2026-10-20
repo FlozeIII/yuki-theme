@@ -141,6 +141,25 @@
 - **系统点缀**：状态栏、眉标、编号、虚线胶带、细冷色线。`.yuki-dot-pattern` 与
   `.yuki-soft-frame` 作为旧钩子保留，但首页不再显示圆点纹理。
 
+## 文章内组件
+
+`assets/css/components.css` 在 `style.css` 之后加载，编辑器和前台共用；组件本身只用核心块，
+不注册自定义块、不新增 JS。pattern 分类为 `yuki-archive`，五个模式在 `patterns/`。
+
+| 组件 | pattern | 视觉 |
+| --- | --- | --- |
+| 档案注记 | `yuki/archive-note` | 左侧 3px 红墨线 + 冷白/深色卡片，标签 11px 等宽 `NOTE / 01` |
+| 档案规格表 | `yuki/archive-spec` | 两列表格，1px 冷线；表头等宽小字；窄屏 `overflow-x:auto` |
+| 档案时间线 | `yuki/archive-timeline` | 左侧竖线 + 方形节点；日期用等宽红墨色 |
+| 证据图卡 | `yuki/archive-evidence` | 1px 边框图卡，内置 SVG 占位图，图下 `EVIDENCE / 01` |
+| 双栏简报 | `yuki/archive-brief` | 两栏、栏间 1px 线；640px 下堆叠 |
+
+- 强调色只在组件内部用 `--yuki-comp-red`（浅色 #A94A25 / 深色 #E4776A），不覆盖全局
+  `--yuki-primary` 或季节色。
+- 文字/表面优先读 `--da-doc*`，编辑器里没有这些变量时回退到 `--yuki-card` / `--yuki-ink`。
+- 所有组件都可放在 `.yuki-prose`、`.editor-styles-wrapper` 与 `.yuki-shuoshuo-body` 里；
+  行内标签不参与 `aria-hidden`，图片占位图有可替换的 `alt`。
+
 ## 字体
 
 - 正文 15–16px / line-height 1.7；标题跟随自定义器的字体设置，不固定窄体或等宽。

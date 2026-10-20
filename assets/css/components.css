@@ -1,0 +1,270 @@
+/*
+ * 可复用组件：文章内档案组件。
+ *
+ * 只用核心块，不依赖构建。颜色从数字档案的 --da-* 读取；编辑器里没有这些变量时
+ * 回退到全局 --yuki-*，所以同一份样式在前台和编辑器画布里都能用。
+ */
+
+:root {
+  --yuki-comp-red: #A94A25;
+  --yuki-comp-cyan: #1C6B7A;
+}
+
+.dark {
+  --yuki-comp-red: #E4776A;
+  --yuki-comp-cyan: #67C3D2;
+}
+
+.yuki-note,
+.yuki-spec-table,
+.yuki-timeline,
+.yuki-evidence,
+.yuki-brief {
+  --yuki-comp-surface: var(--da-doc, var(--yuki-card));
+  --yuki-comp-ink: var(--da-doc-ink, var(--yuki-ink));
+  --yuki-comp-muted: var(--da-doc-muted, var(--yuki-muted-foreground));
+  --yuki-comp-line: var(--da-doc-line, var(--yuki-border));
+}
+
+/* 档案注记 */
+
+.yuki-note {
+  margin: 2em 0;
+  padding: 18px 22px;
+  border: 1px solid var(--yuki-comp-line);
+  border-left: 3px solid var(--yuki-comp-red);
+  background: var(--yuki-comp-surface);
+  color: var(--yuki-comp-ink);
+}
+
+.yuki-note > p {
+  margin: 0;
+}
+
+.yuki-note > p + p {
+  margin-top: 8px;
+}
+
+.yuki-note-label,
+.yuki-timeline-date,
+.yuki-evidence-label,
+.yuki-brief-label {
+  margin: 0 0 8px;
+  color: var(--yuki-comp-red);
+  font-family: var(--yuki-font-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  line-height: 1.5;
+  text-transform: uppercase;
+}
+
+.yuki-note > p:not(.yuki-note-label) {
+  color: var(--yuki-comp-ink);
+  font-size: 15px;
+  line-height: 1.75;
+}
+
+/* 档案规格表 */
+
+.yuki-spec-table {
+  margin: 2em 0;
+  overflow-x: auto;
+}
+
+.yuki-spec-table table {
+  width: 100%;
+  border-collapse: collapse;
+  color: var(--yuki-comp-ink);
+  font-size: 14px;
+  line-height: 1.65;
+}
+
+.yuki-spec-table th,
+.yuki-spec-table td {
+  padding: 10px 12px;
+  border: 1px solid var(--yuki-comp-line);
+  text-align: left;
+  vertical-align: top;
+}
+
+.yuki-spec-table th {
+  width: 32%;
+  background: color-mix(in srgb, var(--yuki-comp-line) 20%, transparent);
+  color: var(--yuki-comp-muted);
+  font-family: var(--yuki-font-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.yuki-spec-table figcaption {
+  margin-top: 10px;
+  color: var(--yuki-comp-muted);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+/* 档案时间线 */
+
+.yuki-timeline {
+  position: relative;
+  margin: 2em 0;
+  padding-left: 28px;
+}
+
+.yuki-timeline::before {
+  position: absolute;
+  top: 5px;
+  bottom: 5px;
+  left: 7px;
+  width: 1px;
+  background: var(--yuki-comp-line);
+  content: "";
+}
+
+.yuki-timeline-item {
+  position: relative;
+  margin: 0 0 26px;
+}
+
+.yuki-timeline-item:last-child {
+  margin-bottom: 0;
+}
+
+.yuki-timeline-item::before {
+  position: absolute;
+  top: 5px;
+  left: -25px;
+  width: 9px;
+  height: 9px;
+  border: 2px solid var(--yuki-comp-red);
+  background: var(--yuki-comp-surface);
+  content: "";
+}
+
+.yuki-timeline-date {
+  margin-bottom: 4px;
+}
+
+.yuki-timeline-item h3 {
+  margin: 4px 0 6px;
+  color: var(--yuki-comp-ink);
+  font-family: var(--yuki-font-sans);
+  font-size: 19px;
+  line-height: 1.35;
+}
+
+.yuki-timeline-item p:not(.yuki-timeline-date) {
+  margin: 0;
+  color: var(--yuki-comp-muted);
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+/* 证据图卡 */
+
+.yuki-evidence {
+  margin: 2em 0;
+  padding: 12px;
+  border: 1px solid var(--yuki-comp-line);
+  background: var(--yuki-comp-surface);
+}
+
+.yuki-evidence .yuki-evidence-image {
+  margin: 0;
+}
+
+.yuki-evidence .yuki-evidence-image img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--yuki-comp-line);
+}
+
+.yuki-evidence-meta {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--yuki-comp-line);
+}
+
+.yuki-evidence-meta > p {
+  margin: 0;
+  color: var(--yuki-comp-muted);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.yuki-evidence-meta > .yuki-evidence-label {
+  flex: none;
+  color: var(--yuki-comp-red);
+}
+
+/* 双栏简报 */
+
+.yuki-brief {
+  margin: 2em 0;
+  gap: 0;
+  border-top: 1px solid var(--yuki-comp-line);
+}
+
+.yuki-brief .wp-block-column {
+  padding: 16px 24px 16px 0;
+  border-right: 1px solid var(--yuki-comp-line);
+}
+
+.yuki-brief .wp-block-column:last-child {
+  padding-right: 0;
+  padding-left: 24px;
+  border-right: 0;
+}
+
+.yuki-brief-label {
+  margin-bottom: 4px;
+}
+
+.yuki-brief h3 {
+  margin: 4px 0 8px;
+  color: var(--yuki-comp-ink);
+  font-family: var(--yuki-font-sans);
+  font-size: 20px;
+  line-height: 1.35;
+}
+
+.yuki-brief .wp-block-column > p:not(.yuki-brief-label) {
+  margin: 0;
+  color: var(--yuki-comp-muted);
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+@media (max-width: 640px) {
+  .yuki-spec-table table {
+    min-width: 420px;
+  }
+
+  .yuki-brief .wp-block-column {
+    flex-basis: 100%;
+    padding: 16px 0;
+    border-right: 0;
+    border-bottom: 1px solid var(--yuki-comp-line);
+  }
+
+  .yuki-brief .wp-block-column:last-child {
+    padding-left: 0;
+    border-bottom: 0;
+  }
+
+  .yuki-timeline {
+    padding-left: 22px;
+  }
+
+  .yuki-timeline::before {
+    left: 5px;
+  }
+
+  .yuki-timeline-item::before {
+    left: -21px;
+  }
+}

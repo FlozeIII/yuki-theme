@@ -1369,3 +1369,4 @@ require_once get_template_directory() . '/inc/comment-submit.php';
 require_once get_template_directory() . '/inc/related-posts.php';
 require_once get_template_directory() . '/inc/shuoshuo-composer.php';
 require_once get_template_directory() . '/inc/production-bible.php';
+require_once get_template_directory() . '/inc/components.php';
