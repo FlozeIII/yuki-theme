@@ -808,6 +808,99 @@ html:not(.dark) .yuki-production-bible .yuki-hero-rule span:last-child {
   color: #A94A25;
 }
 
+/* 浅色主题：侧栏也回到文档纸面，而不是深色控制台卡片 */
+html:not(.dark) .yuki-production-bible .yuki-sidebar {
+  --da-doc: #FFFFFF;
+  --da-doc-ink: #162126;
+  --da-doc-muted: #52666F;
+  --da-line: #BBC9CF;
+  --da-cyan: #1C6B7A;
+  --da-red: #A94A25;
+  color: #3F525B;
+}
+html:not(.dark) .yuki-production-bible .yuki-sidebar-head {
+  border-bottom-color: #BBC9CF;
+  color: #52666F;
+}
+html:not(.dark) .yuki-production-bible .yuki-sidebar-head span:last-child {
+  color: #A94A25;
+}
+html:not(.dark) .yuki-production-bible .yuki-widget {
+  border-color: #BBC9CF;
+  background: #FFFFFF;
+  color: #3F525B;
+}
+html:not(.dark) .yuki-production-bible .yuki-widget h2,
+html:not(.dark) .yuki-production-bible .yuki-widget h3,
+html:not(.dark) .yuki-production-bible .yuki-widget .widget-title {
+  border-bottom-color: #BBC9CF;
+  color: #1C6B7A;
+}
+html:not(.dark) .yuki-production-bible .yuki-widget h3::before {
+  color: #A94A25;
+}
+html:not(.dark) .yuki-production-bible .yuki-widget a {
+  color: #162126;
+}
+html:not(.dark) .yuki-production-bible .yuki-widget a:hover {
+  color: #1C6B7A;
+}
+html:not(.dark) .yuki-production-bible .yuki-widget .count {
+  border-color: #BBC9CF;
+  color: #52666F;
+}
+html:not(.dark) .yuki-production-bible .yuki-widget .tagcloud a {
+  border-color: #BBC9CF;
+  color: #3F525B;
+}
+html:not(.dark) .yuki-production-bible .yuki-widget .tagcloud a:hover {
+  border-color: #1C6B7A;
+  color: #1C6B7A;
+}
+html:not(.dark) .yuki-production-bible .yuki-author-card .name {
+  color: #162126;
+}
+html:not(.dark) .yuki-production-bible .yuki-author-card .role {
+  color: #52666F;
+}
+html:not(.dark) .yuki-production-bible .yuki-author-card p {
+  color: #3F525B;
+}
+html:not(.dark) .yuki-production-bible .yuki-hitokoto p {
+  color: #3F525B;
+}
+html:not(.dark) .yuki-production-bible .yuki-tag-wall {
+  background: #FFFFFF;
+}
+html:not(.dark) .yuki-production-bible .yuki-tag-wall > summary::after {
+  color: #A94A25;
+}
+html:not(.dark) .yuki-production-bible .yuki-subscribe-card h3 {
+  color: #162126;
+}
+
+/* 浅色主题：文档顶栏与证据图框也回到纸面，不再留深色控制台块 */
+html:not(.dark) .yuki-production-bible .yuki-filebar {
+  border-color: #BBC9CF;
+  background: #E7EDEF;
+  color: #52666F;
+}
+html:not(.dark) .yuki-production-bible .yuki-filebar span:last-child {
+  color: #A94A25;
+}
+html:not(.dark) .yuki-production-bible .yuki-article-featured {
+  border-color: #BBC9CF;
+  background: #FFFFFF;
+}
+html:not(.dark) .yuki-production-bible .yuki-frame-label {
+  border-top-color: #BBC9CF;
+  background: #FFFFFF;
+  color: #52666F;
+}
+html:not(.dark) .yuki-production-bible .yuki-frame-label span:last-child {
+  color: #A94A25;
+}
+
 @media (max-width: 960px) {
   .yuki-production-bible.single main.yuki-container,
   .yuki-production-bible.page main.yuki-narrow {

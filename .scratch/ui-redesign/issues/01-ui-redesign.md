@@ -114,4 +114,8 @@ ARCHIVE UPLINK 全部落到真实模板与真实站点数据上。
   `.yuki-article-main`，让侧栏与文章头部/正文同顶；`verify-editor-alignment` 58/58、
   `verify-ui-redesign` 58/58、`verify-image-lightbox` 39/39、`verify-reading` 39/39、
   `verify-site-modules` 34/34、`verify-comment-nesting` 53/53。
+- 同日继续：用户要求浅色侧栏也改浅。`html:not(.dark)` 下侧栏卡片、作者卡、标签墙、订阅卡
+  改为白底冷线；文档顶栏 `#E7EDEF`、证据图框白底，避免浅色文档里留下孤立的深色块。
+  深色模式不变；`verify-image-lightbox` 39/39、`verify-ui-redesign` 58/58 通过。
+
 
