@@ -53,6 +53,21 @@ JavaScript 框架、不注册自定义块：
 - 新增占位图 `assets/images/component-evidence.svg`（内置 SVG，无外部请求）。
 - 第二批、第三批各自独立 issue；第一批先落地，后续复用它的标签/边框/间距语法。
 
+### 第二批 · 单篇阅读
+
+- `inc/reading.php`：
+  - 注册非公开分类 `yuki_series`（`post`），只在编辑器给作者归类，不生成前台系列归档；
+  - 只在 `is_singular('post')` 时入队 `assets/js/reading.js`，用 `wp_localize_script` 注入目录/进度文案；
+  - `yuki_series_nav()` 取当前文章的第一条系列，按日期升序输出；少于两篇或没有系列时不输出。
+- `single.php`：在 `.yuki-prose` 前放 `[data-yuki-toc]` 空槽，在上下篇导航前调用 `yuki_series_nav()`。
+  JS 不参与时目录不出现，服务端不预生成目录。
+- `assets/js/reading.js`：IIFE、无依赖；从正文 `h2/h3` 生成 `<details class="yuki-toc">`，
+  `h2` 为一级、`h3` 缩进；点击平滑滚动、更新 hash、把焦点放到标题；
+  滚动时更新 `aria-current`。少于两个标题不建目录。
+- 进度条由 JS 插入 body 顶部，`role="progressbar"`，`aria-valuenow` 跟随滚动；
+  reduced-motion 下不启用过渡。
+- 系列导航与目录样式都追加在 `assets/css/components.css`；不改正文 724px、侧栏 300px 和 B 外壳策略。
+
 ## Testing Decisions
 
 唯一 seam 仍是 HTTP；不引入 PHPUnit/Jest/构建。
@@ -70,12 +85,17 @@ JavaScript 框架、不注册自定义块：
     深色下卡片背景与文字可读；640px 下双栏堆叠、表格可横向滚动、页面无横向溢出；
     reduced-motion 下无新增动画。
 - 既有 `verify-editor-styles` 必须继续通过（编辑器仍只有主题样式，不另立构建产物）。
+- 第二批新增 `tests/bin/reading-fixtures.php` 与 `tests/bin/verify-reading.mjs`：
+  - fixtures 造三篇同系列文章，其中一篇含 h2/h3；另造一篇无标题、无系列文章；
+  - 静态检查脚本、分类、入队条件、单篇钩子；
+  - 浏览器检查目录层级/默认展开/点击 hash/焦点/`aria-current`、进度 0→100、640px 折叠与无溢出、
+    无标题不建目录、无系列不留空容器、reduced-motion 去掉进度过渡。
 
 ## Out of Scope
 
 - 自定义 Gutenberg 块、Inspector 控件、区块样式变体（本批用 pattern + core blocks）。
 - 图标库、字体文件、构建工具。
-- 第二批的目录/进度、第三批的站点模块；它们各自有 issue。
+- 第三批的站点模块；它另有 issue。
 - 自动迁移旧文章内容。
 
 ## Further Notes
@@ -83,3 +103,4 @@ JavaScript 框架、不注册自定义块：
 - 第二批见 `issues/02-reading-components.md`。
 - 第三批见 `issues/03-site-modules.md`。
 - 第一批提交前需要按 HEAD + 本次文件重建 POT（pattern 标题/描述若含 PHP 字符串才会计入）。
+- 第二批的系列是**非公开分类**：作者在编辑器里归类，读者通过单篇导航移动；不新增系列归档页。

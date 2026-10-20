@@ -19,7 +19,9 @@
 .yuki-spec-table,
 .yuki-timeline,
 .yuki-evidence,
-.yuki-brief {
+.yuki-brief,
+.yuki-toc,
+.yuki-series {
   --yuki-comp-surface: var(--da-doc, var(--yuki-card));
   --yuki-comp-ink: var(--da-doc-ink, var(--yuki-ink));
   --yuki-comp-muted: var(--da-doc-muted, var(--yuki-muted-foreground));
@@ -266,5 +268,201 @@
 
   .yuki-timeline-item::before {
     left: -21px;
+  }
+}
+
+/* 自动目录 */
+
+.yuki-toc {
+  margin: 0 0 2.4em;
+  border: 1px solid var(--yuki-comp-line);
+  background: var(--yuki-comp-surface);
+}
+
+.yuki-toc-summary {
+  padding: 13px 16px;
+  color: var(--yuki-comp-red);
+  font-family: var(--yuki-font-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  line-height: 1.5;
+  text-transform: uppercase;
+  cursor: pointer;
+  list-style: none;
+}
+
+.yuki-toc-summary::-webkit-details-marker {
+  display: none;
+}
+
+.yuki-toc-summary::before {
+  content: "+";
+  display: inline-block;
+  width: 1.4em;
+}
+
+.yuki-toc[open] > .yuki-toc-summary {
+  border-bottom: 1px solid var(--yuki-comp-line);
+}
+
+.yuki-toc[open] > .yuki-toc-summary::before {
+  content: "−";
+}
+
+.yuki-toc-list {
+  max-height: 40vh;
+  margin: 0;
+  padding: 10px 16px 14px 2.8em;
+  overflow: auto;
+  color: var(--yuki-comp-ink);
+}
+
+.yuki-toc-list li {
+  padding: 4px 0;
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.yuki-toc-list li::marker {
+  color: var(--yuki-comp-red);
+  font-family: var(--yuki-font-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 11px;
+}
+
+.yuki-toc-list li.is-level-3 {
+  padding-left: 18px;
+  font-size: 13px;
+}
+
+.yuki-toc-list a {
+  color: var(--yuki-comp-ink);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+}
+
+.yuki-toc-list a:hover {
+  border-bottom-color: var(--yuki-comp-red);
+}
+
+.yuki-toc-list a[aria-current] {
+  color: var(--yuki-comp-red);
+}
+
+.yuki-prose h2,
+.yuki-prose h3 {
+  scroll-margin-top: 92px;
+}
+
+/* 系列导航 */
+
+.yuki-series {
+  margin: 2.8em 0 1.4em;
+  padding-top: 16px;
+  border-top: 1px solid var(--yuki-comp-line);
+}
+
+.yuki-series-label {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  margin: 0 0 10px;
+  color: var(--yuki-comp-red);
+  font-family: var(--yuki-font-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  line-height: 1.5;
+  text-transform: uppercase;
+}
+
+.yuki-series-list {
+  max-height: 22rem;
+  margin: 0;
+  padding: 0;
+  overflow: auto;
+  list-style: none;
+}
+
+.yuki-series-list li {
+  display: grid;
+  grid-template-columns: 30px minmax(0, 1fr);
+  gap: 10px;
+  padding: 8px 0;
+  border-bottom: 1px dashed var(--yuki-comp-line);
+}
+
+.yuki-series-list li:last-child {
+  border-bottom: 0;
+}
+
+.yuki-series-index {
+  color: var(--yuki-comp-red);
+  font-family: var(--yuki-font-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 11px;
+  line-height: 1.8;
+}
+
+.yuki-series-title {
+  color: var(--yuki-comp-ink);
+  font-size: 15px;
+  line-height: 1.6;
+  text-decoration: none;
+}
+
+a.yuki-series-title:hover {
+  color: var(--yuki-comp-red);
+}
+
+.yuki-series-list .is-current .yuki-series-title {
+  color: var(--yuki-comp-red);
+  font-weight: 600;
+}
+
+/* 阅读进度 */
+
+.yuki-reading-progress {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 9999;
+  height: 2px;
+  pointer-events: none;
+  background: transparent;
+}
+
+.yuki-reading-progress-bar {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: var(--yuki-comp-red);
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  transition: transform 120ms linear;
+}
+
+@media (max-width: 640px) {
+  .yuki-toc-list {
+    max-height: 50vh;
+    padding-left: 2.2em;
+    overflow: auto;
+  }
+
+  .yuki-toc-list li {
+    font-size: 13px;
+  }
+
+  .yuki-series-list li {
+    grid-template-columns: 24px minmax(0, 1fr);
+    gap: 6px;
+  }
+
+  .yuki-series-title {
+    font-size: 14px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .yuki-reading-progress-bar {
+    transition: none;
   }
 }

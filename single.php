@@ -48,6 +48,8 @@ get_header();
 						</figure>
 					<?php endif; ?>
 
+					<div class="yuki-toc-slot" data-yuki-toc></div>
+
 					<div class="yuki-prose">
 						<?php the_content(); ?>
 						<?php
@@ -63,6 +65,10 @@ get_header();
 
 					<?php if ( get_the_tag_list() ) : ?>
 						<div class="yuki-tags"><?php echo get_the_tag_list( '', '' ); ?></div>
+					<?php endif; ?>
+
+					<?php if ( function_exists( 'yuki_series_nav' ) ) : ?>
+						<?php yuki_series_nav(); ?>
 					<?php endif; ?>
 
 					<nav class="yuki-post-nav">

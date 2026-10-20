@@ -160,6 +160,16 @@
 - 所有组件都可放在 `.yuki-prose`、`.editor-styles-wrapper` 与 `.yuki-shuoshuo-body` 里；
   行内标签不参与 `aria-hidden`，图片占位图有可替换的 `alt`。
 
+## 单篇阅读组件
+
+- **自动目录**：`assets/js/reading.js` 从正文 `h2` / `h3` 生成 `<details class="yuki-toc">`；
+  桌面默认展开，960px 以下默认折叠。条目用等宽红墨编号，`h3` 缩进一级；当前小节用
+  `aria-current="location"` 标红。少于两个标题时不生成。
+- **阅读进度**：视口顶端 2px 红线，`role="progressbar"`；`prefers-reduced-motion` 下不启用过渡。
+- **系列导航**：`yuki_series` 非公开分类，作者在编辑器里归类。单篇在上下篇之前列出同系列文章，
+  当前项是 `aria-current="page"` 的文本而不是链接；少于两篇或没有系列时不输出容器。
+- 目录、系列都使用组件变量 `--yuki-comp-*`；不覆盖 `--yuki-primary`、季节色或 B 外壳策略。
+
 ## 字体
 
 - 正文 15–16px / line-height 1.7；标题跟随自定义器的字体设置，不固定窄体或等宽。

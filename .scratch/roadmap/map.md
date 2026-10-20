@@ -76,10 +76,11 @@ SECTOR/STATUS + EVIDENCE、归档/搜索/404/侧栏/footer 同一套档案语言
 **第七批：组件库（分三批）。** spec：`.scratch/components/spec.md`；工单：
 `.scratch/components/issues/01-content-components.md`、
 `.scratch/components/issues/02-reading-components.md`、
-`.scratch/components/issues/03-site-modules.md`。**第一批「文章内档案组件」实现与验收完成。**
+`.scratch/components/issues/03-site-modules.md`。**第一、二批实现与验收完成。**
 用户选「全都要，分批做」。第一批只做正文里的五个核心块 pattern（注记/规格表/时间线/证据图卡/
 双栏简报），配 `assets/css/components.css`；不注册自定义块、不加 JS、不改单篇布局。
-后续第二批目录/阅读进度/系列导航，第三批数据条/标签墙/作者卡/订阅卡/页脚链接组。
+第二批加自动目录、阅读进度与非公开系列分类；目录/进度只在单篇加载，系列不生成前台归档。
+后续第三批数据条/标签墙/作者卡/订阅卡/页脚链接组。
 
 ### 二次元成分（跨类）
 
@@ -129,6 +130,8 @@ SECTOR/STATUS + EVIDENCE、归档/搜索/404/侧栏/footer 同一套档案语言
 - 2026-10-20：第七批组件库，用户选「全都要，分批做」。先做**文章内档案组件**：
   五个核心块 pattern + 单份 CSS，不注册自定义块、不加 JS；颜色只读 `--da-doc*` 和
   组件自己的 `--yuki-comp-red`，不覆盖全局主色与季节色。编辑器面板点击插入留人工复验。
+- 2026-10-20：第二批**单篇阅读组件**完成：目录/进度只在单篇加载；系列用**非公开**
+  `yuki_series` 分类，不生成系列归档，少于两篇不输出容器；正文 724px 与侧栏 300px 不变。
   为让评论区、说说、页脚与封面共用一张纸，刻意把既有 `--yuki-background` 从
   `#FDFBF7/#18181F` 改为 `#EDE8DC/#0F1720`，相关断言同步更新并在 spec 写明理由。
   页面标题继续跟随自定义器字体，只有资料集小标签用窄体；截图 `screenshot.png`

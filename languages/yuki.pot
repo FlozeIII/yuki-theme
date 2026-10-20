@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Yuki 1.3.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-20T11:39:31+00:00\n"
+"POT-Creation-Date: 2026-10-20T11:51:22+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -158,6 +158,10 @@ msgstr ""
 msgid "SECTORS"
 msgstr ""
 
+#: inc/reading.php:147
+msgid "SERIES"
+msgstr ""
+
 #: index.php:109
 msgid "SORT / NEWEST"
 msgstr ""
@@ -215,11 +219,11 @@ msgstr ""
 msgid "一言"
 msgstr ""
 
-#: single.php:75
+#: single.php:81
 msgid "上一篇"
 msgstr ""
 
-#: single.php:81
+#: single.php:87
 msgid "下一篇"
 msgstr ""
 
@@ -381,6 +385,10 @@ msgstr ""
 msgid "强调色"
 msgstr ""
 
+#: inc/reading.php:32
+msgid "所有系列"
+msgstr ""
+
 #: functions.php:284
 msgid "承载说说的分类"
 msgstr ""
@@ -405,6 +413,10 @@ msgstr ""
 msgid "搜索「%s」"
 msgstr ""
 
+#: inc/reading.php:38
+msgid "搜索系列"
+msgstr ""
+
 #: searchform.php:10
 msgid "搜索："
 msgstr ""
@@ -417,6 +429,10 @@ msgstr ""
 msgid "文章侧边栏"
 msgstr ""
 
+#: inc/reading.php:36
+msgid "新建系列"
+msgstr ""
+
 #: functions.php:337
 msgid "无衬线（默认）"
 msgstr ""
@@ -427,6 +443,10 @@ msgstr ""
 
 #: functions.php:789
 msgid "暮色四合的时候，连风都放慢了脚步。"
+msgstr ""
+
+#: inc/reading.php:35
+msgid "更新系列"
 msgstr ""
 
 #: functions.php:792
@@ -449,6 +469,10 @@ msgstr ""
 msgid "查看大图：%s"
 msgstr ""
 
+#: inc/reading.php:34
+msgid "查看系列"
+msgstr ""
+
 #: sidebar.php:69
 msgid "标签云"
 msgstr ""
@@ -463,6 +487,10 @@ msgstr ""
 
 #: footer.php:17
 msgid "每周一封邮件，分享新文章与灵感碎片。随时取消。"
+msgstr ""
+
+#: inc/reading.php:39
+msgid "没有系列"
 msgstr ""
 
 #: inc/comment-likes.php:247
@@ -485,6 +513,10 @@ msgstr ""
 msgid "用于链接、按钮、主题开关与选中态；留空使用主题默认的堇紫。"
 msgstr ""
 
+#: inc/reading.php:75
+msgid "目录"
+msgstr ""
+
 #: template-parts/related-posts.php:16 template-parts/related-posts.php:17
 msgid "相关文章"
 msgstr ""
@@ -497,8 +529,24 @@ msgstr ""
 msgid "确认删除"
 msgstr ""
 
+#: inc/reading.php:29 inc/reading.php:30 inc/reading.php:31
+msgid "系列"
+msgstr ""
+
+#: inc/reading.php:37
+msgid "系列名称"
+msgstr ""
+
+#: inc/reading.php:144
+msgid "系列：%s"
+msgstr ""
+
 #: template-parts/comment.php:51 template-parts/comment.php:89
 msgid "编辑"
+msgstr ""
+
+#: inc/reading.php:33
+msgid "编辑系列"
 msgstr ""
 
 #: functions.php:299
@@ -600,6 +648,10 @@ msgstr ""
 
 #: functions.php:266
 msgid "镜像站点地址，例如 https://mirror.example.cn，会拼成 地址/avatar/哈希；直接粘贴含 /avatar/ 的完整前缀也可以。仅在上一项选「自定义镜像」时生效。"
+msgstr ""
+
+#: inc/reading.php:76
+msgid "阅读进度"
 msgstr ""
 
 #: index.php:87
