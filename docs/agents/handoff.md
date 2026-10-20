@@ -1,23 +1,32 @@
 # 开发交接
 
-最后更新：2026-10-19。当前发布 **v1.3.0**（标签 `v1.3.0` → `d330fc1`），`main` 已推到
-`c6da520`；工作树干净，`.scratch/holds.md` 为空。
+最后更新：2026-10-20。当前发布 **v1.3.0**（标签 `v1.3.0` → `d330fc1`），`main` 已推到
+`9cf12cf`；工作树干净，`.scratch/holds.md` 为空。
+v1.3.0 之后的功能已合并但**尚未发版**，下一个版本号需要重新决定。
 
 ## 先读
 
 1. `AGENTS.md` —— 并行会话的六条硬规则。**这是操作步骤，不是礼貌。**
 2. `CONTEXT.md` —— 领域词汇：极简线、对外发布、不自足功能、主题形态、说说、一言、头像镜像。
-3. `DESIGN.md` —— 视觉 token、布局、浮层、季节点缀。
+3. `DESIGN.md` —— 视觉 token、布局、浮层、季节点缀、数字档案 UI 与组件。
 4. `.scratch/roadmap/map.md` —— 路线图、已完成批次与下一批候选。
 5. `docs/agents/issue-tracker.md` —— spec 与工单的写法。
 
 ## 当前状态
 
-- 已发布 `v1.3.0`：二次元四批（雪兔、贴纸/气泡、季节点缀色、hero 花瓣）与外观设置四批
-  （背景图+蒙层、页头图、强调色、字体切换）。
-- 全套 27 个验收脚本、1039/1039；`verify-package` 65/65。
-- Theme Check（对产物）：REQUIRED 1（`readme.txt`，ADR 0002 主动不写）· WARNING 1 ·
-  RECOMMENDED 5 · INFO 5。
+- 已发布 `v1.3.0`：二次元四批、外观设置四批。
+- v1.3.0 之后合并、尚未发版的内容：
+  - 代码块复制按钮。
+  - 整站数字档案 UI（深色控制台 + 浅色文档面板；浅色外壳跟随、深色保留控制台）。
+  - 雪兔白底证件照卡。
+  - 文章内档案组件（注记、规格表、时间线、证据图卡、双栏简报）。
+  - 单篇目录、阅读进度、系列导航。
+  - 站点模块（数据条、标签墙、作者卡、订阅卡、页脚链接组）。
+- 全套 **32 个**验收脚本通过；`verify-package` 65/65。
+- `languages/yuki.pot`：180 条条目、204 个行号引用，`check-pot` 全绿。
+- `wptk check`：0 error / 0 warning / 10 info；其中 2 条 `html.img-alt` 是动态 PHP 属性误报，
+  其余 8 条为既有项。
+- **Theme Check 尚未在这些改动后重跑**；发版前必须按 `docs/RELEASING.md` 对产物重跑。
 - 已知测试基建项：`.scratch/comment-submit-ajax/issues/04-browser-retry-flake.md`（浏览器
   「太快 → 重试」场景偶发不稳，不挡功能开发）。
 
@@ -63,11 +72,12 @@ curl -s -o /dev/null -w "%{http_code}\n" http://localhost:8080/
 
 ## 下一批候选（来自 roadmap）
 
-- **A 阅读体验**：代码块复制、长文目录（从 h2/h3 生成）、阅读进度。
-- **B 内容形态**：相册/画廊页、文章系列、说说增强（不引入新数据模型）。
-- **D 作者工作流**：草稿预览。
-- 灯箱的多图左右切换仍在 Fog；外观设置四批已完成。
+- **A 阅读体验**：只剩灯箱同页多图左右切换（Fog）；代码块复制、长文目录、阅读进度已完成。
+- **B 内容形态**：相册/画廊页、说说增强（不引入新数据模型）；关联文章、文章系列已完成。
+- **D 作者工作流**：草稿预览；前台发说说已完成。
+- 外观设置与站点氛围已完成。
 - 优先选**小、可独立验收、不碰共享文件**的一件；一次只开一件。
+- 也可以先做 **v1.4.0 发布**：升版本号、重建 POT、重跑 Theme Check/`verify-package`、打 tag。
 
 ## 多个 agent 并行时
 
@@ -84,7 +94,8 @@ curl -s -o /dev/null -w "%{http_code}\n" http://localhost:8080/
 先读 AGENTS.md、CONTEXT.md、DESIGN.md、docs/agents/handoff.md、
 .scratch/roadmap/map.md、docs/agents/issue-tracker.md。
 
-当前发布 v1.3.0，工作树干净，holds.md 为空。请从 roadmap 的候选里选一件
+当前标签 v1.3.0，main 已推到 9cf12cf，工作树干净，holds.md 为空；
+v1.3.0 之后已有未发版改动。当前没有进行中的功能，请从 roadmap 的候选里选一件
 （或按用户指定的功能），先写 .scratch/<feature>/spec.md 与 issues/NN-*.md，再实现。
 
 遵守 AGENTS.md 的并行会话规则：动共享文件前在 .scratch/holds.md 挂行；
