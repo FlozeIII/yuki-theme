@@ -52,7 +52,7 @@ Status: ready-for-agent
 - [x] `node tests/bin/verify-components.mjs` 全绿。
 - [x] 既有 `verify-editor-styles`、`verify-editor-alignment`、`verify-ui-redesign` 继续通过。
 - [x] POT 按 HEAD + 本次文件重建，`check-pot` 全绿。
-- [ ] 工单、spec、DESIGN、roadmap 更新；只提交自己的路径；holds 自己那两行删除。
+- [x] 工单、spec、DESIGN、roadmap 更新；只提交自己的路径；holds 自己那两行删除。
 
 ## Comments
 
