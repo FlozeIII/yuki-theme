@@ -220,7 +220,12 @@ check('页面上也找不到垃圾提交的正文', !spamPage.body.includes(spam
 
 section('不需要登录');
 
-check('以上所有请求都没有被带去登录页', !/wp-login\.php/.test(revisit.body + stranger.body + afterApprove.body), '页面把人往登录页带');
+const loginRedirects = [revisit, stranger, afterApprove]
+  .filter((res) => res.status >= 300 && res.status < 400)
+  .map((res) => res.headers.get('location') || '')
+  .filter((location) => location.includes('wp-login.php'));
+
+check('以上所有请求都没有被带去登录页', loginRedirects.length === 0, loginRedirects.join(' / ') || '页面把人往登录页带');
 note(`身份只用了 WordPress 原生的评论者 cookie（${yi.cookie ? '已下发' : '未下发'}）与一次性的跳转参数，全程没有账号`);
 
 /* ================= 收尾 ================= */

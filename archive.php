@@ -42,6 +42,7 @@ $yuki_is_shuoshuo = $yuki_shuoshuo_id && is_category() && (int) get_queried_obje
 			<span><?php echo esc_html( wp_strip_all_tags( get_the_archive_title() ) ); ?></span>
 			<span><?php echo esc_html( sprintf( '%02d ENTRIES', $yuki_count ) ); ?></span>
 		</div>
+		<?php get_template_part( 'template-parts/site-stats', null, array( 'class' => 'yuki-archive-stats' ) ); ?>
 	</div>
 </section>
 

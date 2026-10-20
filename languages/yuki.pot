@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Yuki 1.3.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-20T11:51:22+00:00\n"
+"POT-Creation-Date: 2026-10-20T12:57:05+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -22,11 +22,17 @@ msgstr ""
 msgid "%d 分钟阅读"
 msgstr ""
 
+#: template-parts/site-tag-wall.php:31
+msgid "%d 项"
+msgid_plural "%d 项"
+msgstr[0] ""
+msgstr[1] ""
+
 #: template-parts/shuoshuo-item.php:49
 msgid "%s 条评论"
 msgstr ""
 
-#: sidebar.php:16
+#: sidebar.php:15
 msgid "ACCESS LOG"
 msgstr ""
 
@@ -38,7 +44,7 @@ msgstr ""
 msgid "ARCHIVE SYSTEM / PERSONAL RECORDS"
 msgstr ""
 
-#: footer.php:15
+#: footer.php:15 template-parts/site-subscribe.php:11
 msgid "ARCHIVE UPLINK"
 msgstr ""
 
@@ -50,7 +56,7 @@ msgstr ""
 msgid "CASE FILE 01 / PERSONAL ARCHIVE"
 msgstr ""
 
-#: index.php:78
+#: index.php:65
 msgid "CLASS"
 msgstr ""
 
@@ -58,7 +64,7 @@ msgstr ""
 msgid "Cravatar（境内镜像）"
 msgstr ""
 
-#: index.php:74
+#: index.php:61
 msgid "DESIGNATION"
 msgstr ""
 
@@ -66,7 +72,7 @@ msgstr ""
 msgid "DOCUMENT"
 msgstr ""
 
-#: index.php:100
+#: index.php:87
 msgid "DOCUMENT INDEX"
 msgstr ""
 
@@ -74,7 +80,7 @@ msgstr ""
 msgid "EVIDENCE"
 msgstr ""
 
-#: index.php:67
+#: index.php:54
 msgid "FIG. 01"
 msgstr ""
 
@@ -94,7 +100,7 @@ msgstr ""
 msgid "Gravatar（默认，境内不可用）"
 msgstr ""
 
-#: index.php:82
+#: index.php:69
 msgid "HEIGHT"
 msgstr ""
 
@@ -106,11 +112,15 @@ msgstr ""
 msgid "MATCHING FILES"
 msgstr ""
 
+#: template-parts/site-footer-links.php:21
+msgid "MENU"
+msgstr ""
+
 #: template-parts/post-item.php:23
 msgid "NO KEY FRAME"
 msgstr ""
 
-#: index.php:86
+#: index.php:73
 msgid "ORIGIN"
 msgstr ""
 
@@ -130,7 +140,7 @@ msgstr ""
 msgid "QUERY"
 msgstr ""
 
-#: index.php:50
+#: template-parts/site-stats.php:20
 msgid "RECORDS"
 msgstr ""
 
@@ -140,6 +150,10 @@ msgstr ""
 
 #: search.php:22
 msgid "RECORDS / SEARCH"
+msgstr ""
+
+#: template-parts/site-footer-links.php:54
+msgid "RSS"
 msgstr ""
 
 #: search.php:18
@@ -154,7 +168,7 @@ msgstr ""
 msgid "SECTOR / STATIC RECORD"
 msgstr ""
 
-#: index.php:54
+#: template-parts/site-stats.php:24
 msgid "SECTORS"
 msgstr ""
 
@@ -162,7 +176,7 @@ msgstr ""
 msgid "SERIES"
 msgstr ""
 
-#: index.php:109
+#: index.php:96
 msgid "SORT / NEWEST"
 msgstr ""
 
@@ -174,15 +188,19 @@ msgstr ""
 msgid "STATUS / RELEASED"
 msgstr ""
 
-#: index.php:66
+#: index.php:53
 msgid "SUBJECT PROFILE"
 msgstr ""
 
-#: sidebar.php:15
+#: sidebar.php:14
 msgid "SYSTEM NOTES"
 msgstr ""
 
-#: archive.php:31 index.php:34 index.php:58
+#: template-parts/site-tag-wall.php:26
+msgid "TAG INDEX"
+msgstr ""
+
+#: archive.php:31 index.php:34 template-parts/site-stats.php:28
 msgid "UPDATED"
 msgstr ""
 
@@ -215,7 +233,7 @@ msgstr ""
 msgid "[%s] 需要的话，你可以删掉自己那条评论"
 msgstr ""
 
-#: sidebar.php:39
+#: sidebar.php:29
 msgid "一言"
 msgstr ""
 
@@ -239,11 +257,11 @@ msgstr ""
 msgid "主导航"
 msgstr ""
 
-#: sidebar.php:30
+#: template-parts/site-author-card.php:16
 msgid "作者"
 msgstr ""
 
-#: sidebar.php:25
+#: sidebar.php:24
 msgid "作者简介"
 msgstr ""
 
@@ -261,7 +279,7 @@ msgstr ""
 msgid "你没有发布说说的权限。"
 msgstr ""
 
-#: footer.php:21
+#: footer.php:21 template-parts/site-subscribe.php:19
 msgid "你的邮箱地址"
 msgstr ""
 
@@ -277,7 +295,7 @@ msgstr ""
 msgid "公安备案号"
 msgstr ""
 
-#: index.php:106
+#: index.php:93
 msgid "共 %d 份记录"
 msgstr ""
 
@@ -285,7 +303,11 @@ msgstr ""
 msgid "共找到 %d 篇文章"
 msgstr ""
 
-#: footer.php:56 functions.php:102
+#: template-parts/site-footer-links.php:52
+msgid "关于"
+msgstr ""
+
+#: footer.php:53 functions.php:102
 msgid "关闭"
 msgstr ""
 
@@ -293,7 +315,7 @@ msgstr ""
 msgid "写下你的想法…"
 msgstr ""
 
-#: sidebar.php:54
+#: sidebar.php:44
 msgid "分类"
 msgstr ""
 
@@ -405,7 +427,7 @@ msgstr ""
 msgid "提交评论"
 msgstr ""
 
-#: footer.php:55 header.php:57 searchform.php:13
+#: footer.php:52 header.php:57 searchform.php:13 template-parts/site-footer-links.php:37
 msgid "搜索"
 msgstr ""
 
@@ -437,8 +459,12 @@ msgstr ""
 msgid "无衬线（默认）"
 msgstr ""
 
-#: sidebar.php:100
+#: sidebar.php:84
 msgid "暂无数据"
+msgstr ""
+
+#: template-parts/site-tag-wall.php:17
+msgid "暂无标签。"
 msgstr ""
 
 #: functions.php:789
@@ -453,7 +479,7 @@ msgstr ""
 msgid "月光落在窗台上，像一句没写完的诗。"
 msgstr ""
 
-#: index.php:79
+#: index.php:66
 msgid "本站看板角色"
 msgstr ""
 
@@ -473,11 +499,11 @@ msgstr ""
 msgid "查看系列"
 msgstr ""
 
-#: sidebar.php:69
-msgid "标签云"
+#: template-parts/site-tag-wall.php:27
+msgid "标签墙"
 msgstr ""
 
-#: index.php:101
+#: index.php:88
 msgid "档案索引"
 msgstr ""
 
@@ -485,7 +511,7 @@ msgstr ""
 msgid "正文与标题一起换；代码块仍用等宽字体。"
 msgstr ""
 
-#: footer.php:17
+#: footer.php:17 template-parts/site-subscribe.php:13
 msgid "每周一封邮件，分享新文章与灵感碎片。随时取消。"
 msgstr ""
 
@@ -501,16 +527,20 @@ msgstr ""
 msgid "点赞"
 msgstr ""
 
-#: sidebar.php:81
+#: sidebar.php:65
 msgid "热门文章"
 msgstr ""
 
-#: sidebar.php:30
+#: template-parts/site-author-card.php:16
 msgid "独立创作者"
 msgstr ""
 
 #: functions.php:315
 msgid "用于链接、按钮、主题开关与选中态；留空使用主题默认的堇紫。"
+msgstr ""
+
+#: template-parts/site-footer-links.php:55
+msgid "登录"
 msgstr ""
 
 #: inc/reading.php:75
@@ -529,6 +559,10 @@ msgstr ""
 msgid "确认删除"
 msgstr ""
 
+#: template-parts/site-footer-links.php:34
+msgid "站点"
+msgstr ""
+
 #: inc/reading.php:29 inc/reading.php:30 inc/reading.php:31
 msgid "系列"
 msgstr ""
@@ -539,6 +573,10 @@ msgstr ""
 
 #: inc/reading.php:144
 msgid "系列：%s"
+msgstr ""
+
+#: template-parts/site-footer-links.php:44
+msgid "索引"
 msgstr ""
 
 #: template-parts/comment.php:51 template-parts/comment.php:89
@@ -565,11 +603,11 @@ msgstr ""
 msgid "衬线（宋体 / Georgia）"
 msgstr ""
 
-#: footer.php:22 footer.php:33 header.php:51
+#: footer.php:22 header.php:51 template-parts/site-footer-links.php:38 template-parts/site-subscribe.php:23
 msgid "订阅"
 msgstr ""
 
-#: footer.php:16
+#: footer.php:16 template-parts/site-subscribe.php:12
 msgid "订阅更新"
 msgstr ""
 
@@ -646,6 +684,10 @@ msgstr ""
 msgid "那条评论已经不在了。"
 msgstr ""
 
+#: footer.php:21 template-parts/site-subscribe.php:15
+msgid "邮箱地址"
+msgstr ""
+
 #: functions.php:266
 msgid "镜像站点地址，例如 https://mirror.example.cn，会拼成 地址/avatar/哈希；直接粘贴含 /avatar/ 的完整前缀也可以。仅在上一项选「自定义镜像」时生效。"
 msgstr ""
@@ -654,11 +696,11 @@ msgstr ""
 msgid "阅读进度"
 msgstr ""
 
-#: index.php:87
+#: index.php:74
 msgid "雪 / 线稿"
 msgstr ""
 
-#: index.php:75
+#: index.php:62
 msgid "雪兔"
 msgstr ""
 
@@ -666,7 +708,7 @@ msgstr ""
 msgid "雪兔在雪地里找了半天，也没有找到这一页。链接可能已经失效，或者内容被移到了别的扇区。试试搜索："
 msgstr ""
 
-#: index.php:132
+#: index.php:119
 msgid "雪兔把院子扫干净了——还没有文章，去后台发布第一篇吧。"
 msgstr ""
 
@@ -674,7 +716,7 @@ msgstr ""
 msgid "雪兔竖起耳朵听了半天，没有找到匹配的文章。换个关键词试试。"
 msgstr ""
 
-#: archive.php:77
+#: archive.php:78
 msgid "雪兔翻遍了这一栏，还没有文章。"
 msgstr ""
 
@@ -682,11 +724,19 @@ msgstr ""
 msgid "雪落得很轻，像是怕吵醒这个下午。"
 msgstr ""
 
+#: template-parts/site-footer-links.php:18
+msgid "页脚链接"
+msgstr ""
+
+#: inc/site-modules.php:22
+msgid "页脚链接组"
+msgstr ""
+
 #: template-parts/shuoshuo-composer.php:18
 msgid "页面过期了，刷新后再试。"
 msgstr ""
 
-#: footer.php:32 header.php:50
+#: header.php:50 template-parts/site-footer-links.php:36
 msgid "首页"
 msgstr ""
 

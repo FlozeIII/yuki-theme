@@ -18,7 +18,7 @@ $gongan = get_theme_mod( 'yuki_gongan_number', '' );
 		</div>
 		<!-- 可替换为任意订阅服务（Mailchimp / Follow.it 等）的嵌入表单 -->
 		<form onsubmit="return false;">
-			<input type="email" placeholder="<?php esc_attr_e( '你的邮箱地址', 'yuki' ); ?>">
+			<input type="email" placeholder="<?php esc_attr_e( '你的邮箱地址', 'yuki' ); ?>" aria-label="<?php esc_attr_e( '邮箱地址', 'yuki' ); ?>" required>
 			<button type="submit" class="yuki-btn"><?php esc_html_e( '订阅', 'yuki' ); ?></button>
 		</form>
 	</div>
@@ -26,12 +26,9 @@ $gongan = get_theme_mod( 'yuki_gongan_number', '' );
 
 <footer class="yuki-footer">
 	<div class="yuki-container">
+		<?php get_template_part( 'template-parts/site-footer-links' ); ?>
 		<div class="yuki-footer-top">
 			<div>&copy; <?php echo esc_html( gmdate( 'Y' ) ); ?> <?php bloginfo( 'name' ); ?></div>
-			<div class="links">
-				<a href="<?php echo esc_url( home_url( '/' ) ); ?>"><?php esc_html_e( '首页', 'yuki' ); ?></a>
-				<a href="#newsletter"><?php esc_html_e( '订阅', 'yuki' ); ?></a>
-			</div>
 		</div>
 
 		<div class="yuki-icp">

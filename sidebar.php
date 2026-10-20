@@ -8,7 +8,6 @@
  * @package Yuki
  */
 
-$author_name = get_the_author();
 ?>
 <aside class="yuki-sidebar">
 	<div class="yuki-sidebar-head" aria-hidden="true">
@@ -23,16 +22,7 @@ $author_name = get_the_author();
 
 	<div class="yuki-widget">
 		<h3><?php esc_html_e( '作者简介', 'yuki' ); ?></h3>
-		<div class="yuki-author-card">
-			<?php echo get_avatar( get_the_author_meta( 'ID' ), 56 ); ?>
-			<div>
-				<div class="name"><?php echo esc_html( $author_name ); ?></div>
-				<div class="role"><?php echo esc_html( get_the_author_meta( 'description' ) ? __( '作者', 'yuki' ) : __( '独立创作者', 'yuki' ) ); ?></div>
-			</div>
-		</div>
-		<p style="margin:0;font-size:14px;">
-			<?php echo esc_html( wp_trim_words( get_the_author_meta( 'description' ), 40, '…' ) ); ?>
-		</p>
+		<?php get_template_part( 'template-parts/site-author-card' ); ?>
 	</div>
 
 	<div class="yuki-widget">
@@ -65,17 +55,11 @@ $author_name = get_the_author();
 		</ul>
 	</div>
 
-	<div class="yuki-widget">
-		<h3><?php esc_html_e( '标签云', 'yuki' ); ?></h3>
-		<?php
-		wp_tag_cloud( array(
-			'smallest' => 12,
-			'largest'  => 12,
-			'unit'     => 'px',
-			'number'   => 14,
-		) );
-		?>
+	<div class="yuki-widget yuki-widget--tag-wall">
+		<?php get_template_part( 'template-parts/site-tag-wall' ); ?>
 	</div>
+
+	<?php get_template_part( 'template-parts/site-subscribe' ); ?>
 
 	<div class="yuki-widget">
 		<h3><?php esc_html_e( '热门文章', 'yuki' ); ?></h3>

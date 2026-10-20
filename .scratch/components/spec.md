@@ -90,17 +90,39 @@ JavaScript 框架、不注册自定义块：
   - 静态检查脚本、分类、入队条件、单篇钩子；
   - 浏览器检查目录层级/默认展开/点击 hash/焦点/`aria-current`、进度 0→100、640px 折叠与无溢出、
     无标题不建目录、无系列不留空容器、reduced-motion 去掉进度过渡。
+- 第三批新增 `tests/bin/site-modules-fixtures.php` 与 `tests/bin/verify-site-modules.mjs`：
+  - fixtures 造 14 个标签和一篇管理员文章，返回首页/归档/文章 URL 与真实统计；支持 `--cleanup`；
+  - 静态检查模板注册、页脚菜单位、enqueue、隐藏的 Gravatar 请求；
+  - 浏览器检查标签墙收起/展开、空邮箱原生校验、桌面三列、640px 单列与无横向、归档数据条。
+
+### 第三批 · 站点模块
+
+- `inc/site-modules.php`：注册 `footer` 菜单位；入队 `assets/css/site-modules.css`
+  （依赖 `yuki-components`）与 `assets/js/site-modules.js`（无依赖、footer）。
+- `template-parts/site-stats.php`：复用 `yuki_production_stats()`，输出数据条；首页与归档共用，
+  归档额外保留 entries 数。
+- `template-parts/site-tag-wall.php`：`get_tags()` 全量输出；`<details open>` 默认展开，
+  超过 12 项时由 JS 收起，无 JS 时完整显示；空站显示「暂无标签。」。
+- `template-parts/site-author-card.php`：头像只在 host 是本站时输出，否则用姓名首字母方块；
+  不请求 Gravatar/外部头像。
+- `template-parts/site-subscribe.php`：沿用 `#newsletter` 的前端行为，邮箱 `required`，
+  不接第三方服务。
+- `template-parts/site-footer-links.php`：有 `footer` 菜单用菜单，否则站点/索引/关于三组兜底；
+  分类为空时省略该组。
+- 数据条、标签墙、作者卡、订阅卡落在 `sidebar.php`/`index.php`/`archive.php`/`footer.php`；
+  B 外壳策略、正文 724px、侧栏 300px 不变。
 
 ## Out of Scope
 
 - 自定义 Gutenberg 块、Inspector 控件、区块样式变体（本批用 pattern + core blocks）。
 - 图标库、字体文件、构建工具。
-- 第三批的站点模块；它另有 issue。
 - 自动迁移旧文章内容。
 
 ## Further Notes
 
 - 第二批见 `issues/02-reading-components.md`。
 - 第三批见 `issues/03-site-modules.md`。
+- 第三批的站点模块在 2026-10-20 完成；数据条、标签墙、作者卡、订阅卡、页脚链接组
+  都复用了第一批的标签/边框语法。
 - 第一批提交前需要按 HEAD + 本次文件重建 POT（pattern 标题/描述若含 PHP 字符串才会计入）。
 - 第二批的系列是**非公开分类**：作者在编辑器里归类，读者通过单篇导航移动；不新增系列归档页。

@@ -150,6 +150,10 @@ SECTOR/STATUS + EVIDENCE、归档/搜索/404/侧栏/footer 同一套档案语言
 - 2026-10-20：雪兔改为 **白底证件照卡**：AI 胸像 `assets/images/mascot-yuki.png`
   + 卡框/硬阴影 + 卡底季节色条；不再追求透明抠图，季节只走色条，角色本体固定。
   `verify-mascot` 改为图片卡断言，`verify-season` 继续验卡底颜色；`DESIGN.md` 同步。
+- 2026-10-20：第三批**站点模块**完成：首页/归档数据条、侧栏标签墙（12 项后前端收起，
+  无 JS 完整展开）、作者卡（只有本站头像回源，否则字母方块）、订阅卡（原生 `required`）、
+  页脚三组链接（有 `footer` 菜单时接管）。`verify-site-modules` 34/34，
+  全套 32 个脚本与 `verify-package` 65/65 通过；不改正文 724px、侧栏 300px 和 B 外壳。
 - 测试基建另有一张 `comment-submit-ajax/issues/04-browser-retry-flake.md`，不挡路线图。
 
 ## Fog

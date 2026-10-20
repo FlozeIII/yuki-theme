@@ -284,7 +284,8 @@ try {
   const shown500 = shownFrom(pool, sidebarOf(fail500.body));
 
   const fail500Sidebar = sidebarOf(fail500.body);
-  const fail500Siblings = ['作者简介', '分类', '标签云', '热门文章'].filter((title) => fail500Sidebar.includes(`<h3>${title}</h3>`));
+  const fail500Siblings = ['作者简介', '分类', '热门文章'].filter((title) => fail500Sidebar.includes(`<h3>${title}</h3>`));
+  const fail500HasTagWall = fail500Sidebar.includes('yuki-tag-wall');
 
   check('上游 500 时页面正常返回', fail500.status === 200, `实际 ${fail500.status}`);
   check('上游 500 时显示的是内置兜底句', shown500.length === 1, `兜底句出现 ${shown500.length} 句：${shown500[0] || '(没有)'}`);
@@ -296,8 +297,8 @@ try {
   check('兜底之后页面完整收尾', fail500.body.includes('</html>'), `页面${fail500.body.includes('</html>') ? '正常收尾' : '没有收尾'}`);
   check(
     '兜底之后侧边栏其余部分照旧',
-    fail500Sidebar.length > 0 && fail500Siblings.length === 4,
-    `侧边栏 ${fail500Sidebar.length} 字符，其余内置小工具在 ${fail500Siblings.length}/4 个：${fail500Siblings.join('、') || '(一个都没有)'}`,
+    fail500Sidebar.length > 0 && fail500Siblings.length === 3 && fail500HasTagWall,
+    `侧边栏 ${fail500Sidebar.length} 字符，其余内置小工具在 ${fail500Siblings.length}/3 个：${fail500Siblings.join('、') || '(一个都没有)'}；标签墙${fail500HasTagWall ? '在' : '缺失'}`,
   );
 
   section('上游返回垃圾');

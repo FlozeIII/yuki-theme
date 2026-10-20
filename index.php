@@ -45,20 +45,7 @@ $yuki_stats = function_exists( 'yuki_production_stats' )
 					<p class="yuki-cover-desc"><?php bloginfo( 'description' ); ?></p>
 				<?php endif; ?>
 
-				<dl class="yuki-cover-specs">
-					<div>
-						<dt><?php esc_html_e( 'RECORDS', 'yuki' ); ?></dt>
-						<dd><?php echo esc_html( sprintf( '%02d', (int) $yuki_stats['episodes'] ) ); ?></dd>
-					</div>
-					<div>
-						<dt><?php esc_html_e( 'SECTORS', 'yuki' ); ?></dt>
-						<dd><?php echo esc_html( sprintf( '%02d', (int) $yuki_stats['categories'] ) ); ?></dd>
-					</div>
-					<div>
-						<dt><?php esc_html_e( 'UPDATED', 'yuki' ); ?></dt>
-						<dd><?php echo esc_html( $yuki_stats['updated'] ); ?></dd>
-					</div>
-				</dl>
+				<?php get_template_part( 'template-parts/site-stats' ); ?>
 			</div>
 
 			<div class="yuki-character-sheet">

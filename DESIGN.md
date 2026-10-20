@@ -170,6 +170,23 @@
   当前项是 `aria-current="page"` 的文本而不是链接；少于两篇或没有系列时不输出容器。
 - 目录、系列都使用组件变量 `--yuki-comp-*`；不覆盖 `--yuki-primary`、季节色或 B 外壳策略。
 
+## 站点模块
+
+`inc/site-modules.php` 注册页脚菜单位，入队 `assets/css/site-modules.css` 与
+`assets/js/site-modules.js`；页面结构在 `template-parts/site-*.php`。
+
+| 模块 | 数据/位置 | 行为 |
+| --- | --- | --- |
+| 数据条 | `yuki_production_stats()`；首页封面与归档 hero | 三列 RECORDS / SECTORS / UPDATED，数字不写死 |
+| 标签墙 | `get_tags()`；文章侧栏 | 默认 `<details open>` 显示完整列表；超过 12 项时脚本收起，点击展开 |
+| 作者卡 | 当前文章作者；文章侧栏 | 只用本地头像；外部 Gravatar 地址不请求，改显示姓名首字方块 |
+| 订阅卡 | 文章侧栏；沿用 `#newsletter` 的占位表单 | 不接第三方服务，不新增提交端点 |
+| 页脚链接组 | `footer` 菜单位；页脚 | 有菜单按菜单输出，无菜单给「站点 / 索引 / 关于」三列兜底 |
+
+- 模块沿用 `--da-*` 与主题 token，不覆盖正文宽度、B 外壳策略或 `--yuki-primary`。
+- 标签墙的无脚本状态必须完整展开；脚本只做可逆的折叠增强。
+
+
 ## 字体
 
 - 正文 15–16px / line-height 1.7；标题跟随自定义器的字体设置，不固定窄体或等宽。

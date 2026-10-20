@@ -1,0 +1,386 @@
+/* ============================================
+   Yuki · Site Modules
+   --------------------------------------------
+   数据条、标签墙、作者卡、订阅卡、页脚链接组。
+   颜色读数字档案变量，回退到主题 token。
+   ============================================ */
+
+.yuki-stats-bar {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin: 22px 0 0;
+  padding: 0;
+  border-top: 1px solid var(--da-line, var(--yuki-border));
+  border-bottom: 1px solid var(--da-line, var(--yuki-border));
+}
+
+.yuki-hero .yuki-stats-bar {
+  border-color: var(--yuki-border);
+}
+
+.yuki-hero .yuki-stats-bar dt {
+  color: var(--yuki-muted-foreground);
+}
+
+.yuki-hero .yuki-stats-bar dd {
+  color: var(--yuki-ink);
+}
+
+.yuki-stats-bar > div {
+  min-width: 0;
+  padding: 12px 14px 10px 0;
+}
+
+.yuki-stats-bar > div + div {
+  padding-left: 14px;
+  border-left: 1px solid var(--da-line, var(--yuki-border));
+}
+
+.yuki-stats-bar dt {
+  margin: 0;
+  color: var(--da-doc-muted, var(--yuki-muted-foreground));
+  font-family: var(--yuki-font-mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  line-height: 1.4;
+}
+
+.yuki-stats-bar dd {
+  margin: 4px 0 0;
+  color: var(--da-doc-ink, var(--yuki-ink));
+  font-family: var(--yuki-font-mono);
+  font-size: clamp(20px, 2.2vw, 28px);
+  line-height: 1;
+}
+
+.yuki-archive-stats {
+  max-width: 60ch;
+  margin-top: 18px;
+}
+
+/* 作者卡 */
+.yuki-author-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.yuki-author-avatar,
+.yuki-author-mark {
+  flex: none;
+  width: 56px;
+  height: 56px;
+  border: 1px solid var(--da-line, var(--yuki-border));
+  background: var(--da-doc, var(--yuki-card));
+  object-fit: cover;
+}
+
+.yuki-author-mark {
+  display: grid;
+  place-items: center;
+  color: var(--da-cyan, var(--yuki-primary-700));
+  font-family: var(--yuki-font-mono);
+  font-size: 24px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.yuki-author-card .name {
+  color: var(--yuki-ink);
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.yuki-author-card .role {
+  margin-top: 2px;
+  color: var(--yuki-muted-foreground);
+  font-family: var(--yuki-font-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+}
+
+.yuki-author-bio {
+  margin: 12px 0 0;
+  color: var(--yuki-ink-2);
+  font-size: 13px;
+  line-height: 1.65;
+}
+
+/* 标签墙 */
+.yuki-tag-wall {
+  border: 1px solid var(--da-line, var(--yuki-border));
+  background: var(--da-doc, var(--yuki-card));
+}
+
+.yuki-tag-wall > summary {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: baseline;
+  gap: 8px;
+  padding: 10px 12px;
+  color: var(--da-doc-ink, var(--yuki-ink));
+  cursor: pointer;
+  list-style: none;
+}
+
+.yuki-tag-wall > summary::-webkit-details-marker {
+  display: none;
+}
+
+.yuki-tag-wall > summary::after {
+  content: "+";
+  color: var(--da-red, var(--yuki-primary-700));
+  font-family: var(--yuki-font-mono);
+  font-size: 14px;
+  line-height: 1;
+}
+
+.yuki-tag-wall[open] > summary::after {
+  content: "−";
+}
+
+.yuki-tag-wall-kicker,
+.yuki-tag-wall-count {
+  color: var(--da-doc-muted, var(--yuki-muted-foreground));
+  font-family: var(--yuki-font-mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+}
+
+.yuki-tag-wall-title {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.yuki-production-bible .yuki-widget .yuki-tag-wall-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0;
+  max-height: 260px;
+  margin: 0;
+  padding: 0 12px 12px;
+  overflow: auto;
+  border-top: 1px solid var(--da-line, var(--yuki-border));
+  list-style: none;
+}
+
+.yuki-production-bible .yuki-widget .yuki-tag-wall-list li {
+  min-width: 0;
+  border-bottom: 1px dotted var(--da-line, var(--yuki-border));
+}
+
+.yuki-production-bible .yuki-widget .yuki-tag-wall-list a {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 8px 8px 8px 0;
+  color: var(--da-doc-ink, var(--yuki-ink));
+  font-size: 12px;
+  text-decoration: none;
+}
+
+.yuki-production-bible .yuki-widget .yuki-tag-wall-list a:hover {
+  color: var(--da-cyan, var(--yuki-primary-700));
+}
+
+.yuki-production-bible .yuki-widget .yuki-tag-wall-item-count {
+  color: var(--da-doc-muted, var(--yuki-muted-foreground));
+  font-family: var(--yuki-font-mono);
+  font-size: 10px;
+}
+
+.yuki-tag-wall-empty {
+  margin: 0;
+  color: var(--yuki-muted-foreground);
+  font-size: 13px;
+}
+
+/* 订阅卡 */
+.yuki-subscribe-card {
+  border: 1px solid var(--da-line, var(--yuki-border));
+  background: var(--da-doc, var(--yuki-card));
+}
+
+.yuki-subscribe-card .yuki-kicker {
+  margin: 0 0 6px;
+  color: var(--da-cyan, var(--yuki-primary-700));
+  font-family: var(--yuki-font-mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+}
+
+.yuki-subscribe-card h3 {
+  margin: 0;
+  color: var(--da-doc-ink, var(--yuki-ink));
+  font-size: 18px;
+}
+
+.yuki-subscribe-card > p:not(.yuki-kicker) {
+  margin: 6px 0 12px;
+  color: var(--da-doc-muted, var(--yuki-muted-foreground));
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.yuki-subscribe-card form {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 6px;
+}
+
+.yuki-subscribe-card input {
+  min-width: 0;
+  padding: 8px 10px;
+  border: 1px solid var(--da-line, var(--yuki-border));
+  border-radius: 0;
+  background: var(--yuki-card);
+  color: var(--yuki-ink);
+  font-size: 12px;
+}
+
+.yuki-subscribe-card input:focus-visible {
+  outline: 2px solid var(--yuki-ring);
+  outline-offset: 1px;
+}
+
+.yuki-subscribe-card .yuki-btn {
+  padding: 8px 10px;
+  border-radius: 0;
+  font-size: 11px;
+}
+
+/* 页脚链接组 */
+.yuki-footer-links {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
+  width: min(var(--yuki-container-width), calc(100% - 48px));
+  margin: 0 auto;
+  padding: 28px 0 18px;
+  border-bottom: 1px solid var(--da-line, rgba(255, 255, 255, 0.18));
+}
+
+.yuki-footer-label {
+  margin: 0 0 10px;
+  color: var(--da-cyan, var(--yuki-primary));
+  font-family: var(--yuki-font-mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+}
+
+.yuki-footer-links ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.yuki-footer-links li {
+  margin: 0 0 6px;
+  font-size: 12px;
+}
+
+.yuki-footer-links a {
+  color: var(--da-footer-ink, #c8d3d8);
+  text-decoration: none;
+}
+
+.yuki-footer-links a:hover {
+  color: var(--da-cyan, var(--yuki-primary));
+}
+
+.yuki-footer-group--menu {
+  grid-column: span 3;
+}
+
+.yuki-footer-links--2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.yuki-footer-menu {
+  columns: 3;
+  column-gap: 24px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.yuki-footer-menu li {
+  break-inside: avoid;
+}
+
+.dark .yuki-stats-bar,
+.dark .yuki-tag-wall,
+.dark .yuki-subscribe-card {
+  border-color: var(--da-line);
+}
+
+.dark .yuki-stats-bar dt,
+.dark .yuki-tag-wall-kicker,
+.dark .yuki-tag-wall-count,
+.dark .yuki-tag-wall-item-count,
+.dark .yuki-subscribe-card > p:not(.yuki-kicker) {
+  color: var(--da-doc-muted);
+}
+
+.dark .yuki-author-card .name,
+.dark .yuki-tag-wall > summary,
+.dark .yuki-tag-wall-list a,
+.dark .yuki-subscribe-card h3 {
+  color: var(--yuki-ink);
+}
+
+.dark .yuki-author-bio {
+  color: var(--yuki-ink-2);
+}
+
+@media (max-width: 960px) {
+  .yuki-footer-links {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    width: calc(100% - 48px);
+  }
+
+  .yuki-footer-group--menu {
+    grid-column: span 2;
+  }
+
+  .yuki-footer-menu {
+    columns: 2;
+  }
+}
+
+@media (max-width: 640px) {
+  .yuki-stats-bar {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .yuki-stats-bar > div {
+    padding: 9px 8px 8px 0;
+  }
+
+  .yuki-stats-bar > div + div {
+    padding-left: 8px;
+  }
+
+  .yuki-stats-bar dd {
+    font-size: 18px;
+  }
+
+  .yuki-production-bible .yuki-widget .yuki-tag-wall-list {
+    grid-template-columns: minmax(0, 1fr);
+    max-height: 220px;
+  }
+
+  .yuki-footer-links {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 18px;
+    width: calc(100% - 40px);
+  }
+
+  .yuki-footer-group--menu {
+    grid-column: span 1;
+  }
+
+  .yuki-footer-menu {
+    columns: 1;
+  }
+}
