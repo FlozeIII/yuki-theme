@@ -33,7 +33,7 @@ Status: ready-for-agent
 - [x] 640px 下目录可折叠或不遮挡正文，无横向溢出。
 - [x] 上下篇导航不重复、不断链；无上一篇/下一篇时不留空卡。
 - [x] `tests/bin/verify-reading.mjs` 全绿；既有 29 个脚本继续通过。
-- [ ] POT、DESIGN、issue、roadmap 同步。
+- [x] POT、DESIGN、issue、roadmap 同步。
 
 ## Comments
 
