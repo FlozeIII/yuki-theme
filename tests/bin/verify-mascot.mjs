@@ -1,6 +1,6 @@
 // 工单 01 的验收：雪兔与空状态微文案。
 //
-// 静态看模板与 SVG；HTTP 看 404、空归档、空搜索与首页 hero；
+// 静态看模板、图片卡与季节条；HTTP 看 404、空归档、空搜索与首页 hero；
 // 真浏览器量 hero 与 404 的角色尺寸、640px 是否横向滚动、深色下是否还在。
 //
 // 用法: node tests/bin/verify-mascot.mjs
@@ -23,13 +23,19 @@ const mascotPath = path.join(REPO_ROOT, 'template-parts', 'mascot.php');
 check('雪兔模板存在', fs.existsSync(mascotPath));
 
 const mascot = fs.existsSync(mascotPath) ? fs.readFileSync(mascotPath, 'utf8') : '';
-check('是内联 SVG', mascot.includes('<svg') && mascot.includes('aria-hidden="true"'));
-check('没有引用外部图片',
-  !/<image\b/i.test(mascot) && !/href=["']https?:/i.test(mascot) && !/xlink:href=["']https?:/i.test(mascot));
+const mascotCss = fs.readFileSync(path.join(REPO_ROOT, 'assets', 'css', 'mascot-card.css'), 'utf8');
+const mascotImage = path.join(REPO_ROOT, 'assets', 'images', 'mascot-yuki.png');
+check('是白底证件照卡', mascot.includes('<span') && mascot.includes('<img') &&
+  mascot.includes('class="yuki-mascot-photo"') && mascot.includes('aria-hidden="true"'));
+check('图片与季节条都在卡片里',
+  mascot.includes('assets/images/mascot-yuki.png') && mascot.includes('class="yuki-mascot-season"') &&
+  mascot.includes('fill="var(--yuki-season)"'));
+check('图片文件存在', fs.existsSync(mascotImage));
+check('没有引用外部图片', !/src=["']https?:/i.test(mascot));
 
-const hexes = [...mascot.matchAll(/#[0-9a-f]{3,8}\b/gi)].map((m) => m[0].toUpperCase());
-check('颜色只用白与墨色', hexes.every((hex) => hex === '#FFFFFF' || hex === '#2D2D35'),
-  hexes.join(', '));
+check('卡片样式存在',
+  mascotCss.includes('.yuki-mascot--photo') && mascotCss.includes('.yuki-mascot-photo') &&
+  mascotCss.includes('.yuki-mascot-season'));
 
 const index = fs.readFileSync(path.join(REPO_ROOT, 'index.php'), 'utf8');
 const notFound = fs.readFileSync(path.join(REPO_ROOT, '404.php'), 'utf8');
@@ -70,24 +76,26 @@ section('页面里的雪兔');
 
 const home = await get(facts.home_url);
 check('首页能打开', home.status === 200, `status=${home.status}`);
-check('hero 里有雪兔', home.body.includes('yuki-hero-title-row') && /class="yuki-mascot yuki-mascot--lg/.test(home.body));
-check('雪兔对读屏软件隐藏', /<svg class="yuki-mascot[^"]*"[\s\S]*?aria-hidden="true"/.test(home.body));
+check('hero 里有雪兔', home.body.includes('yuki-hero-title-row') &&
+  /class="yuki-mascot yuki-mascot--photo yuki-mascot--lg/.test(home.body));
+check('雪兔对读屏软件隐藏', /<span class="yuki-mascot[^"]*"[^>]*aria-hidden="true"/.test(home.body));
+check('雪兔图片是本站资源', /src="[^"]*assets\/images\/mascot-yuki\.png"/.test(home.body));
 
 const missing = await get(facts.not_found_url);
 check('404 能打开', missing.status === 404, `status=${missing.status}`);
-check('404 有雪兔', /class="yuki-mascot yuki-mascot--lg/.test(missing.body));
+check('404 有雪兔', /class="yuki-mascot yuki-mascot--photo yuki-mascot--lg/.test(missing.body));
 check('404 有新文案', missing.body.includes(facts.copy.not_found));
 
 const emptyArchive = await get(facts.empty_archive_url);
 check('空归档能打开', emptyArchive.status === 200, `status=${emptyArchive.status}`);
 check('空归档有雪兔', emptyArchive.body.includes('yuki-empty-state') &&
-  /class="yuki-mascot yuki-mascot--sm/.test(emptyArchive.body));
+  /class="yuki-mascot yuki-mascot--photo yuki-mascot--sm/.test(emptyArchive.body));
 check('空归档有新文案', emptyArchive.body.includes(facts.copy.archive));
 
 const emptySearch = await get(facts.empty_search_url);
 check('空搜索能打开', emptySearch.status === 200, `status=${emptySearch.status}`);
 check('空搜索有雪兔', emptySearch.body.includes('yuki-empty-state') &&
-  /class="yuki-mascot yuki-mascot--sm/.test(emptySearch.body));
+  /class="yuki-mascot yuki-mascot--photo yuki-mascot--sm/.test(emptySearch.body));
 check('空搜索有新文案', emptySearch.body.includes(facts.copy.search));
 
 /* ---------------- 真浏览器 ---------------- */

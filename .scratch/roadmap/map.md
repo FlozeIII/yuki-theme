@@ -133,6 +133,9 @@ SECTOR/STATUS + EVIDENCE、归档/搜索/404/侧栏/footer 同一套档案语言
   浅色状态栏/导航/首页与归档 hero 改冷灰，深色模式保留控制台外壳；侧栏与页脚仍是深色块。
   `archive-console.css` 新增 `html:not(.dark)` 覆盖，`verify-ui-redesign` 扩到 58/58；
   同时修了无头 Edge 关闭时临时 profile 的 EPERM 清理，29 个脚本与 package 65/65 全绿。
+- 2026-10-20：雪兔改为 **白底证件照卡**：AI 胸像 `assets/images/mascot-yuki.png`
+  + 卡框/硬阴影 + 卡底季节色条；不再追求透明抠图，季节只走色条，角色本体固定。
+  `verify-mascot` 改为图片卡断言，`verify-season` 继续验卡底颜色；`DESIGN.md` 同步。
 - 测试基建另有一张 `comment-submit-ajax/issues/04-browser-retry-flake.md`，不挡路线图。
 
 ## Fog

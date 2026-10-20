@@ -464,9 +464,9 @@ body.yuki-production-bible {
   margin: 0 0 2px;
   color: var(--yuki-blueprint-soft);
   font-family: var(--yuki-font-mono);
-  font-size: 9px;
-  letter-spacing: 0.06em;
-  line-height: 1.7;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  line-height: 1.6;
   text-align: right;
   text-transform: uppercase;
 }
