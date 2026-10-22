@@ -35,7 +35,14 @@ $yuki_stats = function_exists( 'yuki_production_stats' )
 			<span><?php esc_html_e( 'STATUS / ACTIVE', 'yuki' ); ?></span>
 		</div>
 
-		<div class="yuki-cover-grid">
+		<?php
+		$yuki_mascot_enabled = ! function_exists( 'yuki_mascot_is_enabled' ) || yuki_mascot_is_enabled();
+		$yuki_mascot_name    = function_exists( 'yuki_mascot_name' ) ? yuki_mascot_name() : __( '雪兔', 'yuki' );
+		$yuki_mascot_role    = function_exists( 'yuki_mascot_role' ) ? yuki_mascot_role() : __( '本站看板角色', 'yuki' );
+		$yuki_mascot_origin  = function_exists( 'yuki_mascot_origin' ) ? yuki_mascot_origin() : __( '雪 / 线稿', 'yuki' );
+		?>
+
+		<div class="yuki-cover-grid<?php echo $yuki_mascot_enabled ? '' : ' yuki-cover-grid--solo'; ?>">
 			<div class="yuki-cover-copy">
 				<p class="yuki-kicker"><?php esc_html_e( 'ARCHIVE SYSTEM / PERSONAL RECORDS', 'yuki' ); ?></p>
 				<div class="yuki-hero-title-row">
@@ -48,33 +55,35 @@ $yuki_stats = function_exists( 'yuki_production_stats' )
 				<?php get_template_part( 'template-parts/site-stats' ); ?>
 			</div>
 
-			<div class="yuki-character-sheet">
-				<div class="yuki-sheet-head">
-					<span><?php esc_html_e( 'SUBJECT PROFILE', 'yuki' ); ?></span>
-					<span><?php esc_html_e( 'FIG. 01', 'yuki' ); ?></span>
+			<?php if ( $yuki_mascot_enabled ) : ?>
+				<div class="yuki-character-sheet">
+					<div class="yuki-sheet-head">
+						<span><?php esc_html_e( 'SUBJECT PROFILE', 'yuki' ); ?></span>
+						<span><?php esc_html_e( 'FIG. 01', 'yuki' ); ?></span>
+					</div>
+					<div class="yuki-sheet-figure">
+						<?php get_template_part( 'template-parts/mascot', null, array( 'size' => 'lg', 'class' => 'yuki-sheet-mascot' ) ); ?>
+					</div>
+					<dl class="yuki-sheet-meta">
+						<div>
+							<dt><?php esc_html_e( 'DESIGNATION', 'yuki' ); ?></dt>
+							<dd><?php echo esc_html( $yuki_mascot_name ); ?></dd>
+						</div>
+						<div>
+							<dt><?php esc_html_e( 'CLASS', 'yuki' ); ?></dt>
+							<dd><?php echo esc_html( $yuki_mascot_role ); ?></dd>
+						</div>
+						<div>
+							<dt><?php esc_html_e( 'HEIGHT', 'yuki' ); ?></dt>
+							<dd>120 px</dd>
+						</div>
+						<div>
+							<dt><?php esc_html_e( 'ORIGIN', 'yuki' ); ?></dt>
+							<dd><?php echo esc_html( $yuki_mascot_origin ); ?></dd>
+						</div>
+					</dl>
 				</div>
-				<div class="yuki-sheet-figure">
-					<?php get_template_part( 'template-parts/mascot', null, array( 'size' => 'lg', 'class' => 'yuki-sheet-mascot' ) ); ?>
-				</div>
-				<dl class="yuki-sheet-meta">
-					<div>
-						<dt><?php esc_html_e( 'DESIGNATION', 'yuki' ); ?></dt>
-						<dd><?php esc_html_e( '雪兔', 'yuki' ); ?></dd>
-					</div>
-					<div>
-						<dt><?php esc_html_e( 'CLASS', 'yuki' ); ?></dt>
-						<dd><?php esc_html_e( '本站看板角色', 'yuki' ); ?></dd>
-					</div>
-					<div>
-						<dt><?php esc_html_e( 'HEIGHT', 'yuki' ); ?></dt>
-						<dd>120 px</dd>
-					</div>
-					<div>
-						<dt><?php esc_html_e( 'ORIGIN', 'yuki' ); ?></dt>
-						<dd><?php esc_html_e( '雪 / 线稿', 'yuki' ); ?></dd>
-					</div>
-				</dl>
-			</div>
+			<?php endif; ?>
 		</div>
 	</div>
 </section>

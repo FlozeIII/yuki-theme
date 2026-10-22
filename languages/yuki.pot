@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Yuki 1.3.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-20T12:57:05+00:00\n"
+"POT-Creation-Date: 2026-10-22T12:37:48+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -40,7 +40,7 @@ msgstr ""
 msgid "ARCHIVE INDEX"
 msgstr ""
 
-#: index.php:40
+#: index.php:47
 msgid "ARCHIVE SYSTEM / PERSONAL RECORDS"
 msgstr ""
 
@@ -56,7 +56,7 @@ msgstr ""
 msgid "CASE FILE 01 / PERSONAL ARCHIVE"
 msgstr ""
 
-#: index.php:65
+#: index.php:73
 msgid "CLASS"
 msgstr ""
 
@@ -64,23 +64,23 @@ msgstr ""
 msgid "Cravatar（境内镜像）"
 msgstr ""
 
-#: index.php:61
+#: index.php:69
 msgid "DESIGNATION"
 msgstr ""
 
-#: page.php:22 single.php:20
+#: page.php:22 single.php:23
 msgid "DOCUMENT"
 msgstr ""
 
-#: index.php:87
+#: index.php:96
 msgid "DOCUMENT INDEX"
 msgstr ""
 
-#: page.php:38 single.php:45
+#: page.php:38 single.php:46
 msgid "EVIDENCE"
 msgstr ""
 
-#: index.php:54
+#: index.php:62
 msgid "FIG. 01"
 msgstr ""
 
@@ -100,7 +100,7 @@ msgstr ""
 msgid "Gravatar（默认，境内不可用）"
 msgstr ""
 
-#: index.php:69
+#: index.php:77
 msgid "HEIGHT"
 msgstr ""
 
@@ -120,7 +120,7 @@ msgstr ""
 msgid "NO KEY FRAME"
 msgstr ""
 
-#: index.php:73
+#: index.php:81
 msgid "ORIGIN"
 msgstr ""
 
@@ -128,7 +128,7 @@ msgstr ""
 msgid "PERSONAL RECORDS / CLEARANCE 02"
 msgstr ""
 
-#: page.php:39 single.php:46
+#: page.php:39 single.php:47
 msgid "PLATE 01"
 msgstr ""
 
@@ -160,7 +160,7 @@ msgstr ""
 msgid "SEARCH INDEX"
 msgstr ""
 
-#: single.php:21
+#: single.php:24
 msgid "SECTOR"
 msgstr ""
 
@@ -176,7 +176,7 @@ msgstr ""
 msgid "SERIES"
 msgstr ""
 
-#: index.php:96
+#: index.php:105
 msgid "SORT / NEWEST"
 msgstr ""
 
@@ -184,11 +184,11 @@ msgstr ""
 msgid "STATUS / ACTIVE"
 msgstr ""
 
-#: single.php:22
+#: single.php:25
 msgid "STATUS / RELEASED"
 msgstr ""
 
-#: index.php:53
+#: index.php:61
 msgid "SUBJECT PROFILE"
 msgstr ""
 
@@ -206,6 +206,10 @@ msgstr ""
 
 #: header.php:25
 msgid "YUKI ARCHIVE // SITE-01"
+msgstr ""
+
+#: inc/mascot.php:105
+msgid "Yuki 吉祥物"
 msgstr ""
 
 #: functions.php:238
@@ -237,11 +241,11 @@ msgstr ""
 msgid "一言"
 msgstr ""
 
-#: single.php:81
+#: single.php:82
 msgid "上一篇"
 msgstr ""
 
-#: single.php:87
+#: single.php:88
 msgid "下一篇"
 msgstr ""
 
@@ -295,7 +299,7 @@ msgstr ""
 msgid "公安备案号"
 msgstr ""
 
-#: index.php:93
+#: index.php:102
 msgid "共 %d 份记录"
 msgstr ""
 
@@ -309,6 +313,10 @@ msgstr ""
 
 #: footer.php:53 functions.php:102
 msgid "关闭"
+msgstr ""
+
+#: inc/mascot.php:117
+msgid "关闭后首页角色卡、404 与空状态的吉祥物一起隐藏。"
 msgstr ""
 
 #: comments.php:52
@@ -349,6 +357,18 @@ msgstr ""
 
 #: functions.php:300
 msgid "只在设置了背景图时生效；0 最清楚，100 最淡。"
+msgstr ""
+
+#: inc/mascot.php:140
+msgid "吉祥物名称"
+msgstr ""
+
+#: inc/mascot.php:128
+msgid "吉祥物图片"
+msgstr ""
+
+#: inc/mascot.php:152
+msgid "吉祥物身份"
 msgstr ""
 
 #: inc/comment-deletion.php:318
@@ -401,6 +421,10 @@ msgstr ""
 
 #: functions.php:110
 msgid "已复制"
+msgstr ""
+
+#: inc/mascot.php:129
+msgid "建议上传 512×512 的方形图；留空使用默认雪兔。"
 msgstr ""
 
 #: functions.php:314
@@ -459,6 +483,18 @@ msgstr ""
 msgid "无衬线（默认）"
 msgstr ""
 
+#: inc/mascot.php:116
+msgid "显示吉祥物"
+msgstr ""
+
+#: inc/mascot.php:153
+msgid "显示在角色卡 CLASS 一栏。"
+msgstr ""
+
+#: inc/mascot.php:141
+msgid "显示在角色卡 DESIGNATION 一栏。"
+msgstr ""
+
 #: sidebar.php:84
 msgid "暂无数据"
 msgstr ""
@@ -479,7 +515,7 @@ msgstr ""
 msgid "月光落在窗台上，像一句没写完的诗。"
 msgstr ""
 
-#: index.php:66
+#: inc/mascot.php:25 inc/mascot.php:79 inc/mascot.php:81 index.php:41
 msgid "本站看板角色"
 msgstr ""
 
@@ -503,7 +539,7 @@ msgstr ""
 msgid "标签墙"
 msgstr ""
 
-#: index.php:88
+#: index.php:97
 msgid "档案索引"
 msgstr ""
 
@@ -591,6 +627,10 @@ msgstr ""
 msgid "背景蒙层强度"
 msgstr ""
 
+#: inc/mascot.php:91
+msgid "自定义"
+msgstr ""
+
 #: functions.php:255
 msgid "自定义镜像"
 msgstr ""
@@ -601,6 +641,10 @@ msgstr ""
 
 #: functions.php:338
 msgid "衬线（宋体 / Georgia）"
+msgstr ""
+
+#: inc/mascot.php:106
+msgid "角色卡上的看板角色；留空即使用默认雪兔。"
 msgstr ""
 
 #: footer.php:22 header.php:51 template-parts/site-footer-links.php:38 template-parts/site-subscribe.php:23
@@ -696,11 +740,11 @@ msgstr ""
 msgid "阅读进度"
 msgstr ""
 
-#: index.php:74
+#: inc/mascot.php:92 index.php:42
 msgid "雪 / 线稿"
 msgstr ""
 
-#: index.php:62
+#: inc/mascot.php:24 inc/mascot.php:68 inc/mascot.php:70 index.php:40
 msgid "雪兔"
 msgstr ""
 
@@ -708,7 +752,7 @@ msgstr ""
 msgid "雪兔在雪地里找了半天，也没有找到这一页。链接可能已经失效，或者内容被移到了别的扇区。试试搜索："
 msgstr ""
 
-#: index.php:119
+#: index.php:128
 msgid "雪兔把院子扫干净了——还没有文章，去后台发布第一篇吧。"
 msgstr ""
 

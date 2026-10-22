@@ -14,6 +14,9 @@ import { withBrowser, newPage } from './browser.mjs';
 import { themeCss } from './theme-css.mjs';
 
 const FIXTURES = path.join(import.meta.dirname, 'mascot-fixtures.php');
+const CUSTOM_FIXTURES = path.join(import.meta.dirname, 'mascot-customizer-fixtures.php');
+
+const readFacts = (result) => JSON.parse(/YUKI-JSON: (\{.*\})/.exec(result.stdout)[1]);
 
 /* ---------------- 静态 ---------------- */
 
@@ -33,6 +36,22 @@ check('图片与季节条都在卡片里',
 check('图片文件存在', fs.existsSync(mascotImage));
 check('没有引用外部图片', !/src=["']https?:/i.test(mascot));
 
+const mascotModulePath = path.join(REPO_ROOT, 'inc', 'mascot.php');
+check('吉祥物设置模块存在', fs.existsSync(mascotModulePath));
+const mascotModule = fs.existsSync(mascotModulePath) ? fs.readFileSync(mascotModulePath, 'utf8') : '';
+check('自定义器注册了图片/开关/名称/身份',
+  mascotModule.includes("add_section( 'yuki_mascot'") &&
+  mascotModule.includes("'yuki_mascot_enabled'") &&
+  mascotModule.includes("'yuki_mascot_image'") &&
+  mascotModule.includes("'yuki_mascot_name'") &&
+  mascotModule.includes("'yuki_mascot_role'") &&
+  mascotModule.includes('WP_Customize_Image_Control'));
+check('设置模块在 functions.php 里显式接入',
+  fs.readFileSync(path.join(REPO_ROOT, 'functions.php'), 'utf8').includes('/inc/mascot.php'));
+check('自定义图片时来源改成自定义',
+  mascotModule.includes('yuki_mascot_has_custom_image()') &&
+  mascotModule.includes("__( '自定义', 'yuki' )"));
+
 check('卡片样式存在',
   mascotCss.includes('.yuki-mascot--photo') && mascotCss.includes('.yuki-mascot-photo') &&
   mascotCss.includes('.yuki-mascot-season'));
@@ -49,18 +68,28 @@ check('空归档有雪兔', calls(archive) >= 1);
 check('空搜索有雪兔', calls(search) >= 1);
 
 const css = themeCss();
+const productionCss = fs.readFileSync(path.join(REPO_ROOT, 'assets', 'css', 'production-bible.css'), 'utf8');
 check('雪兔样式存在',
   css.includes('.yuki-mascot') && css.includes('.yuki-mascot--lg') && css.includes('.yuki-mascot--sm'));
 check('hero 标题行存在', css.includes('.yuki-hero-title-row'));
 check('空状态与 404 的布局样式存在',
   css.includes('.yuki-empty-state') && css.includes('.yuki-404 .yuki-mascot'));
+check('关闭时首页有单列布局', productionCss.includes('.yuki-cover-grid--solo'));
 
 const pot = fs.readFileSync(path.join(REPO_ROOT, 'languages', 'yuki.pot'), 'utf8');
 check('新文案进了 pot',
   ['雪兔在雪地里找了半天', '雪兔翻遍了这一栏', '雪兔竖起耳朵听了半天', '雪兔把院子扫干净了']
     .every((text) => pot.includes(text)));
+check('吉祥物设置文案进了 pot',
+  ['Yuki 吉祥物', '显示吉祥物', '吉祥物图片', '吉祥物名称', '吉祥物身份', '自定义']
+    .every((text) => pot.includes(text)));
 
 /* ---------------- 造数 ---------------- */
+
+const preCleanup = php([CUSTOM_FIXTURES, WP_ROOT, '--cleanup']);
+if (preCleanup.status !== 0) {
+  note(`开跑前恢复自定义设置失败：${preCleanup.stderr || preCleanup.stdout}`);
+}
 
 const fixtures = php([FIXTURES, WP_ROOT]);
 if (fixtures.status !== 0) {
@@ -68,7 +97,7 @@ if (fixtures.status !== 0) {
   process.exit(1);
 }
 
-const facts = JSON.parse(/YUKI-JSON: (\{.*\})/.exec(fixtures.stdout)[1]);
+const facts = readFacts(fixtures);
 
 /* ---------------- HTTP ---------------- */
 
@@ -169,5 +198,119 @@ if (measured) {
   note(`无头浏览器没跑完：${browserError}`);
   check('无头浏览器跑到底', false, browserError);
 }
+
+/* ---------------- 自定义与隐藏 ---------------- */
+
+section('自定义与隐藏');
+
+let customFlowError = '';
+let customFacts = null;
+let hiddenFacts = null;
+let customMeasured = null;
+
+try {
+  const customRun = php([CUSTOM_FIXTURES, WP_ROOT, 'custom']);
+  if (customRun.status !== 0) {
+    throw new Error(`自定义造数失败：${customRun.stderr || customRun.stdout}`);
+  }
+  customFacts = readFacts(customRun);
+
+  const customHome = await get(customFacts.home_url);
+  check('自定义首页能打开', customHome.status === 200, `status=${customHome.status}`);
+  check('自定义图片 URL 生效', customHome.body.includes('yuki-custom=1'));
+  check('自定义名称生效', customHome.body.includes('<dd>YUKI-CUSTOM-NAME</dd>'));
+  check('自定义身份生效', customHome.body.includes('<dd>YUKI-CUSTOM-ROLE</dd>'));
+  check('自定义来源显示「自定义」', customHome.body.includes('<dd>自定义</dd>'));
+  check('角色卡不再显示默认文案',
+    !customHome.body.includes('<dd>雪兔</dd>') &&
+    !customHome.body.includes('<dd>本站看板角色</dd>'));
+
+  const customMissing = await get(facts.not_found_url);
+  check('自定义后 404 也用同一张图', customMissing.body.includes('yuki-custom=1') &&
+    /class="yuki-mascot yuki-mascot--photo yuki-mascot--lg/.test(customMissing.body));
+
+  const hiddenRun = php([CUSTOM_FIXTURES, WP_ROOT, 'hidden']);
+  if (hiddenRun.status !== 0) {
+    throw new Error(`隐藏造数失败：${hiddenRun.stderr || hiddenRun.stdout}`);
+  }
+  hiddenFacts = readFacts(hiddenRun);
+
+  const hiddenHome = await get(hiddenFacts.home_url);
+  check('隐藏后首页没有角色卡', !hiddenHome.body.includes('yuki-character-sheet'));
+  check('隐藏后首页没有吉祥物', !hiddenHome.body.includes('class="yuki-mascot'));
+  check('隐藏后 grid 变成单列', hiddenHome.body.includes('yuki-cover-grid--solo'));
+
+  const hiddenMissing = await get(facts.not_found_url);
+  check('隐藏后 404 没有吉祥物', !hiddenMissing.body.includes('class="yuki-mascot'));
+
+  customMeasured = await withBrowser(async (browser) => {
+    const result = {};
+
+    const customAgain = php([CUSTOM_FIXTURES, WP_ROOT, 'custom']);
+    if (customAgain.status !== 0) {
+      throw new Error(`重新切到自定义失败：${customAgain.stderr || customAgain.stdout}`);
+    }
+
+    const customPage = await newPage(browser, { colorScheme: 'light' });
+    await customPage.setViewport(1440, 900);
+    await customPage.goto(customFacts.home_url);
+    result.custom = await customPage.evaluate(`(() => {
+      const img = document.querySelector('.yuki-hero .yuki-mascot-photo');
+      const grid = document.querySelector('.yuki-cover-grid');
+      return {
+        src: img ? img.getAttribute('src') : '',
+        columns: grid ? getComputedStyle(grid).gridTemplateColumns.split(' ').length : 0,
+      };
+    })()`);
+    await customPage.close();
+
+    const hiddenAgain = php([CUSTOM_FIXTURES, WP_ROOT, 'hidden']);
+    if (hiddenAgain.status !== 0) {
+      throw new Error(`重新切到隐藏失败：${hiddenAgain.stderr || hiddenAgain.stdout}`);
+    }
+
+    const hiddenPage = await newPage(browser, { colorScheme: 'light' });
+    await hiddenPage.setViewport(1440, 900);
+    await hiddenPage.goto(hiddenFacts.home_url);
+    result.hidden = await hiddenPage.evaluate(`(() => {
+      const grid = document.querySelector('.yuki-cover-grid');
+      return {
+        mascot: !!document.querySelector('.yuki-mascot'),
+        sheet: !!document.querySelector('.yuki-character-sheet'),
+        columns: grid ? getComputedStyle(grid).gridTemplateColumns.split(' ').length : 0,
+      };
+    })()`);
+    await hiddenPage.close();
+
+    return result;
+  });
+} catch (error) {
+  customFlowError = error.message;
+} finally {
+  const cleanup = php([CUSTOM_FIXTURES, WP_ROOT, '--cleanup']);
+  if (cleanup.status !== 0) {
+    note(`自定义设置恢复失败：${cleanup.stderr || cleanup.stdout}`);
+  }
+}
+
+if (customFlowError) {
+  check('自定义流程跑到底', false, customFlowError);
+} else {
+  check('自定义图片真的进了 img', !!customMeasured && customMeasured.custom.src.includes('yuki-custom=1'),
+    customMeasured ? customMeasured.custom.src : '');
+  check('自定义时首页仍是两栏', !!customMeasured && customMeasured.custom.columns === 2,
+    JSON.stringify(customMeasured));
+  check('隐藏时首页没有吉祥物与角色卡', !!customMeasured &&
+    !customMeasured.hidden.mascot && !customMeasured.hidden.sheet,
+    JSON.stringify(customMeasured));
+  check('隐藏时首页 grid 是一列', !!customMeasured && customMeasured.hidden.columns === 1,
+    JSON.stringify(customMeasured));
+}
+
+const restored = await get(facts.home_url);
+check('恢复默认后角色卡与默认图回来',
+  restored.body.includes('yuki-character-sheet') &&
+  /src="[^"]*assets\/images\/mascot-yuki\.png"/.test(restored.body) &&
+  restored.body.includes('<dd>雪兔</dd>'));
 
 report();

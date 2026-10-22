@@ -19,6 +19,7 @@ DOCUMENT INDEX」组织内容，单篇保留 724px 正文列与 300px 侧栏。�
 3. 外观 → 菜单：创建菜单并指定到「主导航」位置；需要页脚链接组时再指定到「页脚链接组」。
 4. 外观 → 自定义 → **Yuki 页脚设置**：填写 ICP 备案号 / 公安备案号（留空则显示占位）。
 5. 外观 → 自定义 → **Yuki 头像设置**：Gravatar 在境内访问不了，国内主机请改选 Cravatar 或自填镜像地址。
+6. 外观 → 自定义 → **Yuki 吉祥物**：上传 512×512 方形图、填写名称/身份，或关闭吉祥物。
 
 ## 从源码打包
 
@@ -59,6 +60,7 @@ yuki-theme/
 ├── comments.php            评论列表与表单
 ├── inc/
 │   ├── production-bible.php   数字档案资源、统计与 body class
+│   ├── mascot.php             吉祥物图片 / 开关 / 名称 / 身份
 │   ├── components.php         组件 pattern 分类、样式与编辑器样式
 │   ├── reading.php            目录 / 阅读进度 / 系列导航
 │   ├── site-modules.php       数据条 / 标签墙 / 作者卡 / 订阅卡 / 页脚链接组
@@ -79,7 +81,7 @@ yuki-theme/
 │   ├── shuoshuo-composer.php  说说写作框
 │   ├── comment.php            单条评论
 │   ├── comment-like.php       点赞控件
-│   ├── mascot.php             雪兔照片卡
+│   ├── mascot.php             雪兔照片卡（可自定义）
 │   ├── related-posts.php      关联文章区块
 │   ├── site-stats.php         数据条
 │   ├── site-tag-wall.php      标签墙
@@ -102,6 +104,8 @@ yuki-theme/
   证据图框）。浅色模式下外壳跟随页面变浅；深色模式保留深色控制台。
 - **首页**：CASE FILE 01 封面、SUBJECT PROFILE 角色卡、DOCUMENT INDEX 四列文章索引；
   记录数 / 分类数 / 最近更新来自站点真实数据。
+- **吉祥物可配**：外观 → 自定义 →「Yuki 吉祥物」可上传方形图、改名称/身份或隐藏；
+  不填图片时仍使用默认雪兔，季节色条保留。
 - **单篇**：DOCUMENT / SECTOR / STATUS 顶栏、EVIDENCE 图卡、724px 正文列 + 300px 侧栏；
   侧栏与文章头部同顶开始。
 - **浅色 / 深色**：头部滑动开关，偏好记忆在 localStorage，跟随系统偏好初始化（内联脚本防闪烁）。

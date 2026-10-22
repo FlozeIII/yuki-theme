@@ -228,6 +228,12 @@ body.yuki-production-bible {
   align-items: stretch;
   padding-top: 36px;
 }
+.yuki-cover-grid--solo {
+  grid-template-columns: minmax(0, 1fr);
+}
+.yuki-cover-grid--solo .yuki-cover-copy {
+  max-width: 760px;
+}
 .yuki-cover-copy {
   display: flex;
   flex-direction: column;

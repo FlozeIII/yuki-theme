@@ -139,6 +139,9 @@
 - **雪兔照片卡**：`assets/images/mascot-yuki.png`（512×512 PNG），`img` 填满卡面，
   `object-position: 50% 42%`；卡底内联 SVG 季节条用 `var(--yuki-season)`，整卡 `aria-hidden`，
   不参与语义。
+- **吉祥物可配**：外观 → 自定义 →「Yuki 吉祥物」可换方形图、改名称/身份、关闭展示。
+  换图后 `ORIGIN` 显示「自定义」；关闭时首页角色卡整块移除，封面变单列，404/空状态也不再出现。
+  默认图与默认文案仍保持「雪兔 / 本站看板角色 / 雪 / 线稿」。
 - **单篇**：`DOCUMENT / SECTOR / STATUS` 档案条与正文列左对齐，正文约 722px，侧栏 300px；
   featured 图下沿有 `EVIDENCE / PLATE 01` 帧标。
 - **归档/搜索/404**：`RECORDS / BACK MATTER`、`RECORDS / SEARCH`、`FILE NOT FOUND`；
