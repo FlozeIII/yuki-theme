@@ -186,4 +186,6 @@ Yuki 以 **GPL-2.0-or-later** 发布，是 **100% GPL 兼容**的自由软件：
 
 ---
 
+[![](https://img.shields.io/badge/developed_with-Claude-D97757?style=flat-square&logo=claude&logoColor=white)](https://claude.ai/)
+
 [![](https://img.shields.io/badge/powered_by-dsh-4D6BFE?style=flat-square&logo=deepseek&logoColor=white)](https://github.com/deepseek-ai/deepseek-harness)
