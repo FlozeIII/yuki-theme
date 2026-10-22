@@ -179,3 +179,7 @@ yuki-theme/
   `wp-content/languages/themes/yuki-{locale}.l10n.php`（或 `.mo`）。
 - **无构建步骤，开箱即用。** 唯一的外部依赖是一言：只有它需要联网（服务端取回、缓存一小时），
   连不上时用主题自带的句子顶上，页面照常完整——它是「不自足功能」，降级是它的一部分。
+
+---
+
+[![](https://img.shields.io/badge/powered_by-dsh-4D6BFE?style=flat-square&logo=deepseek&logoColor=white)](https://github.com/deepseek-ai/deepseek-harness)
