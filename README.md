@@ -1,3 +1,5 @@
+![Yuki — 数字档案式 WordPress 主题](docs/images/readme-hero.png)
+
 # Yuki — 极简 × 二次元 WordPress 主题
 
 数字档案式版面：深色系统外壳包住浅色文档面板，首页以「CASE FILE / SUBJECT PROFILE /
