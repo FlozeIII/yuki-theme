@@ -1,7 +1,9 @@
 # 开发交接
 
-最后更新：2026-10-20。当前发布 **v1.3.0**（标签 `v1.3.0` → `d330fc1`），`main` 已推到
-`9cf12cf`；工作树干净，`.scratch/holds.md` 为空。
+最后更新：2026-10-22。当前发布 **v1.3.0**（标签 `v1.3.0` → `d330fc1`），`main` 已推到
+`6632639`；工作树干净，`.scratch/holds.md` 为空。
+上一段长会话的来龙去脉（含设计决策与未答问题）另见
+`.scratch/handoff-session-deb3d979.md`。
 v1.3.0 之后的功能已合并但**尚未发版**，下一个版本号需要重新决定。
 
 ## 先读
@@ -22,6 +24,8 @@ v1.3.0 之后的功能已合并但**尚未发版**，下一个版本号需要重
   - 文章内档案组件（注记、规格表、时间线、证据图卡、双栏简报）。
   - 单篇目录、阅读进度、系列导航。
   - 站点模块（数据条、标签墙、作者卡、订阅卡、页脚链接组）。
+  - 浅色下单篇侧栏、文档顶栏与证据图框改用纸面；单篇侧栏与文章头部对齐修复。
+  - 以上全部已推送，`main` = `6632639`。
 - 全套 **32 个**验收脚本通过；`verify-package` 65/65。
 - `languages/yuki.pot`：180 条条目、204 个行号引用，`check-pot` 全绿。
 - `wptk check`：0 error / 0 warning / 10 info；其中 2 条 `html.img-alt` 是动态 PHP 属性误报，
@@ -94,7 +98,7 @@ curl -s -o /dev/null -w "%{http_code}\n" http://localhost:8080/
 先读 AGENTS.md、CONTEXT.md、DESIGN.md、docs/agents/handoff.md、
 .scratch/roadmap/map.md、docs/agents/issue-tracker.md。
 
-当前标签 v1.3.0，main 已推到 9cf12cf，工作树干净，holds.md 为空；
+当前标签 v1.3.0，main 已推到 6632639，工作树干净，holds.md 为空；
 v1.3.0 之后已有未发版改动。当前没有进行中的功能，请从 roadmap 的候选里选一件
 （或按用户指定的功能），先写 .scratch/<feature>/spec.md 与 issues/NN-*.md，再实现。
 
