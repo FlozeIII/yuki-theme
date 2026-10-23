@@ -31,4 +31,4 @@ Status: ready-for-agent
 - 2026-10-23：玻璃/科技层已删除，扁平层实现完成；`verify-flat-ui` 32/32。全量回归与截图完成。
 - 减少动效从 `0.01ms` 改为 `0s`，修复 `verify-image-lightbox` 与 `verify-reading` 对 `transition-duration` 的断言；两者恢复 39/39。
 - 截图时发现自定义器字体被此前的测试留在 serif，已把 `yuki_font_style` 恢复默认 `sans` 后重拍。
-- 2026-10-23：头部搜索按钮与主题开关改为 4px 圆角矩形，滑块 3px；`verify-flat-ui` 扩到 36/36。
+- 2026-10-23：头部搜索按钮与主题开关改为 8px 圆角矩形，滑块 6px；`verify-flat-ui` 扩到 36/36。

@@ -25,13 +25,13 @@ body.yuki-production-bible .yuki-nav {
   backdrop-filter: none;
 }
 
-/* 头部图标：统一为小圆角矩形，而不是胶囊/圆点 */
+/* 头部图标：统一为更圆润的小矩形，而不是胶囊/圆点 */
 body.yuki-production-bible .yuki-search-btn,
 body.yuki-production-bible .theme-switch {
-  border-radius: 4px;
+  border-radius: 8px;
 }
 body.yuki-production-bible .theme-switch-knob {
-  border-radius: 3px;
+  border-radius: 6px;
   box-shadow: none;
 }
 body.yuki-production-bible .yuki-nav::after,
