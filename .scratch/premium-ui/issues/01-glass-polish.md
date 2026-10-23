@@ -2,6 +2,8 @@
 
 Status: ready-for-agent
 
+> **已被取代**：玻璃层/科技 HUD 层已删除，当前视觉以 `.scratch/flat-ui/spec.md` 与 `assets/css/flat.css` 为准；本文件仅保留历史决策。
+
 ## What to build
 
 在数字档案层之上加一层 `assets/css/premium.css`：圆角矩形、轻量玻璃、层次阴影和短促入场/悬停动画。模板、宽度和已有 token 不动。

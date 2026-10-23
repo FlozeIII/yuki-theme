@@ -1,0 +1,134 @@
+/* ============================================
+   Yuki · Flat Surface
+   --------------------------------------------
+   扁平层：去掉玻璃、重阴影与装饰性 HUD，
+   只保留细边框、小圆角和颜色反馈。
+   ============================================ */
+
+body.yuki-production-bible {
+  --yf-radius: 3px;
+  --yf-radius-lg: 5px;
+}
+
+/* 页面与封面：去掉网格与点阵，回到纯色表面 */
+body.yuki-production-bible,
+body.yuki-production-bible .yuki-hero,
+body.yuki-production-bible .yuki-archive-hero {
+  background-image: none;
+}
+
+/* 导航：不再悬浮、不再圆角、不再模糊 */
+body.yuki-production-bible .yuki-nav {
+  border-radius: 0;
+  box-shadow: none;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+body.yuki-production-bible .yuki-nav::after,
+body.yuki-production-bible .yuki-nav .brand::after,
+body.yuki-production-bible .yuki-production-strip::after,
+body.yuki-production-bible .yuki-cover-grid::before,
+body.yuki-production-bible .yuki-cover-grid::after,
+body.yuki-production-bible .yuki-hero .yuki-container::after,
+body.yuki-production-bible .yuki-stats-bar::before,
+body.yuki-production-bible .yuki-stats-bar > div::after,
+body.yuki-production-bible .yuki-widget::after,
+body.yuki-production-bible .yuki-toc::after,
+body.yuki-production-bible .yuki-series::after,
+body.yuki-production-bible .yuki-filebar::before,
+body.yuki-production-bible .yuki-filebar::after,
+body.yuki-production-bible .yuki-article-featured::before,
+body.yuki-production-bible .yuki-article-featured::after {
+  content: none;
+  display: none;
+}
+
+/* 表面：实色、细线、小圆角 */
+body.yuki-production-bible .yuki-character-sheet,
+body.yuki-production-bible .yuki-widget,
+body.yuki-production-bible .yuki-toc,
+body.yuki-production-bible .yuki-series,
+body.yuki-production-bible .yuki-post-nav a,
+body.yuki-production-bible .yuki-article-featured,
+body.yuki-production-bible .yuki-stats-bar,
+body.yuki-production-bible .yuki-evidence,
+body.yuki-production-bible .yuki-note,
+body.yuki-production-bible .yuki-spec-table,
+body.yuki-production-bible .yuki-brief {
+  border-radius: var(--yf-radius-lg);
+  box-shadow: none;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+body.yuki-production-bible .yuki-character-sheet {
+  border-radius: var(--yf-radius);
+}
+body.yuki-production-bible .yuki-cover-grid .yuki-character-sheet,
+html:not(.dark) body.yuki-production-bible .yuki-cover-grid .yuki-character-sheet,
+.dark body.yuki-production-bible .yuki-cover-grid .yuki-character-sheet,
+body.yuki-production-bible .yuki-cover-grid .yuki-character-sheet:hover {
+  box-shadow: none;
+  transform: none;
+}
+body.yuki-production-bible .yuki-character-sheet:hover {
+  box-shadow: none;
+  transform: none;
+}
+
+/* 文章索引：只留分隔线与颜色 */
+body.yuki-production-bible .yuki-post-item {
+  border-radius: 0;
+  box-shadow: none;
+}
+body.yuki-production-bible .yuki-post-thumb,
+body.yuki-production-bible .yuki-post-thumb img {
+  border-radius: var(--yf-radius);
+  box-shadow: none;
+}
+
+/* 控件：方形为主，保留 2px 圆角 */
+body.yuki-production-bible .yuki-btn,
+body.yuki-production-bible .yuki-search-field,
+body.yuki-production-bible .yuki-search-form input,
+body.yuki-production-bible .yuki-comment-form input,
+body.yuki-production-bible .yuki-comment-form textarea,
+body.yuki-production-bible .yuki-code-copy,
+body.yuki-production-bible .yuki-tag,
+body.yuki-production-bible .yuki-tags a {
+  border-radius: 2px;
+  box-shadow: none;
+}
+body.yuki-production-bible .yuki-btn:hover,
+body.yuki-production-bible .yuki-btn:focus-visible {
+  box-shadow: none;
+  transform: none;
+}
+
+/* 图卡：小圆角、无外阴影 */
+body.yuki-production-bible .yuki-mascot--photo,
+body.yuki-production-bible .yuki-mascot--photo:hover,
+body.yuki-production-bible .yuki-figure,
+body.yuki-production-bible .yuki-figure img,
+body.yuki-production-bible .yuki-article-featured img {
+  border-radius: var(--yf-radius);
+  box-shadow: none;
+}
+
+/* 只保留颜色/边框的短反馈，不再做位移 */
+body.yuki-production-bible .yuki-widget,
+body.yuki-production-bible .yuki-toc,
+body.yuki-production-bible .yuki-series,
+body.yuki-production-bible .yuki-post-nav a,
+body.yuki-production-bible .yuki-character-sheet {
+  transition: border-color 140ms ease, background-color 140ms ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body.yuki-production-bible *,
+  body.yuki-production-bible *::before,
+  body.yuki-production-bible *::after {
+    animation-duration: 0s !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0s !important;
+  }
+}

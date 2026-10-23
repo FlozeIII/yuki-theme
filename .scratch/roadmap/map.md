@@ -90,15 +90,14 @@ SECTOR/STATUS + EVIDENCE、归档/搜索/404/侧栏/footer 同一套档案语言
 自定义器新增「Yuki 吉祥物」：方形图上传、显示/隐藏、名称与身份；默认图仍是雪兔，
 换图后来源显示「自定义」；关闭时首页角色卡整块移除、封面单列，404/空状态也不出现。
 
-**第九批：C · 玻璃精修与动效。** spec：`.scratch/premium-ui/spec.md`；工单：
-`.scratch/premium-ui/issues/01-glass-polish.md`。只加 `assets/css/premium.css` 一层：
-导航/侧栏/目录/角色卡/证据图框/数据条/搜索/按钮的圆角与轻量玻璃，封面/列表/侧栏短距入场，
-reduced-motion 全关；正文、评论、代码块保持实色，宽度契约不变。**实现与验收已完成，未发版。**
+**第九批：C · 扁平表面与动效。** spec：`.scratch/flat-ui/spec.md`；工单：
+`.scratch/flat-ui/issues/01-flat-ui.md`。只加 `assets/css/flat.css` 一层：
+导航/侧栏/目录/角色卡/证据图框/数据条/按钮的 2–5px 小圆角、实色表面和细边框；去掉玻璃、
+HUD、重阴影与入场位移，只保留颜色/边框过渡；reduced-motion 压到 0s。正文、评论、
+代码块保持实色，宽度契约不变。**实现与验收已完成，未发版。**
 
-**第九批补充：科技感 HUD。** 工单：`.scratch/premium-ui/issues/02-tech-accent.md`。
-在玻璃层之后加 `assets/css/tech.css`：导航信号线/状态点、封面角标与扫描线、数据条读角、
-侧栏/目录角标、证据图框 bracket；640px 隐藏扫描线，reduced-motion 停止动画。
-**实现与验收已完成，未发版。**
+> 第九批最初的玻璃层与科技 HUD 层已被扁平层取代；历史见
+> `.scratch/premium-ui/`，当前视觉以 `assets/css/flat.css` 为准。
 
 ### 二次元成分（跨类）
 
@@ -175,12 +174,11 @@ reduced-motion 全关；正文、评论、代码块保持实色，宽度契约�
 - 2026-10-22：第八批**自定义吉祥物**完成：自定义器上传方形图 + 显示/隐藏 + 名称/身份；
   默认回退雪兔，换图后来源显示「自定义」；关闭时首页角色卡整块移除、封面单列，
   404/空状态也不出现。`verify-mascot` 扩到 53/53，`verify-season` 23/23 保持默认季节色条。
-- 2026-10-23：第九批**玻璃精修**完成：用户要「多运用圆角矩形和玻璃特效，多加动画」。
-  在档案层之后加 `assets/css/premium.css`：局部 10–26px 圆角、导航/侧栏/目录/搜索/证据图框的
-  轻玻璃、封面/列表/侧栏的短距入场；正文、评论、代码块保持实色。减少动效关闭新增动画与
-  transform；`verify-premium-ui` 36/36，既有脚本与 `verify-package` 同步回归。
-- 2026-10-23：玻璃层被反馈「缺乏一点科技感」，补 `assets/css/tech.css`：只画 cyan 信号线、
-  角标、状态点与扫描线，不改布局/底色/正文；`verify-tech-accent` 30/30，全量回归后提交。
+- 2026-10-23：第九批定为**扁平表面**：用户先要「多运用圆角矩形和玻璃特效，多加动画」，
+  玻璃层之后又反馈「缺乏一点科技感」，最后要求「更简洁一点，来点扁平化设计」。最终删除
+  `premium.css`/`tech.css` 与对应验收，改用 `assets/css/flat.css`：2–5px 小圆角、实色表面、
+  细边框、无玻璃/HUD/重阴影/入场位移；正文、评论、代码块保持实色与宽度。
+  `verify-flat-ui` 32/32，全量脚本与 `verify-package` 同步回归。
 - 测试基建另有一张 `comment-submit-ajax/issues/04-browser-retry-flake.md`，不挡路线图。
 
 ## Fog

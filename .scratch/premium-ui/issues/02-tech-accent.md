@@ -2,6 +2,8 @@
 
 Status: ready-for-agent
 
+> **已被取代**：玻璃层/科技 HUD 层已删除，当前视觉以 `.scratch/flat-ui/spec.md` 与 `assets/css/flat.css` 为准；本文件仅保留历史决策。
+
 ## What to build
 
 在现有玻璃精修层上再加一点「科技感」，不改模板和布局：细 cyan 信号线、角标、状态点、轻微扫描线，以及只在交互面上的低强度光晕。
