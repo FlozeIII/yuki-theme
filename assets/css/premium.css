@@ -1,0 +1,442 @@
+/* ============================================
+   Yuki · Premium Polish
+   --------------------------------------------
+   在档案层上加一层圆角、玻璃与短动效。
+   只改表面，不改模板、宽度、正文与既有 token。
+   ============================================ */
+
+body.yuki-production-bible {
+  --yp-radius-sm: 10px;
+  --yp-radius-md: 14px;
+  --yp-radius-lg: 20px;
+  --yp-radius-xl: 26px;
+
+  --yp-glass-light: rgba(255, 255, 255, 0.64);
+  --yp-glass-light-strong: rgba(255, 255, 255, 0.82);
+  --yp-glass-border-light: rgba(255, 255, 255, 0.82);
+  --yp-glass-dark: rgba(13, 23, 29, 0.64);
+  --yp-glass-dark-strong: rgba(9, 17, 22, 0.82);
+  --yp-glass-border-dark: rgba(103, 195, 210, 0.22);
+
+  --yp-shadow-soft:
+    0 1px 0 rgba(255, 255, 255, 0.72) inset,
+    0 18px 42px rgba(10, 17, 22, 0.10),
+    0 2px 7px rgba(10, 17, 22, 0.05);
+  --yp-shadow-lift:
+    0 1px 0 rgba(255, 255, 255, 0.76) inset,
+    0 24px 54px rgba(10, 17, 22, 0.15),
+    0 4px 12px rgba(10, 17, 22, 0.06);
+  --yp-shadow-dark:
+    0 1px 0 rgba(255, 255, 255, 0.05) inset,
+    0 20px 44px rgba(0, 0, 0, 0.42),
+    0 2px 8px rgba(0, 0, 0, 0.28);
+  --yp-shadow-dark-lift:
+    0 1px 0 rgba(255, 255, 255, 0.06) inset,
+    0 28px 60px rgba(0, 0, 0, 0.5),
+    0 4px 14px rgba(0, 0, 0, 0.32);
+}
+
+.dark body.yuki-production-bible {
+  --yp-glass-light: var(--yp-glass-dark);
+  --yp-glass-light-strong: var(--yp-glass-dark-strong);
+  --yp-glass-border-light: var(--yp-glass-border-dark);
+  --yp-shadow-soft: var(--yp-shadow-dark);
+  --yp-shadow-lift: var(--yp-shadow-dark-lift);
+}
+
+@keyframes yp-rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes yp-sheen {
+  0%,
+  100% {
+    background-position: 140% 0;
+  }
+  50% {
+    background-position: -40% 0;
+  }
+}
+
+/* 导航：悬浮玻璃条。背景色保持原值，避免改变主题契约。 */
+.yuki-production-bible .yuki-nav {
+  border-bottom-color: rgba(255, 255, 255, 0.08);
+  border-bottom-left-radius: var(--yp-radius-lg);
+  border-bottom-right-radius: var(--yp-radius-lg);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.14);
+  -webkit-backdrop-filter: blur(22px) saturate(155%);
+  backdrop-filter: blur(22px) saturate(155%);
+}
+html:not(.dark) .yuki-production-bible .yuki-nav {
+  border-bottom-color: rgba(22, 33, 38, 0.09);
+  box-shadow: 0 10px 28px rgba(22, 33, 38, 0.08);
+}
+
+/* 侧栏：毛玻璃卡片 */
+html:not(.dark) .yuki-production-bible .yuki-sidebar .yuki-widget {
+  border-color: var(--yp-glass-border-light);
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.72), rgba(255, 255, 255, 0.42)),
+    var(--yp-glass-light);
+  box-shadow: var(--yp-shadow-soft);
+  -webkit-backdrop-filter: blur(18px) saturate(135%);
+  backdrop-filter: blur(18px) saturate(135%);
+}
+.dark .yuki-production-bible .yuki-sidebar .yuki-widget {
+  border-color: var(--yp-glass-border-dark);
+  background:
+    linear-gradient(145deg, rgba(24, 39, 47, 0.78), rgba(9, 17, 22, 0.58)),
+    var(--yp-glass-dark);
+  box-shadow: var(--yp-shadow-dark);
+  -webkit-backdrop-filter: blur(18px) saturate(135%);
+  backdrop-filter: blur(18px) saturate(135%);
+}
+
+.yuki-production-bible .yuki-sidebar .yuki-widget {
+  overflow: hidden;
+  border-radius: var(--yp-radius-lg);
+  transition:
+    transform 220ms ease,
+    box-shadow 220ms ease,
+    border-color 220ms ease;
+}
+.yuki-production-bible .yuki-sidebar .yuki-widget:hover {
+  border-color: var(--da-cyan, var(--yuki-primary));
+  box-shadow: var(--yp-shadow-lift);
+  transform: translateY(-2px);
+}
+.dark .yuki-production-bible .yuki-sidebar .yuki-widget:hover {
+  box-shadow: var(--yp-shadow-dark-lift);
+}
+
+/* 标签墙嵌在玻璃 widget 里，不再叠第二层玻璃 */
+html:not(.dark) .yuki-production-bible .yuki-widget--tag-wall .yuki-tag-wall,
+.dark .yuki-production-bible .yuki-widget--tag-wall .yuki-tag-wall {
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+.yuki-production-bible .yuki-widget--tag-wall .yuki-tag-wall-list {
+  border-top-color: rgba(82, 102, 111, 0.22);
+}
+
+/* 订阅卡：沿用 widget 玻璃，只让输入区更柔和 */
+.yuki-production-bible .yuki-subscribe-card form {
+  align-items: center;
+}
+.yuki-production-bible .yuki-subscribe-card input {
+  border-radius: var(--yp-radius-sm);
+}
+
+/* 目录、系列、上下篇：轻玻璃与圆角 */
+.yuki-production-bible .yuki-toc,
+.yuki-production-bible .yuki-series,
+.yuki-production-bible .yuki-post-nav a {
+  border-radius: var(--yp-radius-lg);
+  background: var(--yp-glass-light);
+  box-shadow: var(--yp-shadow-soft);
+  -webkit-backdrop-filter: blur(16px) saturate(130%);
+  backdrop-filter: blur(16px) saturate(130%);
+}
+.dark .yuki-production-bible .yuki-toc,
+.dark .yuki-production-bible .yuki-series,
+.dark .yuki-production-bible .yuki-post-nav a {
+  background: var(--yp-glass-dark);
+  box-shadow: var(--yp-shadow-dark);
+}
+.yuki-production-bible .yuki-toc,
+.yuki-production-bible .yuki-series {
+  overflow: hidden;
+  border: 1px solid var(--yp-glass-border-light);
+}
+.dark .yuki-production-bible .yuki-toc,
+.dark .yuki-production-bible .yuki-series {
+  border-color: var(--yp-glass-border-dark);
+}
+
+.yuki-production-bible .yuki-post-nav a {
+  transition:
+    transform 180ms ease,
+    box-shadow 180ms ease,
+    border-color 180ms ease;
+}
+.yuki-production-bible .yuki-post-nav a:hover {
+  box-shadow: var(--yp-shadow-lift);
+}
+
+/* 角色卡：圆角、层次、悬停微浮 */
+.yuki-production-bible .yuki-character-sheet {
+  overflow: hidden;
+  border-width: 1px;
+  border-radius: var(--yp-radius-xl);
+  box-shadow:
+    0 0 0 1px rgba(5, 9, 12, 0.7),
+    10px 12px 0 rgba(0, 0, 0, 0.16),
+    0 24px 50px rgba(10, 17, 22, 0.16);
+  transition:
+    transform 240ms ease,
+    box-shadow 240ms ease;
+}
+.yuki-production-bible .yuki-character-sheet:hover {
+  box-shadow:
+    0 0 0 1px rgba(5, 9, 12, 0.7),
+    12px 15px 0 rgba(0, 0, 0, 0.14),
+    0 30px 60px rgba(10, 17, 22, 0.2);
+  transform: translateY(-3px);
+}
+.yuki-production-bible .yuki-sheet-figure {
+  border-radius: 0;
+}
+.yuki-production-bible .yuki-sheet-figure .yuki-mascot {
+  border-radius: var(--yp-radius-sm);
+}
+
+/* 文章图框与缩略图 */
+.yuki-production-bible .yuki-filebar {
+  overflow: hidden;
+  border-radius: var(--yp-radius-sm);
+}
+.yuki-production-bible .yuki-article-featured {
+  overflow: hidden;
+  border-radius: var(--yp-radius-lg);
+  box-shadow: var(--yp-shadow-soft);
+}
+.yuki-production-bible .yuki-article-featured img {
+  border-radius: calc(var(--yp-radius-lg) - 6px);
+}
+.yuki-production-bible .yuki-frame-label {
+  border-bottom-left-radius: var(--yp-radius-sm);
+}
+.yuki-production-bible .yuki-post-thumb {
+  border-radius: var(--yp-radius-sm);
+  overflow: hidden;
+}
+.yuki-production-bible .yuki-post-thumb img {
+  border-radius: calc(var(--yp-radius-sm) - 2px);
+}
+
+/* 数据条：在 hero 上的薄玻璃 */
+.yuki-production-bible .yuki-stats-bar {
+  padding: 12px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  border-radius: var(--yp-radius-md);
+  background: rgba(255, 255, 255, 0.035);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.06) inset;
+  -webkit-backdrop-filter: blur(14px) saturate(125%);
+  backdrop-filter: blur(14px) saturate(125%);
+}
+html:not(.dark) .yuki-production-bible .yuki-stats-bar {
+  border-color: rgba(22, 33, 38, 0.10);
+  background: rgba(255, 255, 255, 0.28);
+  box-shadow: var(--yp-shadow-soft);
+}
+.yuki-production-bible .yuki-stats-bar > div {
+  border-right-color: rgba(103, 195, 210, 0.20);
+}
+.yuki-production-bible .yuki-stats-bar > div:last-child {
+  border-right: 0;
+}
+
+/* 文章内组件：圆角与轻阴影 */
+.yuki-production-bible .yuki-note,
+.yuki-production-bible .yuki-evidence,
+.yuki-production-bible .yuki-brief,
+.yuki-production-bible .yuki-spec-table {
+  border-radius: var(--yp-radius-md);
+  box-shadow: 0 10px 30px rgba(10, 17, 22, 0.06);
+}
+.yuki-production-bible .yuki-spec-table table {
+  overflow: hidden;
+  border-radius: var(--yp-radius-md);
+}
+.yuki-production-bible .yuki-note {
+  overflow: hidden;
+}
+.yuki-production-bible .yuki-evidence {
+  overflow: hidden;
+}
+
+/* 搜索：玻璃对话框、圆角输入 */
+.yuki-production-bible .yuki-search-dialog {
+  border-radius: var(--yp-radius-xl);
+  border-color: var(--yp-glass-border-light);
+  background: var(--yp-glass-light-strong);
+  box-shadow: var(--yp-shadow-lift);
+  -webkit-backdrop-filter: blur(26px) saturate(150%);
+  backdrop-filter: blur(26px) saturate(150%);
+}
+.dark .yuki-production-bible .yuki-search-dialog {
+  border-color: var(--yp-glass-border-dark);
+  background: var(--yp-glass-dark-strong);
+  box-shadow: var(--yp-shadow-dark-lift);
+}
+.yuki-production-bible .yuki-search-field,
+.yuki-production-bible .yuki-comment-form input,
+.yuki-production-bible .yuki-comment-form textarea {
+  border-radius: var(--yp-radius-sm);
+}
+.yuki-production-bible .yuki-search-field:focus,
+.yuki-production-bible .yuki-comment-form input:focus,
+.yuki-production-bible .yuki-comment-form textarea:focus {
+  box-shadow: 0 0 0 4px rgba(103, 195, 210, 0.12);
+}
+
+/* 按钮：圆角矩形 + 扫光 */
+.yuki-production-bible .yuki-btn {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--yp-radius-sm);
+  box-shadow: 0 8px 18px rgba(10, 17, 22, 0.10);
+  transition:
+    background-color 180ms ease,
+    box-shadow 220ms ease,
+    transform 220ms ease;
+}
+.yuki-production-bible .yuki-btn::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(110deg, transparent 25%, rgba(255, 255, 255, 0.32) 50%, transparent 75%);
+  transform: translateX(-120%);
+  transition: transform 600ms ease;
+  pointer-events: none;
+}
+.yuki-production-bible .yuki-btn:hover {
+  box-shadow: 0 12px 26px rgba(10, 17, 22, 0.16);
+  transform: translateY(-1px);
+}
+.yuki-production-bible .yuki-btn:hover::after {
+  transform: translateX(120%);
+}
+
+/* 代码块：圆角外壳，按钮本身保持原样 */
+.yuki-production-bible .yuki-code-block {
+  overflow: hidden;
+  border: 1px solid var(--da-doc-line, var(--yuki-border));
+  border-radius: var(--yp-radius-md);
+  background: var(--da-doc, var(--yuki-card));
+}
+
+/* 入场动效：只动 y，不改变水平位置 */
+.yuki-production-bible .yuki-cover-copy,
+.yuki-production-bible .yuki-character-sheet,
+.yuki-production-bible .yuki-index-head,
+.yuki-production-bible .yuki-article-header,
+.yuki-production-bible .yuki-filebar,
+.yuki-production-bible .yuki-sidebar .yuki-widget {
+  animation: yp-rise 520ms cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
+}
+.yuki-production-bible .yuki-character-sheet {
+  animation-delay: 80ms;
+}
+.yuki-production-bible .yuki-index-head,
+.yuki-production-bible .yuki-article-header {
+  animation-delay: 40ms;
+}
+.yuki-production-bible .yuki-filebar {
+  animation-delay: 20ms;
+}
+.yuki-production-bible .yuki-post-item {
+  animation: yp-rise 460ms cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
+}
+.yuki-production-bible .yuki-post-item:nth-child(1) { animation-delay: 40ms; }
+.yuki-production-bible .yuki-post-item:nth-child(2) { animation-delay: 80ms; }
+.yuki-production-bible .yuki-post-item:nth-child(3) { animation-delay: 120ms; }
+.yuki-production-bible .yuki-post-item:nth-child(4) { animation-delay: 160ms; }
+.yuki-production-bible .yuki-post-item:nth-child(5) { animation-delay: 200ms; }
+.yuki-production-bible .yuki-post-item:nth-child(6) { animation-delay: 240ms; }
+.yuki-production-bible .yuki-post-item:nth-child(n + 7) { animation-delay: 280ms; }
+
+/* hero 的极轻扫光，不遮挡文字 */
+.yuki-production-bible .yuki-hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: linear-gradient(115deg, transparent 38%, rgba(255, 255, 255, 0.055) 50%, transparent 62%);
+  background-size: 260% 100%;
+  animation: yp-sheen 14s ease-in-out infinite;
+  pointer-events: none;
+}
+.yuki-production-bible .yuki-hero .yuki-container {
+  position: relative;
+  z-index: 1;
+}
+
+/* 不支持 blur 时回到实色，但仍然保留圆角和阴影 */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  html:not(.dark) .yuki-production-bible .yuki-sidebar .yuki-widget {
+    background: #FFFFFF;
+  }
+  .dark .yuki-production-bible .yuki-sidebar .yuki-widget {
+    background: #0B141A;
+  }
+  .yuki-production-bible .yuki-toc,
+  .yuki-production-bible .yuki-series,
+  .yuki-production-bible .yuki-post-nav a {
+    background: var(--da-doc, var(--yuki-card));
+  }
+  .yuki-production-bible .yuki-search-dialog {
+    background: var(--da-doc, var(--yuki-card));
+  }
+}
+
+/* 640：圆角与动效收敛，不改变单列 */
+@media (max-width: 640px) {
+  .yuki-production-bible .yuki-nav {
+    border-bottom-left-radius: var(--yp-radius-md);
+    border-bottom-right-radius: var(--yp-radius-md);
+  }
+  .yuki-production-bible .yuki-sidebar .yuki-widget {
+    border-radius: var(--yp-radius-md);
+  }
+  .yuki-production-bible .yuki-character-sheet {
+    border-radius: var(--yp-radius-lg);
+  }
+  .yuki-production-bible .yuki-toc,
+  .yuki-production-bible .yuki-series,
+  .yuki-production-bible .yuki-post-nav a {
+    border-radius: var(--yp-radius-md);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .yuki-production-bible .yuki-cover-copy,
+  .yuki-production-bible .yuki-character-sheet,
+  .yuki-production-bible .yuki-index-head,
+  .yuki-production-bible .yuki-article-header,
+  .yuki-production-bible .yuki-filebar,
+  .yuki-production-bible .yuki-post-item,
+  .yuki-production-bible .yuki-sidebar .yuki-widget {
+    animation: none;
+  }
+  .yuki-production-bible .yuki-hero::after {
+    animation: none;
+    background: none;
+  }
+  .yuki-production-bible .yuki-sidebar .yuki-widget:hover,
+  .yuki-production-bible .yuki-character-sheet:hover,
+  .yuki-production-bible .yuki-btn:hover {
+    transform: none;
+  }
+  .yuki-production-bible .yuki-btn {
+    transition: background-color 180ms ease;
+  }
+  .yuki-production-bible .yuki-btn::after {
+    transition: none;
+    transform: none;
+  }
+  .yuki-production-bible .yuki-post-nav a {
+    transition: border-color 180ms ease;
+  }
+}

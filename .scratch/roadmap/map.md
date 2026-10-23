@@ -90,6 +90,11 @@ SECTOR/STATUS + EVIDENCE、归档/搜索/404/侧栏/footer 同一套档案语言
 自定义器新增「Yuki 吉祥物」：方形图上传、显示/隐藏、名称与身份；默认图仍是雪兔，
 换图后来源显示「自定义」；关闭时首页角色卡整块移除、封面单列，404/空状态也不出现。
 
+**第九批：C · 玻璃精修与动效。** spec：`.scratch/premium-ui/spec.md`；工单：
+`.scratch/premium-ui/issues/01-glass-polish.md`。只加 `assets/css/premium.css` 一层：
+导航/侧栏/目录/角色卡/证据图框/数据条/搜索/按钮的圆角与轻量玻璃，封面/列表/侧栏短距入场，
+reduced-motion 全关；正文、评论、代码块保持实色，宽度契约不变。**实现与验收已完成，未发版。**
+
 ### 二次元成分（跨类）
 
 见 `.scratch/anime-flavor/spec.md`，四批推进：
@@ -165,6 +170,10 @@ SECTOR/STATUS + EVIDENCE、归档/搜索/404/侧栏/footer 同一套档案语言
 - 2026-10-22：第八批**自定义吉祥物**完成：自定义器上传方形图 + 显示/隐藏 + 名称/身份；
   默认回退雪兔，换图后来源显示「自定义」；关闭时首页角色卡整块移除、封面单列，
   404/空状态也不出现。`verify-mascot` 扩到 53/53，`verify-season` 23/23 保持默认季节色条。
+- 2026-10-23：第九批**玻璃精修**完成：用户要「多运用圆角矩形和玻璃特效，多加动画」。
+  在档案层之后加 `assets/css/premium.css`：局部 10–26px 圆角、导航/侧栏/目录/搜索/证据图框的
+  轻玻璃、封面/列表/侧栏的短距入场；正文、评论、代码块保持实色。减少动效关闭新增动画与
+  transform；`verify-premium-ui` 36/36，既有脚本与 `verify-package` 同步回归。
 - 测试基建另有一张 `comment-submit-ajax/issues/04-browser-retry-flake.md`，不挡路线图。
 
 ## Fog

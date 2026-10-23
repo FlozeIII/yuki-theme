@@ -74,6 +74,9 @@ try {
       // 第一屏摆了哪几篇——图里是什么，这里就说出来，别让人对着产物猜。
       console.log(`第一屏    ${seen.screen.join(' / ')}`);
 
+      // 玻璃层的入场动画约 520ms；等它落定，别截到半透明帧。
+      await sleep(700);
+
       return await page.screenshot();
     } finally {
       await page.close();

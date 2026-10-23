@@ -41,6 +41,19 @@ function yuki_production_assets() {
 add_action( 'wp_enqueue_scripts', 'yuki_production_assets', 20 );
 
 /**
+ * 玻璃与圆角精修层：最后加载，只覆盖表面。
+ */
+function yuki_premium_assets() {
+	wp_enqueue_style(
+		'yuki-premium',
+		get_template_directory_uri() . '/assets/css/premium.css',
+		array( 'yuki-archive-console', 'yuki-components', 'yuki-site-modules', 'yuki-mascot-card' ),
+		yuki_asset_version()
+	);
+}
+add_action( 'wp_enqueue_scripts', 'yuki_premium_assets', 30 );
+
+/**
  * 给前台加资料集 body class，方便只在这一层覆盖。
  *
  * @param string[] $classes body 类名。
