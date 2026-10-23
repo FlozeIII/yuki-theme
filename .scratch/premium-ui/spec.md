@@ -43,3 +43,13 @@ Status: ready-for-agent
 ## Further Notes
 
 玻璃效果按 `@supports (backdrop-filter: blur(1px))` 渐进增强；不支持的浏览器仍得到圆角、阴影和实色表面。圆角/动画均为可移除层，出问题时可单独停用 `yuki-premium`。
+
+## 科技感 HUD（后续迭代，m04985）
+
+在 `premium.css` 之上再加 `assets/css/tech.css`，只在装饰层补：
+- 导航底部 cyan 信号线、品牌状态点；
+- 封面四角 bracket 与跨封面的低频扫描线；
+- 数据条读角/短刻度、侧栏与目录右上角标、证据图卡四角 bracket；
+- 角色卡/按钮 hover 的 cyan 边光。
+
+不新增可见文案、不改底色/尺寸/宽度，扫描线与状态点在 `prefers-reduced-motion: reduce` 下停止；640px 隐藏跨封面扫描线。完整验收见 `issues/02-tech-accent.md`。

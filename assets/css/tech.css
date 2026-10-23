@@ -1,0 +1,285 @@
+/* ============================================
+   Yuki · Tech Accent
+   --------------------------------------------
+   在玻璃精修层上加一点 HUD 感：细 cyan 线、
+   角标、状态点和轻扫描。只做装饰，不改布局、
+   宽度、正文与既有 token。
+   ============================================ */
+
+body.yuki-production-bible {
+  --yt-accent: var(--da-cyan, #1c6b7a);
+  --yt-line: rgba(103, 195, 210, 0.34);
+  --yt-glow: rgba(28, 107, 122, 0.22);
+}
+
+.dark body.yuki-production-bible {
+  --yt-line: rgba(103, 195, 210, 0.42);
+  --yt-glow: rgba(103, 195, 210, 0.28);
+}
+
+@keyframes yt-scan {
+  0% {
+    opacity: 0;
+    transform: translateY(0);
+  }
+  12%,
+  84% {
+    opacity: 0.38;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(100%);
+  }
+}
+
+@keyframes yt-pulse {
+  0%,
+  100% {
+    opacity: 0.55;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* 导航：底部信号线与品牌状态点 */
+.yuki-production-bible .yuki-nav {
+  position: relative;
+}
+.yuki-production-bible .yuki-nav::after {
+  content: "";
+  position: absolute;
+  right: 18px;
+  bottom: -1px;
+  left: 18px;
+  height: 1px;
+  pointer-events: none;
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      var(--yt-line) 12%,
+      var(--yt-accent) 50%,
+      var(--yt-line) 88%,
+      transparent
+    );
+  box-shadow: 0 0 10px var(--yt-glow);
+  opacity: 0.82;
+}
+.yuki-production-bible .yuki-nav .brand {
+  position: relative;
+}
+.yuki-production-bible .yuki-nav .brand::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: -14px;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--yt-accent);
+  box-shadow: 0 0 10px var(--yt-accent);
+  opacity: 0.8;
+  transform: translateY(-50%);
+  animation: yt-pulse 3.2s ease-in-out infinite;
+}
+
+/* 生产信息栏：极细的扫描纹理 */
+.yuki-production-bible .yuki-production-strip {
+  position: relative;
+}
+.yuki-production-bible .yuki-production-strip::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: repeating-linear-gradient(
+    90deg,
+    transparent 0 23px,
+    rgba(103, 195, 210, 0.06) 23px 24px
+  );
+  opacity: 0.5;
+}
+
+/* 封面：角标 + 缓慢扫描线 */
+.yuki-production-bible .yuki-cover-grid {
+  position: relative;
+}
+.yuki-production-bible .yuki-cover-grid::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 26px;
+  height: 26px;
+  pointer-events: none;
+  border-top: 1px solid var(--yt-accent);
+  border-left: 1px solid var(--yt-accent);
+  opacity: 0.62;
+}
+.yuki-production-bible .yuki-cover-grid::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 26px;
+  height: 26px;
+  pointer-events: none;
+  border-right: 1px solid var(--yt-accent);
+  border-bottom: 1px solid var(--yt-accent);
+  opacity: 0.4;
+}
+.yuki-production-bible .yuki-hero .yuki-container::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  height: 1px;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--yt-line) 18%,
+    var(--yt-accent) 50%,
+    var(--yt-line) 82%,
+    transparent
+  );
+  box-shadow: 0 0 12px var(--yt-glow);
+  animation: yt-scan 10s linear infinite;
+}
+
+/* 数据条：右上角读角 + 底部短刻度 */
+.yuki-production-bible .yuki-stats-bar {
+  position: relative;
+}
+.yuki-production-bible .yuki-stats-bar::before {
+  content: "";
+  position: absolute;
+  top: 9px;
+  right: 9px;
+  width: 7px;
+  height: 7px;
+  pointer-events: none;
+  border-top: 1px solid var(--yt-accent);
+  border-right: 1px solid var(--yt-accent);
+  opacity: 0.65;
+}
+.yuki-production-bible .yuki-stats-bar > div::after {
+  content: "";
+  display: block;
+  width: 18px;
+  height: 1px;
+  margin-top: 7px;
+  background: var(--yt-line);
+}
+
+/* 侧栏与文章内卡片：极轻的角标 */
+.yuki-production-bible .yuki-widget,
+.yuki-production-bible .yuki-toc,
+.yuki-production-bible .yuki-series {
+  position: relative;
+}
+.yuki-production-bible .yuki-widget::after,
+.yuki-production-bible .yuki-toc::after,
+.yuki-production-bible .yuki-series::after {
+  content: "";
+  position: absolute;
+  top: 9px;
+  right: 10px;
+  width: 8px;
+  height: 8px;
+  pointer-events: none;
+  border-top: 1px solid var(--yt-line);
+  border-right: 1px solid var(--yt-line);
+  opacity: 0.7;
+}
+
+/* 单篇文档顶栏：四角 bracket */
+.yuki-production-bible .yuki-filebar {
+  position: relative;
+}
+.yuki-production-bible .yuki-filebar::before,
+.yuki-production-bible .yuki-filebar::after {
+  content: "";
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  pointer-events: none;
+  opacity: 0.65;
+}
+.yuki-production-bible .yuki-filebar::before {
+  top: 6px;
+  left: 6px;
+  border-top: 1px solid var(--yt-accent);
+  border-left: 1px solid var(--yt-accent);
+}
+.yuki-production-bible .yuki-filebar::after {
+  right: 6px;
+  bottom: 6px;
+  border-right: 1px solid var(--yt-accent);
+  border-bottom: 1px solid var(--yt-accent);
+}
+
+/* 证据图卡：四角 bracket */
+.yuki-production-bible .yuki-article-featured {
+  position: relative;
+}
+.yuki-production-bible .yuki-article-featured::before,
+.yuki-production-bible .yuki-article-featured::after {
+  content: "";
+  position: absolute;
+  z-index: 2;
+  width: 18px;
+  height: 18px;
+  pointer-events: none;
+  opacity: 0.55;
+}
+.yuki-production-bible .yuki-article-featured::before {
+  top: 10px;
+  left: 10px;
+  border-top: 1px solid var(--yt-accent);
+  border-left: 1px solid var(--yt-accent);
+}
+.yuki-production-bible .yuki-article-featured::after {
+  right: 10px;
+  bottom: 10px;
+  border-right: 1px solid var(--yt-accent);
+  border-bottom: 1px solid var(--yt-accent);
+}
+
+/* 交互面：只用光和边，不碰底色与尺寸 */
+.yuki-production-bible .yuki-character-sheet {
+  transition: border-color 180ms ease, box-shadow 180ms ease;
+}
+.yuki-production-bible .yuki-character-sheet:hover {
+  border-color: var(--yt-line);
+  box-shadow: 0 0 0 1px var(--yt-line), 0 0 22px var(--yt-glow);
+}
+.yuki-production-bible .yuki-btn {
+  border-color: var(--yt-line);
+}
+.yuki-production-bible .yuki-btn:hover,
+.yuki-production-bible .yuki-btn:focus-visible {
+  box-shadow: 0 0 0 1px var(--yt-line), 0 0 16px var(--yt-glow);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .yuki-production-bible .yuki-nav .brand::after,
+  .yuki-production-bible .yuki-hero .yuki-container::after {
+    animation: none;
+  }
+  .yuki-production-bible .yuki-character-sheet {
+    transition: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .yuki-production-bible .yuki-nav::after {
+    right: 12px;
+    left: 12px;
+  }
+  .yuki-production-bible .yuki-hero .yuki-container::after {
+    display: none;
+  }
+}

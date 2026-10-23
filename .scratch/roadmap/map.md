@@ -95,6 +95,11 @@ SECTOR/STATUS + EVIDENCE、归档/搜索/404/侧栏/footer 同一套档案语言
 导航/侧栏/目录/角色卡/证据图框/数据条/搜索/按钮的圆角与轻量玻璃，封面/列表/侧栏短距入场，
 reduced-motion 全关；正文、评论、代码块保持实色，宽度契约不变。**实现与验收已完成，未发版。**
 
+**第九批补充：科技感 HUD。** 工单：`.scratch/premium-ui/issues/02-tech-accent.md`。
+在玻璃层之后加 `assets/css/tech.css`：导航信号线/状态点、封面角标与扫描线、数据条读角、
+侧栏/目录角标、证据图框 bracket；640px 隐藏扫描线，reduced-motion 停止动画。
+**实现与验收已完成，未发版。**
+
 ### 二次元成分（跨类）
 
 见 `.scratch/anime-flavor/spec.md`，四批推进：
@@ -174,6 +179,8 @@ reduced-motion 全关；正文、评论、代码块保持实色，宽度契约�
   在档案层之后加 `assets/css/premium.css`：局部 10–26px 圆角、导航/侧栏/目录/搜索/证据图框的
   轻玻璃、封面/列表/侧栏的短距入场；正文、评论、代码块保持实色。减少动效关闭新增动画与
   transform；`verify-premium-ui` 36/36，既有脚本与 `verify-package` 同步回归。
+- 2026-10-23：玻璃层被反馈「缺乏一点科技感」，补 `assets/css/tech.css`：只画 cyan 信号线、
+  角标、状态点与扫描线，不改布局/底色/正文；`verify-tech-accent` 30/30，全量回归后提交。
 - 测试基建另有一张 `comment-submit-ajax/issues/04-browser-retry-flake.md`，不挡路线图。
 
 ## Fog

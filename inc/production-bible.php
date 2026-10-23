@@ -54,6 +54,20 @@ function yuki_premium_assets() {
 add_action( 'wp_enqueue_scripts', 'yuki_premium_assets', 30 );
 
 /**
+ * 科技感 HUD 层：在玻璃精修之后叠加细线与角标。
+ */
+function yuki_tech_assets() {
+	wp_enqueue_style(
+		'yuki-tech',
+		get_template_directory_uri() . '/assets/css/tech.css',
+		array( 'yuki-premium' ),
+		yuki_asset_version()
+	);
+}
+add_action( 'wp_enqueue_scripts', 'yuki_tech_assets', 31 );
+
+
+/**
  * 给前台加资料集 body class，方便只在这一层覆盖。
  *
  * @param string[] $classes body 类名。
