@@ -35,6 +35,9 @@ check('小圆角变量', css.includes('--yf-radius: 3px') && css.includes('--yf-
 check('覆盖导航/卡片/控件/雪兔卡',
   ['.yuki-nav', '.yuki-widget', '.yuki-character-sheet', '.yuki-btn', '.yuki-mascot--photo']
     .every((selector) => css.includes(selector)));
+check('头部图标用圆角矩形',
+  css.includes('.yuki-search-btn') && css.includes('.theme-switch') &&
+  css.includes('border-radius: 4px') && css.includes('.theme-switch-knob'));
 check('移除 HUD 伪元素', css.includes('content: none') && css.includes('display: none'));
 check('减少动效近乎关闭', /prefers-reduced-motion[\s\S]*animation-duration:\s*0s/.test(css));
 
@@ -79,6 +82,9 @@ if (singlePath) {
           sheetRadius: parseFloat(style(sheet).borderTopLeftRadius),
           sheetShadow: style(sheet).boxShadow,
           statsRadius: parseFloat(style(stats).borderTopLeftRadius),
+          searchRadius: parseFloat(style(q('.yuki-search-btn')).borderTopLeftRadius),
+          themeRadius: parseFloat(style(q('.theme-switch')).borderTopLeftRadius),
+          knobRadius: parseFloat(style(q('.theme-switch-knob')).borderTopLeftRadius),
           bodyImage: style(document.body).backgroundImage,
           heroImage: style(q('.yuki-hero')).backgroundImage,
           overflow: document.documentElement.scrollWidth > document.documentElement.clientWidth,
@@ -134,6 +140,9 @@ if (browserError) {
   check('角色卡小圆角', measured.home.sheetRadius > 0 && measured.home.sheetRadius <= 5, String(measured.home.sheetRadius));
   check('角色卡无阴影', measured.home.sheetShadow === 'none', measured.home.sheetShadow);
   check('数据条小圆角', measured.home.statsRadius <= 5, String(measured.home.statsRadius));
+  check('搜索按钮圆角矩形', measured.home.searchRadius === 4, String(measured.home.searchRadius));
+  check('主题开关圆角矩形', measured.home.themeRadius === 4, String(measured.home.themeRadius));
+  check('主题开关滑块小圆角', measured.home.knobRadius === 3, String(measured.home.knobRadius));
   check('页面背景无图', measured.home.bodyImage === 'none', measured.home.bodyImage);
   check('封面无背景图', measured.home.heroImage === 'none', measured.home.heroImage);
   check('首页 1440 无横向溢出', !measured.home.overflow);

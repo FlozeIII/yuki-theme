@@ -24,6 +24,16 @@ body.yuki-production-bible .yuki-nav {
   -webkit-backdrop-filter: none;
   backdrop-filter: none;
 }
+
+/* 头部图标：统一为小圆角矩形，而不是胶囊/圆点 */
+body.yuki-production-bible .yuki-search-btn,
+body.yuki-production-bible .theme-switch {
+  border-radius: 4px;
+}
+body.yuki-production-bible .theme-switch-knob {
+  border-radius: 3px;
+  box-shadow: none;
+}
 body.yuki-production-bible .yuki-nav::after,
 body.yuki-production-bible .yuki-nav .brand::after,
 body.yuki-production-bible .yuki-production-strip::after,

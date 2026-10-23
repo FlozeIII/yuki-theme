@@ -20,7 +20,7 @@ Status: ready-for-agent
 - [x] 角色卡 3px 且无阴影；数据条 5px；侧栏无玻璃/阴影/5px；按钮 2px。
 - [x] body/hero 无背景图；640px 无横向溢出；正文仍 722px。
 - [x] reduced-motion 动画/过渡压到 0s。
-- [x] `verify-flat-ui` 32/32。
+- [x] `verify-flat-ui` 36/36（含头部图标圆角矩形）。
 - [x] 既有 33 个脚本全部通过。
 - [x] `verify-package` 65/65；`wptk check` 0 error / 0 warning / 10 info（既有 info）。
 - [x] `screenshot.png` 重建为扁平版，1200×900、约 122 KB。
@@ -31,3 +31,4 @@ Status: ready-for-agent
 - 2026-10-23：玻璃/科技层已删除，扁平层实现完成；`verify-flat-ui` 32/32。全量回归与截图完成。
 - 减少动效从 `0.01ms` 改为 `0s`，修复 `verify-image-lightbox` 与 `verify-reading` 对 `transition-duration` 的断言；两者恢复 39/39。
 - 截图时发现自定义器字体被此前的测试留在 serif，已把 `yuki_font_style` 恢复默认 `sans` 后重拍。
+- 2026-10-23：头部搜索按钮与主题开关改为 4px 圆角矩形，滑块 3px；`verify-flat-ui` 扩到 36/36。
